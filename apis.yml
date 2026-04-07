@@ -4,10 +4,9 @@ apis:
   - aid: influxdb:influxdb
     name: InfluxDB API
     tags:
-      - Time Series
       - Database
-    image: 
-      https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Time Series
+    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: http://api.example.com
     humanURL: https://www.influxdata.com/main/
     properties:
@@ -23,8 +22,8 @@ apis:
       build intelligent, real-time systems with their time series data.
 name: InfluxDB
 tags:
-  - Time Series
   - Database
+  - Time Series
 type: Contract
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 common:
