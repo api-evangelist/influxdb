@@ -1,67 +1,80 @@
 # InfluxDB (influxdb)
 
-We are the company building InfluxDB, the open source time series database
-used by more than a million developers around the world. Our mission is to
-help developers build intelligent, real-time systems with their time series
-data.
+InfluxData is the company building InfluxDB, the open source time series
+database used by more than a million developers around the world. Their
+mission is to help developers build intelligent, real-time systems with
+their time series data, with offerings spanning open source InfluxDB Core
+and Enterprise, InfluxDB Cloud Serverless and Dedicated, and Telegraf for
+data collection.
 
-**URL:** [Visit APIs.json URL](http://example.com/apis.json)
+**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/apis.yml)
 
 ## Scope
 
-- **Type:** Index 
+- **Type:** Contract
+- **Position:** Consuming
+- **Access:** 3rd-Party
 
 ## Tags:
 
- - Time Series, Database
+ - Database, Time Series, Real-Time, Analytics
 
 ## Timestamps
 
-- **Created:** 2024-09-25 
-- **Modified:** 2024-09-25 
+- **Created:** 2024-09-25
+- **Modified:** 2026-04-28
 
 ## APIs
 
-### InfluxDB API
+### InfluxDB Cloud API
 
-We are the company building InfluxDB, the open source time series database
-used by more than a million developers around the world. Our mission is to
-help developers build intelligent, real-time systems with their time
-series data.
+InfluxDB Cloud v2 API for managing buckets, organizations, tasks,
+authorizations, dashboards, and writing and querying time series data.
+The API exposes the full surface of the InfluxDB Cloud platform including
+data ingestion, Flux query execution, task scheduling, alerting, and
+access control.
 
-**Human URL:** [https://www.influxdata.com/main/](https://www.influxdata.com/main/)
+**Human URL:** [https://www.influxdata.com/](https://www.influxdata.com/)
 
-**Base URL:** [http://api.example.com](http://api.example.com)
-
+**Base URL:** [https://cloud2.influxdata.com/api/v2](https://cloud2.influxdata.com/api/v2)
 
 #### Tags:
 
- - Time Series, Database
+ - Database, Time Series, Real-Time, Cloud
 
 #### Properties
 
 - [Documentation](https://docs.influxdata.com/influxdb/cloud/api/v2/)
-- [OpenAPI](
-https://raw.githubusercontent.com/influxdata/openapi/master/contracts/ref/cloud.yml)
+- [OpenAPI](https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-openapi.yml)
+- [Authentication](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication)
+- [Getting Started](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start)
+- [Pagination](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination)
+- [Headers](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers)
+- [Source](https://github.com/influxdata/openapi)
+
+#### Contact
+
+- **FN:** InfluxData Support
+- **Email:** support@influxdata.com
+- **URL:** https://support.influxdata.com/
 
 ## Common Properties
 
+- [Website](https://www.influxdata.com/)
+- [Documentation](https://docs.influxdata.com/)
 - [Getting Started](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start)
-- [Resources](https://www.influxdata.com/_resources/?pg=1)
-- [Webinars](https://www.influxdata.com/_resources/?pg=1&ct=webinar)
-- [White papers](https://www.influxdata.com/_resources/?pg=1&ct=tech_paper)
-- [Video](https://www.influxdata.com/_resources/?pg=1&ct=video)
-- [Case Studies](https://www.influxdata.com/_resources/?pg=1&ct=case_study)
 - [Pricing](https://www.influxdata.com/influxdb-pricing/)
 - [Use Cases](https://www.influxdata.com/solutions/)
-- [Authentication](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication)
-- [Headers](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers)
-- [Pagination](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination)
-- [Issues](https://github.com/influxdata/influxdb/issues/new/choose/)
-- [Support](https://support.influxdata.com/)
+- [Resources](https://www.influxdata.com/_resources/?pg=1)
+- [Webinars](https://www.influxdata.com/_resources/?pg=1&ct=webinar)
+- [White Papers](https://www.influxdata.com/_resources/?pg=1&ct=tech_paper)
+- [Video](https://www.influxdata.com/_resources/?pg=1&ct=video)
+- [Case Studies](https://www.influxdata.com/_resources/?pg=1&ct=case_study)
 - [Events](https://www.influxdata.com/events/)
 - [Glossary](https://www.influxdata.com/glossary/)
 - [Integrations](https://www.influxdata.com/products/integrations/)
+- [Issues](https://github.com/influxdata/influxdb/issues/new/choose/)
+- [Support](https://support.influxdata.com/)
 - [GitHub](https://github.com/influxdata/influxdb)
 - [LinkedIn](https://www.linkedin.com/company/influxdb/)
 
@@ -70,4 +83,3 @@ https://raw.githubusercontent.com/influxdata/openapi/master/contracts/ref/cloud.
 **FN:** Kin Lane
 
 **Email:** kin@apievangelist.com
-
