@@ -1,0 +1,3066 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API
+  description: Complete InfluxDB Cloud API API capability.
+  tags:
+  - Influxdb
+  - API
+  created: '2026-05-06'
+  modified: '2026-05-06'
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb
+    baseUri: ''
+    description: Complete InfluxDB Cloud API HTTP API.
+    authentication:
+      type: basic
+      username: '{{INFLUXDB_USERNAME}}'
+      password: '{{INFLUXDB_PASSWORD}}'
+    resources:
+    - name: api-v2
+      path: /api/v2
+      operations:
+      - name: getroutes
+        method: GET
+        description: List all top level routes
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-authorizations
+      path: /api/v2/authorizations
+      operations:
+      - name: getauthorizations
+        method: GET
+        description: List authorizations
+        inputParameters:
+        - name: userID
+          in: query
+          type: string
+          description: A user ID. Only returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).
+        - name: user
+          in: query
+          type: string
+          description: A user name. Only returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Only returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organ
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Only returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#org
+        - name: token
+          in: query
+          type: string
+          description: An API [token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token) value. Specifies
+            an authorization by its `token` property value and returns
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postauthorizations
+        method: POST
+        description: Create an authorization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-authorizations-authid
+      path: /api/v2/authorizations/{authID}
+      operations:
+      - name: deleteauthorizationsid
+        method: DELETE
+        description: Delete an authorization
+        inputParameters:
+        - name: authID
+          in: path
+          type: string
+          required: true
+          description: An authorization ID. Specifies the authorization to delete.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getauthorizationsid
+        method: GET
+        description: Retrieve an authorization
+        inputParameters:
+        - name: authID
+          in: path
+          type: string
+          required: true
+          description: An authorization ID. Specifies the authorization to retrieve.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchauthorizationsid
+        method: PATCH
+        description: Update an API token to be active or inactive
+        inputParameters:
+        - name: authID
+          in: path
+          type: string
+          required: true
+          description: An authorization ID. Specifies the authorization to update.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets
+      path: /api/v2/buckets
+      operations:
+      - name: getbuckets
+        method: GET
+        description: List buckets
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: 'An organization name. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter.
+            - Lists buckets for the organization associated with the autho'
+        - name: orgID
+          in: query
+          type: string
+          description: 'An organization ID. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter. -
+            Lists buckets for the organization associated with the authori'
+        - name: name
+          in: query
+          type: string
+          description: A bucket name. Only returns buckets with the specified name.
+        - name: id
+          in: query
+          type: string
+          description: A bucket ID. Only returns the bucket with the specified ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postbuckets
+        method: POST
+        description: Create a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid
+      path: /api/v2/buckets/{bucketID}
+      operations:
+      - name: deletebucketsid
+        method: DELETE
+        description: Delete a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: Bucket ID. The ID of the bucket to delete.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getbucketsid
+        method: GET
+        description: Retrieve a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to retrieve.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchbucketsid
+        method: PATCH
+        description: Update a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The bucket ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-labels
+      path: /api/v2/buckets/{bucketID}/labels
+      operations:
+      - name: getbucketsidlabels
+        method: GET
+        description: List all labels for a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to retrieve labels for.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postbucketsidlabels
+        method: POST
+        description: Add a label to a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: Bucket ID. The ID of the bucket to label.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-labels-labelid
+      path: /api/v2/buckets/{bucketID}/labels/{labelID}
+      operations:
+      - name: deletebucketsidlabelsid
+        method: DELETE
+        description: Delete a label from a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The bucket ID.
+        - name: labelID
+          in: path
+          type: string
+          required: true
+          description: The ID of the label to delete.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-members
+      path: /api/v2/buckets/{bucketID}/members
+      operations:
+      - name: getbucketsidmembers
+        method: GET
+        description: List all users with member privileges for a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to retrieve users for.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postbucketsidmembers
+        method: POST
+        description: Add a member to a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to retrieve users for.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-members-userid
+      path: /api/v2/buckets/{bucketID}/members/{userID}
+      operations:
+      - name: deletebucketsidmembersid
+        method: DELETE
+        description: Remove a member from a bucket
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          required: true
+          description: The ID of the user to remove.
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to remove a user from.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-owners
+      path: /api/v2/buckets/{bucketID}/owners
+      operations:
+      - name: getbucketsidowners
+        method: GET
+        description: List all owners of a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to retrieve owners for.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postbucketsidowners
+        method: POST
+        description: Add an owner to a bucket
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to add an owner for.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-owners-userid
+      path: /api/v2/buckets/{bucketID}/owners/{userID}
+      operations:
+      - name: deletebucketsidownersid
+        method: DELETE
+        description: Remove an owner from a bucket
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          required: true
+          description: The ID of the owner to remove.
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: The ID of the bucket to remove an owner from.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-schema-measurements
+      path: /api/v2/buckets/{bucketID}/schema/measurements
+      operations:
+      - name: getmeasurementschemas
+        method: GET
+        description: List measurement schemas of a bucket
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Specifies the organization that owns the schema.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Specifies the organization that owns the schema.
+        - name: name
+          in: query
+          type: string
+          description: A measurement name. Only returns measurement schemas with the specified name.
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: A bucket ID. Lists measurement schemas for the specified bucket.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createmeasurementschema
+        method: POST
+        description: Create a measurement schema for a bucket
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Specifies the organization that owns the schema.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Specifies the organization that owns the schema.
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: A bucket ID. Adds a schema for the specified bucket.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-buckets-bucketid-schema-measurements-meas
+      path: /api/v2/buckets/{bucketID}/schema/measurements/{measurementID}
+      operations:
+      - name: getmeasurementschema
+        method: GET
+        description: Retrieve a measurement schema
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: Organization name. Specifies the organization that owns the schema.
+        - name: orgID
+          in: query
+          type: string
+          description: Organization ID. Specifies the organization that owns the schema.
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: A bucket ID. Retrieves schemas for the specified bucket.
+        - name: measurementID
+          in: path
+          type: string
+          required: true
+          description: The measurement schema ID. Specifies the measurement schema to retrieve.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updatemeasurementschema
+        method: PATCH
+        description: Update a measurement schema
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Specifies the organization that owns the schema.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Specifies the organization that owns the schema.
+        - name: bucketID
+          in: path
+          type: string
+          required: true
+          description: A bucket ID. Specifies the bucket to retrieve schemas for.
+        - name: measurementID
+          in: path
+          type: string
+          required: true
+          description: A measurement schema ID. Retrieves the specified measurement schema.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-checks
+      path: /api/v2/checks
+      operations:
+      - name: getchecks
+        method: GET
+        description: List all checks
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          required: true
+          description: Only show checks that belong to a specific organization ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createcheck
+        method: POST
+        description: Add new check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-checks-checkid
+      path: /api/v2/checks/{checkID}
+      operations:
+      - name: deletechecksid
+        method: DELETE
+        description: Delete a check
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getchecksid
+        method: GET
+        description: Retrieve a check
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchchecksid
+        method: PATCH
+        description: Update a check
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: putchecksid
+        method: PUT
+        description: Update a check
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-checks-checkid-labels
+      path: /api/v2/checks/{checkID}/labels
+      operations:
+      - name: getchecksidlabels
+        method: GET
+        description: List all labels for a check
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postchecksidlabels
+        method: POST
+        description: Add a label to a check
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-checks-checkid-labels-labelid
+      path: /api/v2/checks/{checkID}/labels/{labelID}
+      operations:
+      - name: deletechecksidlabelsid
+        method: DELETE
+        description: Delete label from a check
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        - name: labelID
+          in: path
+          type: string
+          required: true
+          description: The ID of the label to delete.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-checks-checkid-query
+      path: /api/v2/checks/{checkID}/query
+      operations:
+      - name: getchecksidquery
+        method: GET
+        description: Retrieve a check query
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          required: true
+          description: The check ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards
+      path: /api/v2/dashboards
+      operations:
+      - name: getdashboards
+        method: GET
+        description: List dashboards
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: The maximum number of [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+            to return. Default is `20`. The minimum is `-1` and
+        - name: owner
+          in: query
+          type: string
+          description: A user ID. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+            where the specified user has the `owner` role.
+        - name: sortBy
+          in: query
+          type: string
+          description: The column to sort by.
+        - name: id
+          in: query
+          type: array
+          description: 'A list of dashboard IDs. Returns only the specified [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard).
+            If you specify `id` '
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+            that belong to the specified [organizati
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+            that belong to the specified [organiza
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postdashboards
+        method: POST
+        description: Create a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid
+      path: /api/v2/dashboards/{dashboardID}
+      operations:
+      - name: deletedashboardsid
+        method: DELETE
+        description: Delete a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to update.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getdashboardsid
+        method: GET
+        description: Retrieve a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to update.
+        - name: include
+          in: query
+          type: string
+          description: If `properties`, includes the cell view properties in the response.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchdashboardsid
+        method: PATCH
+        description: Update a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to update.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-cells
+      path: /api/v2/dashboards/{dashboardID}/cells
+      operations:
+      - name: postdashboardsidcells
+        method: POST
+        description: Create a dashboard cell
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to update.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: putdashboardsidcells
+        method: PUT
+        description: Replace cells in a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to update.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-cells-cellid
+      path: /api/v2/dashboards/{dashboardID}/cells/{cellID}
+      operations:
+      - name: deletedashboardsidcellsid
+        method: DELETE
+        description: Delete a dashboard cell
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to delete.
+        - name: cellID
+          in: path
+          type: string
+          required: true
+          description: The ID of the cell to delete.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchdashboardsidcellsid
+        method: PATCH
+        description: Update the non-positional information related to a cell
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to update.
+        - name: cellID
+          in: path
+          type: string
+          required: true
+          description: The ID of the cell to update.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-cells-cellid-view
+      path: /api/v2/dashboards/{dashboardID}/cells/{cellID}/view
+      operations:
+      - name: getdashboardsidcellsidview
+        method: GET
+        description: Retrieve the view for a cell
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        - name: cellID
+          in: path
+          type: string
+          required: true
+          description: The cell ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchdashboardsidcellsidview
+        method: PATCH
+        description: Update the view for a cell
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The ID of the dashboard to update.
+        - name: cellID
+          in: path
+          type: string
+          required: true
+          description: The ID of the cell to update.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-labels
+      path: /api/v2/dashboards/{dashboardID}/labels
+      operations:
+      - name: getdashboardsidlabels
+        method: GET
+        description: List all labels for a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postdashboardsidlabels
+        method: POST
+        description: Add a label to a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-labels-labelid
+      path: /api/v2/dashboards/{dashboardID}/labels/{labelID}
+      operations:
+      - name: deletedashboardsidlabelsid
+        method: DELETE
+        description: Delete a label from a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        - name: labelID
+          in: path
+          type: string
+          required: true
+          description: The ID of the label to delete.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-members
+      path: /api/v2/dashboards/{dashboardID}/members
+      operations:
+      - name: getdashboardsidmembers
+        method: GET
+        description: List all dashboard members
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postdashboardsidmembers
+        method: POST
+        description: Add a member to a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-members-userid
+      path: /api/v2/dashboards/{dashboardID}/members/{userID}
+      operations:
+      - name: deletedashboardsidmembersid
+        method: DELETE
+        description: Remove a member from a dashboard
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          required: true
+          description: The ID of the member to remove.
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-owners
+      path: /api/v2/dashboards/{dashboardID}/owners
+      operations:
+      - name: getdashboardsidowners
+        method: GET
+        description: List all dashboard owners
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postdashboardsidowners
+        method: POST
+        description: Add an owner to a dashboard
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dashboards-dashboardid-owners-userid
+      path: /api/v2/dashboards/{dashboardID}/owners/{userID}
+      operations:
+      - name: deletedashboardsidownersid
+        method: DELETE
+        description: Remove an owner from a dashboard
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          required: true
+          description: The ID of the owner to remove.
+        - name: dashboardID
+          in: path
+          type: string
+          required: true
+          description: The dashboard ID.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dbrps
+      path: /api/v2/dbrps
+      operations:
+      - name: getdbrps
+        method: GET
+        description: List database retention policy mappings
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Only returns DBRP mappings for the specified organization.
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Only returns DBRP mappings for the specified organization.
+        - name: id
+          in: query
+          type: string
+          description: A DBPR mapping ID. Only returns the specified DBRP mapping.
+        - name: bucketID
+          in: query
+          type: string
+          description: A bucket ID. Only returns DBRP mappings that belong to the specified bucket.
+        - name: default
+          in: query
+          type: boolean
+          description: Specifies filtering on default
+        - name: db
+          in: query
+          type: string
+          description: A database. Only returns DBRP mappings that belong to the 1.x database.
+        - name: rp
+          in: query
+          type: string
+          description: A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp).
+            Specifies the 1.x retention policy to filter on.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postdbrp
+        method: POST
+        description: Add a database retention policy mapping
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-dbrps-dbrpid
+      path: /api/v2/dbrps/{dbrpID}
+      operations:
+      - name: deletedbrpid
+        method: DELETE
+        description: Delete a database retention policy
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Specifies the organization that owns the DBRP mapping.
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Specifies the organization that owns the DBRP mapping.
+        - name: dbrpID
+          in: path
+          type: string
+          required: true
+          description: A DBRP mapping ID. Only returns the specified DBRP mapping.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: getdbrpsid
+        method: GET
+        description: Retrieve a database retention policy mapping
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Specifies the organization that owns the DBRP mapping.
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Specifies the organization that owns the DBRP mapping.
+        - name: dbrpID
+          in: path
+          type: string
+          required: true
+          description: A DBRP mapping ID. Specifies the DBRP mapping.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: patchdbrpid
+        method: PATCH
+        description: Update a database retention policy mapping
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID. Specifies the organization that owns the DBRP mapping.
+        - name: org
+          in: query
+          type: string
+          description: An organization name. Specifies the organization that owns the DBRP mapping.
+        - name: dbrpID
+          in: path
+          type: string
+          required: true
+          description: A DBRP mapping ID. Specifies the DBRP mapping.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-delete
+      path: /api/v2/delete
+      operations:
+      - name: postdelete
+        method: POST
+        description: Delete data
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: 'An organization name or ID. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter.
+            - Deletes data from the bucket in the organization assoc'
+        - name: bucket
+          in: query
+          type: string
+          description: A bucket name or ID. Specifies the bucket to delete data from. If you pass both `bucket` and `bucketID`,
+            `bucketID` takes precedence.
+        - name: orgID
+          in: query
+          type: string
+          description: 'An organization ID. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter. -
+            Deletes data from the bucket in the organization associated wi'
+        - name: bucketID
+          in: query
+          type: string
+          description: A bucket ID. Specifies the bucket to delete data from. If you pass both `bucket` and `bucketID`, `bucketID`
+            takes precedence.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+  exposes:
+  - type: rest
+    port: 8080
+    namespace: influxdb-rest
+    description: REST adapter for Complete InfluxDB Cloud API.
+    resources:
+    - path: /api/v2
+      name: getroutes
+      operations:
+      - method: GET
+        name: getroutes
+        description: List all top level routes
+        call: influxdb.getroutes
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/authorizations
+      name: getauthorizations
+      operations:
+      - method: GET
+        name: getauthorizations
+        description: List authorizations
+        call: influxdb.getauthorizations
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/authorizations
+      name: postauthorizations
+      operations:
+      - method: POST
+        name: postauthorizations
+        description: Create an authorization
+        call: influxdb.postauthorizations
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/authorizations/{authID}
+      name: deleteauthorizationsid
+      operations:
+      - method: DELETE
+        name: deleteauthorizationsid
+        description: Delete an authorization
+        call: influxdb.deleteauthorizationsid
+        with:
+          authID: rest.authID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/authorizations/{authID}
+      name: getauthorizationsid
+      operations:
+      - method: GET
+        name: getauthorizationsid
+        description: Retrieve an authorization
+        call: influxdb.getauthorizationsid
+        with:
+          authID: rest.authID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/authorizations/{authID}
+      name: patchauthorizationsid
+      operations:
+      - method: PATCH
+        name: patchauthorizationsid
+        description: Update an API token to be active or inactive
+        call: influxdb.patchauthorizationsid
+        with:
+          authID: rest.authID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets
+      name: getbuckets
+      operations:
+      - method: GET
+        name: getbuckets
+        description: List buckets
+        call: influxdb.getbuckets
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets
+      name: postbuckets
+      operations:
+      - method: POST
+        name: postbuckets
+        description: Create a bucket
+        call: influxdb.postbuckets
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}
+      name: deletebucketsid
+      operations:
+      - method: DELETE
+        name: deletebucketsid
+        description: Delete a bucket
+        call: influxdb.deletebucketsid
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}
+      name: getbucketsid
+      operations:
+      - method: GET
+        name: getbucketsid
+        description: Retrieve a bucket
+        call: influxdb.getbucketsid
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}
+      name: patchbucketsid
+      operations:
+      - method: PATCH
+        name: patchbucketsid
+        description: Update a bucket
+        call: influxdb.patchbucketsid
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/labels
+      name: getbucketsidlabels
+      operations:
+      - method: GET
+        name: getbucketsidlabels
+        description: List all labels for a bucket
+        call: influxdb.getbucketsidlabels
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/labels
+      name: postbucketsidlabels
+      operations:
+      - method: POST
+        name: postbucketsidlabels
+        description: Add a label to a bucket
+        call: influxdb.postbucketsidlabels
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/labels/{labelID}
+      name: deletebucketsidlabelsid
+      operations:
+      - method: DELETE
+        name: deletebucketsidlabelsid
+        description: Delete a label from a bucket
+        call: influxdb.deletebucketsidlabelsid
+        with:
+          bucketID: rest.bucketID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/members
+      name: getbucketsidmembers
+      operations:
+      - method: GET
+        name: getbucketsidmembers
+        description: List all users with member privileges for a bucket
+        call: influxdb.getbucketsidmembers
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/members
+      name: postbucketsidmembers
+      operations:
+      - method: POST
+        name: postbucketsidmembers
+        description: Add a member to a bucket
+        call: influxdb.postbucketsidmembers
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/members/{userID}
+      name: deletebucketsidmembersid
+      operations:
+      - method: DELETE
+        name: deletebucketsidmembersid
+        description: Remove a member from a bucket
+        call: influxdb.deletebucketsidmembersid
+        with:
+          userID: rest.userID
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/owners
+      name: getbucketsidowners
+      operations:
+      - method: GET
+        name: getbucketsidowners
+        description: List all owners of a bucket
+        call: influxdb.getbucketsidowners
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/owners
+      name: postbucketsidowners
+      operations:
+      - method: POST
+        name: postbucketsidowners
+        description: Add an owner to a bucket
+        call: influxdb.postbucketsidowners
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/owners/{userID}
+      name: deletebucketsidownersid
+      operations:
+      - method: DELETE
+        name: deletebucketsidownersid
+        description: Remove an owner from a bucket
+        call: influxdb.deletebucketsidownersid
+        with:
+          userID: rest.userID
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/schema/measurements
+      name: getmeasurementschemas
+      operations:
+      - method: GET
+        name: getmeasurementschemas
+        description: List measurement schemas of a bucket
+        call: influxdb.getmeasurementschemas
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/schema/measurements
+      name: createmeasurementschema
+      operations:
+      - method: POST
+        name: createmeasurementschema
+        description: Create a measurement schema for a bucket
+        call: influxdb.createmeasurementschema
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/schema/measurements/{measurementID}
+      name: getmeasurementschema
+      operations:
+      - method: GET
+        name: getmeasurementschema
+        description: Retrieve a measurement schema
+        call: influxdb.getmeasurementschema
+        with:
+          bucketID: rest.bucketID
+          measurementID: rest.measurementID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/buckets/{bucketID}/schema/measurements/{measurementID}
+      name: updatemeasurementschema
+      operations:
+      - method: PATCH
+        name: updatemeasurementschema
+        description: Update a measurement schema
+        call: influxdb.updatemeasurementschema
+        with:
+          bucketID: rest.bucketID
+          measurementID: rest.measurementID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks
+      name: getchecks
+      operations:
+      - method: GET
+        name: getchecks
+        description: List all checks
+        call: influxdb.getchecks
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks
+      name: createcheck
+      operations:
+      - method: POST
+        name: createcheck
+        description: Add new check
+        call: influxdb.createcheck
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}
+      name: deletechecksid
+      operations:
+      - method: DELETE
+        name: deletechecksid
+        description: Delete a check
+        call: influxdb.deletechecksid
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}
+      name: getchecksid
+      operations:
+      - method: GET
+        name: getchecksid
+        description: Retrieve a check
+        call: influxdb.getchecksid
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}
+      name: patchchecksid
+      operations:
+      - method: PATCH
+        name: patchchecksid
+        description: Update a check
+        call: influxdb.patchchecksid
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}
+      name: putchecksid
+      operations:
+      - method: PUT
+        name: putchecksid
+        description: Update a check
+        call: influxdb.putchecksid
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}/labels
+      name: getchecksidlabels
+      operations:
+      - method: GET
+        name: getchecksidlabels
+        description: List all labels for a check
+        call: influxdb.getchecksidlabels
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}/labels
+      name: postchecksidlabels
+      operations:
+      - method: POST
+        name: postchecksidlabels
+        description: Add a label to a check
+        call: influxdb.postchecksidlabels
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}/labels/{labelID}
+      name: deletechecksidlabelsid
+      operations:
+      - method: DELETE
+        name: deletechecksidlabelsid
+        description: Delete label from a check
+        call: influxdb.deletechecksidlabelsid
+        with:
+          checkID: rest.checkID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/checks/{checkID}/query
+      name: getchecksidquery
+      operations:
+      - method: GET
+        name: getchecksidquery
+        description: Retrieve a check query
+        call: influxdb.getchecksidquery
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards
+      name: getdashboards
+      operations:
+      - method: GET
+        name: getdashboards
+        description: List dashboards
+        call: influxdb.getdashboards
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards
+      name: postdashboards
+      operations:
+      - method: POST
+        name: postdashboards
+        description: Create a dashboard
+        call: influxdb.postdashboards
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}
+      name: deletedashboardsid
+      operations:
+      - method: DELETE
+        name: deletedashboardsid
+        description: Delete a dashboard
+        call: influxdb.deletedashboardsid
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}
+      name: getdashboardsid
+      operations:
+      - method: GET
+        name: getdashboardsid
+        description: Retrieve a dashboard
+        call: influxdb.getdashboardsid
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}
+      name: patchdashboardsid
+      operations:
+      - method: PATCH
+        name: patchdashboardsid
+        description: Update a dashboard
+        call: influxdb.patchdashboardsid
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/cells
+      name: postdashboardsidcells
+      operations:
+      - method: POST
+        name: postdashboardsidcells
+        description: Create a dashboard cell
+        call: influxdb.postdashboardsidcells
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/cells
+      name: putdashboardsidcells
+      operations:
+      - method: PUT
+        name: putdashboardsidcells
+        description: Replace cells in a dashboard
+        call: influxdb.putdashboardsidcells
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/cells/{cellID}
+      name: deletedashboardsidcellsid
+      operations:
+      - method: DELETE
+        name: deletedashboardsidcellsid
+        description: Delete a dashboard cell
+        call: influxdb.deletedashboardsidcellsid
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/cells/{cellID}
+      name: patchdashboardsidcellsid
+      operations:
+      - method: PATCH
+        name: patchdashboardsidcellsid
+        description: Update the non-positional information related to a cell
+        call: influxdb.patchdashboardsidcellsid
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/cells/{cellID}/view
+      name: getdashboardsidcellsidview
+      operations:
+      - method: GET
+        name: getdashboardsidcellsidview
+        description: Retrieve the view for a cell
+        call: influxdb.getdashboardsidcellsidview
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/cells/{cellID}/view
+      name: patchdashboardsidcellsidview
+      operations:
+      - method: PATCH
+        name: patchdashboardsidcellsidview
+        description: Update the view for a cell
+        call: influxdb.patchdashboardsidcellsidview
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/labels
+      name: getdashboardsidlabels
+      operations:
+      - method: GET
+        name: getdashboardsidlabels
+        description: List all labels for a dashboard
+        call: influxdb.getdashboardsidlabels
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/labels
+      name: postdashboardsidlabels
+      operations:
+      - method: POST
+        name: postdashboardsidlabels
+        description: Add a label to a dashboard
+        call: influxdb.postdashboardsidlabels
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/labels/{labelID}
+      name: deletedashboardsidlabelsid
+      operations:
+      - method: DELETE
+        name: deletedashboardsidlabelsid
+        description: Delete a label from a dashboard
+        call: influxdb.deletedashboardsidlabelsid
+        with:
+          dashboardID: rest.dashboardID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/members
+      name: getdashboardsidmembers
+      operations:
+      - method: GET
+        name: getdashboardsidmembers
+        description: List all dashboard members
+        call: influxdb.getdashboardsidmembers
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/members
+      name: postdashboardsidmembers
+      operations:
+      - method: POST
+        name: postdashboardsidmembers
+        description: Add a member to a dashboard
+        call: influxdb.postdashboardsidmembers
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/members/{userID}
+      name: deletedashboardsidmembersid
+      operations:
+      - method: DELETE
+        name: deletedashboardsidmembersid
+        description: Remove a member from a dashboard
+        call: influxdb.deletedashboardsidmembersid
+        with:
+          userID: rest.userID
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/owners
+      name: getdashboardsidowners
+      operations:
+      - method: GET
+        name: getdashboardsidowners
+        description: List all dashboard owners
+        call: influxdb.getdashboardsidowners
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/owners
+      name: postdashboardsidowners
+      operations:
+      - method: POST
+        name: postdashboardsidowners
+        description: Add an owner to a dashboard
+        call: influxdb.postdashboardsidowners
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dashboards/{dashboardID}/owners/{userID}
+      name: deletedashboardsidownersid
+      operations:
+      - method: DELETE
+        name: deletedashboardsidownersid
+        description: Remove an owner from a dashboard
+        call: influxdb.deletedashboardsidownersid
+        with:
+          userID: rest.userID
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dbrps
+      name: getdbrps
+      operations:
+      - method: GET
+        name: getdbrps
+        description: List database retention policy mappings
+        call: influxdb.getdbrps
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dbrps
+      name: postdbrp
+      operations:
+      - method: POST
+        name: postdbrp
+        description: Add a database retention policy mapping
+        call: influxdb.postdbrp
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dbrps/{dbrpID}
+      name: deletedbrpid
+      operations:
+      - method: DELETE
+        name: deletedbrpid
+        description: Delete a database retention policy
+        call: influxdb.deletedbrpid
+        with:
+          dbrpID: rest.dbrpID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dbrps/{dbrpID}
+      name: getdbrpsid
+      operations:
+      - method: GET
+        name: getdbrpsid
+        description: Retrieve a database retention policy mapping
+        call: influxdb.getdbrpsid
+        with:
+          dbrpID: rest.dbrpID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/dbrps/{dbrpID}
+      name: patchdbrpid
+      operations:
+      - method: PATCH
+        name: patchdbrpid
+        description: Update a database retention policy mapping
+        call: influxdb.patchdbrpid
+        with:
+          dbrpID: rest.dbrpID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /api/v2/delete
+      name: postdelete
+      operations:
+      - method: POST
+        name: postdelete
+        description: Delete data
+        call: influxdb.postdelete
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    port: 9090
+    namespace: influxdb-mcp
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API for AI agent use.
+    tools:
+    - name: getroutes
+      description: List all top level routes
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getroutes
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getauthorizations
+      description: List authorizations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getauthorizations
+      with:
+        userID: tools.userID
+        user: tools.user
+        orgID: tools.orgID
+        org: tools.org
+        token: tools.token
+      inputParameters:
+      - name: userID
+        type: string
+        description: A user ID. Only returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).
+      - name: user
+        type: string
+        description: A user name. Only returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).
+      - name: orgID
+        type: string
+        description: An organization ID. Only returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organ
+      - name: org
+        type: string
+        description: An organization name. Only returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#org
+      - name: token
+        type: string
+        description: An API [token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token) value. Specifies
+          an authorization by its `token` property value and returns
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postauthorizations
+      description: Create an authorization
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postauthorizations
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deleteauthorizationsid
+      description: Delete an authorization
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deleteauthorizationsid
+      with:
+        authID: tools.authID
+      inputParameters:
+      - name: authID
+        type: string
+        description: An authorization ID. Specifies the authorization to delete.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getauthorizationsid
+      description: Retrieve an authorization
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getauthorizationsid
+      with:
+        authID: tools.authID
+      inputParameters:
+      - name: authID
+        type: string
+        description: An authorization ID. Specifies the authorization to retrieve.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchauthorizationsid
+      description: Update an API token to be active or inactive
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.patchauthorizationsid
+      with:
+        authID: tools.authID
+      inputParameters:
+      - name: authID
+        type: string
+        description: An authorization ID. Specifies the authorization to update.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getbuckets
+      description: List buckets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getbuckets
+      with:
+        org: tools.org
+        orgID: tools.orgID
+        name: tools.name
+        id: tools.id
+      inputParameters:
+      - name: org
+        type: string
+        description: 'An organization name. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter. -
+          Lists buckets for the organization associated with the autho'
+      - name: orgID
+        type: string
+        description: 'An organization ID. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter. - Lists
+          buckets for the organization associated with the authori'
+      - name: name
+        type: string
+        description: A bucket name. Only returns buckets with the specified name.
+      - name: id
+        type: string
+        description: A bucket ID. Only returns the bucket with the specified ID.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postbuckets
+      description: Create a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postbuckets
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletebucketsid
+      description: Delete a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletebucketsid
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: Bucket ID. The ID of the bucket to delete.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getbucketsid
+      description: Retrieve a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getbucketsid
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to retrieve.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchbucketsid
+      description: Update a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.patchbucketsid
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The bucket ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getbucketsidlabels
+      description: List all labels for a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getbucketsidlabels
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to retrieve labels for.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postbucketsidlabels
+      description: Add a label to a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postbucketsidlabels
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: Bucket ID. The ID of the bucket to label.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletebucketsidlabelsid
+      description: Delete a label from a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletebucketsidlabelsid
+      with:
+        bucketID: tools.bucketID
+        labelID: tools.labelID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The bucket ID.
+        required: true
+      - name: labelID
+        type: string
+        description: The ID of the label to delete.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getbucketsidmembers
+      description: List all users with member privileges for a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getbucketsidmembers
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to retrieve users for.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postbucketsidmembers
+      description: Add a member to a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postbucketsidmembers
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to retrieve users for.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletebucketsidmembersid
+      description: Remove a member from a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletebucketsidmembersid
+      with:
+        userID: tools.userID
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: userID
+        type: string
+        description: The ID of the user to remove.
+        required: true
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to remove a user from.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getbucketsidowners
+      description: List all owners of a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getbucketsidowners
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to retrieve owners for.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postbucketsidowners
+      description: Add an owner to a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postbucketsidowners
+      with:
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to add an owner for.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletebucketsidownersid
+      description: Remove an owner from a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletebucketsidownersid
+      with:
+        userID: tools.userID
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: userID
+        type: string
+        description: The ID of the owner to remove.
+        required: true
+      - name: bucketID
+        type: string
+        description: The ID of the bucket to remove an owner from.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getmeasurementschemas
+      description: List measurement schemas of a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getmeasurementschemas
+      with:
+        bucketID: tools.bucketID
+        org: tools.org
+        orgID: tools.orgID
+        name: tools.name
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: A bucket ID. Lists measurement schemas for the specified bucket.
+        required: true
+      - name: org
+        type: string
+        description: An organization name. Specifies the organization that owns the schema.
+      - name: orgID
+        type: string
+        description: An organization ID. Specifies the organization that owns the schema.
+      - name: name
+        type: string
+        description: A measurement name. Only returns measurement schemas with the specified name.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createmeasurementschema
+      description: Create a measurement schema for a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.createmeasurementschema
+      with:
+        bucketID: tools.bucketID
+        org: tools.org
+        orgID: tools.orgID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: A bucket ID. Adds a schema for the specified bucket.
+        required: true
+      - name: org
+        type: string
+        description: An organization name. Specifies the organization that owns the schema.
+      - name: orgID
+        type: string
+        description: An organization ID. Specifies the organization that owns the schema.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getmeasurementschema
+      description: Retrieve a measurement schema
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getmeasurementschema
+      with:
+        bucketID: tools.bucketID
+        measurementID: tools.measurementID
+        org: tools.org
+        orgID: tools.orgID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: A bucket ID. Retrieves schemas for the specified bucket.
+        required: true
+      - name: measurementID
+        type: string
+        description: The measurement schema ID. Specifies the measurement schema to retrieve.
+        required: true
+      - name: org
+        type: string
+        description: Organization name. Specifies the organization that owns the schema.
+      - name: orgID
+        type: string
+        description: Organization ID. Specifies the organization that owns the schema.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: updatemeasurementschema
+      description: Update a measurement schema
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.updatemeasurementschema
+      with:
+        bucketID: tools.bucketID
+        measurementID: tools.measurementID
+        org: tools.org
+        orgID: tools.orgID
+      inputParameters:
+      - name: bucketID
+        type: string
+        description: A bucket ID. Specifies the bucket to retrieve schemas for.
+        required: true
+      - name: measurementID
+        type: string
+        description: A measurement schema ID. Retrieves the specified measurement schema.
+        required: true
+      - name: org
+        type: string
+        description: An organization name. Specifies the organization that owns the schema.
+      - name: orgID
+        type: string
+        description: An organization ID. Specifies the organization that owns the schema.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getchecks
+      description: List all checks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getchecks
+      with:
+        orgID: tools.orgID
+      inputParameters:
+      - name: orgID
+        type: string
+        description: Only show checks that belong to a specific organization ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: createcheck
+      description: Add new check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.createcheck
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletechecksid
+      description: Delete a check
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletechecksid
+      with:
+        checkID: tools.checkID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getchecksid
+      description: Retrieve a check
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getchecksid
+      with:
+        checkID: tools.checkID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchchecksid
+      description: Update a check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.patchchecksid
+      with:
+        checkID: tools.checkID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: putchecksid
+      description: Update a check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb.putchecksid
+      with:
+        checkID: tools.checkID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getchecksidlabels
+      description: List all labels for a check
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getchecksidlabels
+      with:
+        checkID: tools.checkID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postchecksidlabels
+      description: Add a label to a check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postchecksidlabels
+      with:
+        checkID: tools.checkID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletechecksidlabelsid
+      description: Delete label from a check
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletechecksidlabelsid
+      with:
+        checkID: tools.checkID
+        labelID: tools.labelID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      - name: labelID
+        type: string
+        description: The ID of the label to delete.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getchecksidquery
+      description: Retrieve a check query
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getchecksidquery
+      with:
+        checkID: tools.checkID
+      inputParameters:
+      - name: checkID
+        type: string
+        description: The check ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdashboards
+      description: List dashboards
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdashboards
+      with:
+        limit: tools.limit
+        owner: tools.owner
+        sortBy: tools.sortBy
+        id: tools.id
+        orgID: tools.orgID
+        org: tools.org
+      inputParameters:
+      - name: limit
+        type: integer
+        description: The maximum number of [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+          to return. Default is `20`. The minimum is `-1` and
+      - name: owner
+        type: string
+        description: A user ID. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+          where the specified user has the `owner` role.
+      - name: sortBy
+        type: string
+        description: The column to sort by.
+      - name: id
+        type: array
+        description: 'A list of dashboard IDs. Returns only the specified [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard).
+          If you specify `id` '
+      - name: orgID
+        type: string
+        description: An organization ID. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+          that belong to the specified [organizati
+      - name: org
+        type: string
+        description: An organization name. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+          that belong to the specified [organiza
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postdashboards
+      description: Create a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postdashboards
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletedashboardsid
+      description: Delete a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletedashboardsid
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to update.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdashboardsid
+      description: Retrieve a dashboard
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdashboardsid
+      with:
+        dashboardID: tools.dashboardID
+        include: tools.include
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to update.
+        required: true
+      - name: include
+        type: string
+        description: If `properties`, includes the cell view properties in the response.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchdashboardsid
+      description: Update a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.patchdashboardsid
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to update.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postdashboardsidcells
+      description: Create a dashboard cell
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postdashboardsidcells
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to update.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: putdashboardsidcells
+      description: Replace cells in a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb.putdashboardsidcells
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to update.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletedashboardsidcellsid
+      description: Delete a dashboard cell
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletedashboardsidcellsid
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to delete.
+        required: true
+      - name: cellID
+        type: string
+        description: The ID of the cell to delete.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchdashboardsidcellsid
+      description: Update the non-positional information related to a cell
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.patchdashboardsidcellsid
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to update.
+        required: true
+      - name: cellID
+        type: string
+        description: The ID of the cell to update.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdashboardsidcellsidview
+      description: Retrieve the view for a cell
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdashboardsidcellsidview
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      - name: cellID
+        type: string
+        description: The cell ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchdashboardsidcellsidview
+      description: Update the view for a cell
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.patchdashboardsidcellsidview
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The ID of the dashboard to update.
+        required: true
+      - name: cellID
+        type: string
+        description: The ID of the cell to update.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdashboardsidlabels
+      description: List all labels for a dashboard
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdashboardsidlabels
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postdashboardsidlabels
+      description: Add a label to a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postdashboardsidlabels
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletedashboardsidlabelsid
+      description: Delete a label from a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletedashboardsidlabelsid
+      with:
+        dashboardID: tools.dashboardID
+        labelID: tools.labelID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      - name: labelID
+        type: string
+        description: The ID of the label to delete.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdashboardsidmembers
+      description: List all dashboard members
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdashboardsidmembers
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postdashboardsidmembers
+      description: Add a member to a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postdashboardsidmembers
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletedashboardsidmembersid
+      description: Remove a member from a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletedashboardsidmembersid
+      with:
+        userID: tools.userID
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: userID
+        type: string
+        description: The ID of the member to remove.
+        required: true
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdashboardsidowners
+      description: List all dashboard owners
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdashboardsidowners
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postdashboardsidowners
+      description: Add an owner to a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postdashboardsidowners
+      with:
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletedashboardsidownersid
+      description: Remove an owner from a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletedashboardsidownersid
+      with:
+        userID: tools.userID
+        dashboardID: tools.dashboardID
+      inputParameters:
+      - name: userID
+        type: string
+        description: The ID of the owner to remove.
+        required: true
+      - name: dashboardID
+        type: string
+        description: The dashboard ID.
+        required: true
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdbrps
+      description: List database retention policy mappings
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdbrps
+      with:
+        orgID: tools.orgID
+        org: tools.org
+        id: tools.id
+        bucketID: tools.bucketID
+        default: tools.default
+        db: tools.db
+        rp: tools.rp
+      inputParameters:
+      - name: orgID
+        type: string
+        description: An organization ID. Only returns DBRP mappings for the specified organization.
+      - name: org
+        type: string
+        description: An organization name. Only returns DBRP mappings for the specified organization.
+      - name: id
+        type: string
+        description: A DBPR mapping ID. Only returns the specified DBRP mapping.
+      - name: bucketID
+        type: string
+        description: A bucket ID. Only returns DBRP mappings that belong to the specified bucket.
+      - name: default
+        type: boolean
+        description: Specifies filtering on default
+      - name: db
+        type: string
+        description: A database. Only returns DBRP mappings that belong to the 1.x database.
+      - name: rp
+        type: string
+        description: A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp).
+          Specifies the 1.x retention policy to filter on.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postdbrp
+      description: Add a database retention policy mapping
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postdbrp
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: deletedbrpid
+      description: Delete a database retention policy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb.deletedbrpid
+      with:
+        dbrpID: tools.dbrpID
+        orgID: tools.orgID
+        org: tools.org
+      inputParameters:
+      - name: dbrpID
+        type: string
+        description: A DBRP mapping ID. Only returns the specified DBRP mapping.
+        required: true
+      - name: orgID
+        type: string
+        description: An organization ID. Specifies the organization that owns the DBRP mapping.
+      - name: org
+        type: string
+        description: An organization name. Specifies the organization that owns the DBRP mapping.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: getdbrpsid
+      description: Retrieve a database retention policy mapping
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb.getdbrpsid
+      with:
+        dbrpID: tools.dbrpID
+        orgID: tools.orgID
+        org: tools.org
+      inputParameters:
+      - name: dbrpID
+        type: string
+        description: A DBRP mapping ID. Specifies the DBRP mapping.
+        required: true
+      - name: orgID
+        type: string
+        description: An organization ID. Specifies the organization that owns the DBRP mapping.
+      - name: org
+        type: string
+        description: An organization name. Specifies the organization that owns the DBRP mapping.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: patchdbrpid
+      description: Update a database retention policy mapping
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.patchdbrpid
+      with:
+        dbrpID: tools.dbrpID
+        orgID: tools.orgID
+        org: tools.org
+      inputParameters:
+      - name: dbrpID
+        type: string
+        description: A DBRP mapping ID. Specifies the DBRP mapping.
+        required: true
+      - name: orgID
+        type: string
+        description: An organization ID. Specifies the organization that owns the DBRP mapping.
+      - name: org
+        type: string
+        description: An organization name. Specifies the organization that owns the DBRP mapping.
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: postdelete
+      description: Delete data
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb.postdelete
+      with:
+        org: tools.org
+        bucket: tools.bucket
+        orgID: tools.orgID
+        bucketID: tools.bucketID
+      inputParameters:
+      - name: org
+        type: string
+        description: 'An organization name or ID. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter.
+          - Deletes data from the bucket in the organization assoc'
+      - name: bucket
+        type: string
+        description: A bucket name or ID. Specifies the bucket to delete data from. If you pass both `bucket` and `bucketID`,
+          `bucketID` takes precedence.
+      - name: orgID
+        type: string
+        description: 'An organization ID. #### InfluxDB Cloud - Doesn''t use the `org` parameter or `orgID` parameter. - Deletes
+          data from the bucket in the organization associated wi'
+      - name: bucketID
+        type: string
+        description: A bucket ID. Specifies the bucket to delete data from. If you pass both `bucket` and `bucketID`, `bucketID`
+          takes precedence.
+      outputParameters:
+      - type: object
+        mapping: $.
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_USERNAME: INFLUXDB_USERNAME
+    INFLUXDB_PASSWORD: INFLUXDB_PASSWORD
