@@ -93,6 +93,24 @@ common:
     url: https://github.com/influxdata/influxdb
   - type: LinkedIn
     url: https://www.linkedin.com/company/influxdb/
+integrations:
+  - name: MQTT
+  - name: Docker
+  - name: kubernetes
+  - name: Kafka
+  - name: Azure
+  - name: ctrlX
+  - name: google_cloud_storage
+  - name: NVIDIA
+  - name: Grafana
+  - name: mysql
+  - name: postgresql
+  - name: redis
+  - name: Prometheus
+  - name: aws
+  - name: jenkins
+  - name: apache
+  - name: Microsoft Power BI
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
