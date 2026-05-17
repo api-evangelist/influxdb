@@ -7,7 +7,7 @@ description: >-
   their time series data, with offerings spanning open source InfluxDB Core
   and Enterprise, InfluxDB Cloud Serverless and Dedicated, and Telegraf for
   data collection.
-type: Contract
+kind: contract
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 url: >-
   https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/apis.yml
@@ -46,7 +46,7 @@ apis:
           https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-openapi.yml
       - type: Authentication
         url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication
-      - type: Getting Started
+      - type: GettingStarted
         url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start
       - type: Pagination
         url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination
@@ -63,7 +63,7 @@ common:
     url: https://www.influxdata.com/
   - type: Documentation
     url: https://docs.influxdata.com/
-  - type: Getting Started
+  - type: GettingStarted
     url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start
   - type: Pricing
     url: https://www.influxdata.com/influxdb-pricing/
