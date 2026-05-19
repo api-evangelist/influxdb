@@ -1,0 +1,423 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — NotificationRules
+  description: 'Complete InfluxDB Cloud API — NotificationRules. 9 operations. Lead operation: List all notification rules.
+    Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - NotificationRules
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-notificationrules
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — NotificationRules business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-notificationRules
+      path: /api/v2/notificationRules
+      operations:
+      - name: getnotificationrules
+        method: GET
+        description: List all notification rules
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: Only show notification rules that belong to a specific organization ID.
+          required: true
+        - name: checkID
+          in: query
+          type: string
+          description: Only show notifications that belong to the specific check ID.
+        - name: tag
+          in: query
+          type: string
+          description: Only return notification rules that "would match" statuses which contain the tag key value pairs provided.
+      - name: createnotificationrule
+        method: POST
+        description: Add a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-notificationRules-ruleID
+      path: /api/v2/notificationRules/{ruleID}
+      operations:
+      - name: deletenotificationrulesid
+        method: DELETE
+        description: Delete a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+      - name: getnotificationrulesid
+        method: GET
+        description: Retrieve a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+      - name: patchnotificationrulesid
+        method: PATCH
+        description: Update a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: putnotificationrulesid
+        method: PUT
+        description: Update a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-notificationRules-ruleID-labels
+      path: /api/v2/notificationRules/{ruleID}/labels
+      operations:
+      - name: getnotificationrulesidlabels
+        method: GET
+        description: List all labels for a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+      - name: postnotificationruleidlabels
+        method: POST
+        description: Add a label to a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-notificationRules-ruleID-labels-labelID
+      path: /api/v2/notificationRules/{ruleID}/labels/{labelID}
+      operations:
+      - name: deletenotificationrulesidlabelsid
+        method: DELETE
+        description: Delete label from a notification rule
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+        - name: labelID
+          in: path
+          type: string
+          description: The ID of the label to delete.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-notificationrules-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — NotificationRules. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/notificationrules
+      name: api-v2-notificationrules
+      description: REST surface for api-v2-notificationRules.
+      operations:
+      - method: GET
+        name: getnotificationrules
+        description: List all notification rules
+        call: influxdb-notificationrules.getnotificationrules
+        with:
+          orgID: rest.orgID
+          checkID: rest.checkID
+          tag: rest.tag
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createnotificationrule
+        description: Add a notification rule
+        call: influxdb-notificationrules.createnotificationrule
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/notificationrules/{ruleid}
+      name: api-v2-notificationrules-ruleid
+      description: REST surface for api-v2-notificationRules-ruleID.
+      operations:
+      - method: DELETE
+        name: deletenotificationrulesid
+        description: Delete a notification rule
+        call: influxdb-notificationrules.deletenotificationrulesid
+        with:
+          ruleID: rest.ruleID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getnotificationrulesid
+        description: Retrieve a notification rule
+        call: influxdb-notificationrules.getnotificationrulesid
+        with:
+          ruleID: rest.ruleID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchnotificationrulesid
+        description: Update a notification rule
+        call: influxdb-notificationrules.patchnotificationrulesid
+        with:
+          ruleID: rest.ruleID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putnotificationrulesid
+        description: Update a notification rule
+        call: influxdb-notificationrules.putnotificationrulesid
+        with:
+          ruleID: rest.ruleID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/notificationrules/{ruleid}/labels
+      name: api-v2-notificationrules-ruleid-labels
+      description: REST surface for api-v2-notificationRules-ruleID-labels.
+      operations:
+      - method: GET
+        name: getnotificationrulesidlabels
+        description: List all labels for a notification rule
+        call: influxdb-notificationrules.getnotificationrulesidlabels
+        with:
+          ruleID: rest.ruleID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postnotificationruleidlabels
+        description: Add a label to a notification rule
+        call: influxdb-notificationrules.postnotificationruleidlabels
+        with:
+          ruleID: rest.ruleID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/notificationrules/{ruleid}/labels/{labelid}
+      name: api-v2-notificationrules-ruleid-labels-labelid
+      description: REST surface for api-v2-notificationRules-ruleID-labels-labelID.
+      operations:
+      - method: DELETE
+        name: deletenotificationrulesidlabelsid
+        description: Delete label from a notification rule
+        call: influxdb-notificationrules.deletenotificationrulesidlabelsid
+        with:
+          ruleID: rest.ruleID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-notificationrules-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — NotificationRules. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: list-all-notification-rules
+      description: List all notification rules
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationrules.getnotificationrules
+      with:
+        orgID: tools.orgID
+        checkID: tools.checkID
+        tag: tools.tag
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-notification-rule
+      description: Add a notification rule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-notificationrules.createnotificationrule
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-notification-rule
+      description: Delete a notification rule
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-notificationrules.deletenotificationrulesid
+      with:
+        ruleID: tools.ruleID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-notification-rule
+      description: Retrieve a notification rule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationrules.getnotificationrulesid
+      with:
+        ruleID: tools.ruleID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-notification-rule
+      description: Update a notification rule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationrules.patchnotificationrulesid
+      with:
+        ruleID: tools.ruleID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-notification-rule-2
+      description: Update a notification rule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationrules.putnotificationrulesid
+      with:
+        ruleID: tools.ruleID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-labels-notification-rule
+      description: List all labels for a notification rule
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationrules.getnotificationrulesidlabels
+      with:
+        ruleID: tools.ruleID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-label-notification-rule
+      description: Add a label to a notification rule
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-notificationrules.postnotificationruleidlabels
+      with:
+        ruleID: tools.ruleID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-label-notification-rule
+      description: Delete label from a notification rule
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-notificationrules.deletenotificationrulesidlabelsid
+      with:
+        ruleID: tools.ruleID
+        labelID: tools.labelID
+      outputParameters:
+      - type: object
+        mapping: $.

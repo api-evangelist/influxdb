@@ -1,0 +1,137 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — System information endpoints
+  description: 'Complete InfluxDB Cloud API — System information endpoints. 3 operations. Lead operation: List all top level
+    routes. Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - System information endpoints
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-system-information-endpoints
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — System information endpoints business capability. Self-contained, no shared
+      references.
+    resources:
+    - name: api-v2
+      path: /api/v2
+      operations:
+      - name: getroutes
+        method: GET
+        description: List all top level routes
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-resources
+      path: /api/v2/resources
+      operations:
+      - name: getresources
+        method: GET
+        description: List all known resources
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: ping
+      path: /ping
+      operations:
+      - name: getping
+        method: GET
+        description: Get the status of the instance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-system-information-endpoints-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — System information endpoints. One Spectral-compliant resource
+      per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/v2
+      name: api-v2
+      description: REST surface for api-v2.
+      operations:
+      - method: GET
+        name: getroutes
+        description: List all top level routes
+        call: influxdb-system-information-endpoints.getroutes
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/resources
+      name: api-v2-resources
+      description: REST surface for api-v2-resources.
+      operations:
+      - method: GET
+        name: getresources
+        description: List all known resources
+        call: influxdb-system-information-endpoints.getresources
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/ping
+      name: ping
+      description: REST surface for ping.
+      operations:
+      - method: GET
+        name: getping
+        description: Get the status of the instance
+        call: influxdb-system-information-endpoints.getping
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-system-information-endpoints-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — System information endpoints. One tool per consumed operation,
+      routed inline through this capability's consumes block.
+    tools:
+    - name: list-all-top-level-routes
+      description: List all top level routes
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-system-information-endpoints.getroutes
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-known-resources
+      description: List all known resources
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-system-information-endpoints.getresources
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-status-instance
+      description: Get the status of the instance
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-system-information-endpoints.getping
+      outputParameters:
+      - type: object
+        mapping: $.

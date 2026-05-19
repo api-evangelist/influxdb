@@ -1,0 +1,72 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Signin
+  description: 'Complete InfluxDB Cloud API — Signin. 1 operations. Lead operation: Create a user session.. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Signin
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-signin
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Signin business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-signin
+      path: /api/v2/signin
+      operations:
+      - name: postsignin
+        method: POST
+        description: Create a user session.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-signin-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Signin. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/signin
+      name: api-v2-signin
+      description: REST surface for api-v2-signin.
+      operations:
+      - method: POST
+        name: postsignin
+        description: Create a user session.
+        call: influxdb-signin.postsignin
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-signin-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Signin. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: create-user-session
+      description: Create a user session.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-signin.postsignin
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,411 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — NotificationEndpoints
+  description: 'Complete InfluxDB Cloud API — NotificationEndpoints. 9 operations. Lead operation: List all notification endpoints.
+    Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - NotificationEndpoints
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-notificationendpoints
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — NotificationEndpoints business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-notificationEndpoints
+      path: /api/v2/notificationEndpoints
+      operations:
+      - name: getnotificationendpoints
+        method: GET
+        description: List all notification endpoints
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: Only show notification endpoints that belong to specific organization ID.
+          required: true
+      - name: createnotificationendpoint
+        method: POST
+        description: Add a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-notificationEndpoints-endpointID
+      path: /api/v2/notificationEndpoints/{endpointID}
+      operations:
+      - name: deletenotificationendpointsid
+        method: DELETE
+        description: Delete a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: endpointID
+          in: path
+          type: string
+          description: The notification endpoint ID.
+          required: true
+      - name: getnotificationendpointsid
+        method: GET
+        description: Retrieve a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: endpointID
+          in: path
+          type: string
+          description: The notification endpoint ID.
+          required: true
+      - name: patchnotificationendpointsid
+        method: PATCH
+        description: Update a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: endpointID
+          in: path
+          type: string
+          description: The notification endpoint ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: putnotificationendpointsid
+        method: PUT
+        description: Update a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: endpointID
+          in: path
+          type: string
+          description: The notification endpoint ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-notificationEndpoints-endpointID-labels
+      path: /api/v2/notificationEndpoints/{endpointID}/labels
+      operations:
+      - name: getnotificationendpointsidlabels
+        method: GET
+        description: List all labels for a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: endpointID
+          in: path
+          type: string
+          description: The notification endpoint ID.
+          required: true
+      - name: postnotificationendpointidlabels
+        method: POST
+        description: Add a label to a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: endpointID
+          in: path
+          type: string
+          description: The notification endpoint ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-notificationEndpoints-endpointID-labels-labelID
+      path: /api/v2/notificationEndpoints/{endpointID}/labels/{labelID}
+      operations:
+      - name: deletenotificationendpointsidlabelsid
+        method: DELETE
+        description: Delete a label from a notification endpoint
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: endpointID
+          in: path
+          type: string
+          description: The notification endpoint ID.
+          required: true
+        - name: labelID
+          in: path
+          type: string
+          description: The ID of the label to delete.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-notificationendpoints-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — NotificationEndpoints. One Spectral-compliant resource per
+      consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/notificationendpoints
+      name: api-v2-notificationendpoints
+      description: REST surface for api-v2-notificationEndpoints.
+      operations:
+      - method: GET
+        name: getnotificationendpoints
+        description: List all notification endpoints
+        call: influxdb-notificationendpoints.getnotificationendpoints
+        with:
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createnotificationendpoint
+        description: Add a notification endpoint
+        call: influxdb-notificationendpoints.createnotificationendpoint
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/notificationendpoints/{endpointid}
+      name: api-v2-notificationendpoints-endpointid
+      description: REST surface for api-v2-notificationEndpoints-endpointID.
+      operations:
+      - method: DELETE
+        name: deletenotificationendpointsid
+        description: Delete a notification endpoint
+        call: influxdb-notificationendpoints.deletenotificationendpointsid
+        with:
+          endpointID: rest.endpointID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getnotificationendpointsid
+        description: Retrieve a notification endpoint
+        call: influxdb-notificationendpoints.getnotificationendpointsid
+        with:
+          endpointID: rest.endpointID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchnotificationendpointsid
+        description: Update a notification endpoint
+        call: influxdb-notificationendpoints.patchnotificationendpointsid
+        with:
+          endpointID: rest.endpointID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putnotificationendpointsid
+        description: Update a notification endpoint
+        call: influxdb-notificationendpoints.putnotificationendpointsid
+        with:
+          endpointID: rest.endpointID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/notificationendpoints/{endpointid}/labels
+      name: api-v2-notificationendpoints-endpointid-labels
+      description: REST surface for api-v2-notificationEndpoints-endpointID-labels.
+      operations:
+      - method: GET
+        name: getnotificationendpointsidlabels
+        description: List all labels for a notification endpoint
+        call: influxdb-notificationendpoints.getnotificationendpointsidlabels
+        with:
+          endpointID: rest.endpointID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postnotificationendpointidlabels
+        description: Add a label to a notification endpoint
+        call: influxdb-notificationendpoints.postnotificationendpointidlabels
+        with:
+          endpointID: rest.endpointID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/notificationendpoints/{endpointid}/labels/{labelid}
+      name: api-v2-notificationendpoints-endpointid-labels-labelid
+      description: REST surface for api-v2-notificationEndpoints-endpointID-labels-labelID.
+      operations:
+      - method: DELETE
+        name: deletenotificationendpointsidlabelsid
+        description: Delete a label from a notification endpoint
+        call: influxdb-notificationendpoints.deletenotificationendpointsidlabelsid
+        with:
+          endpointID: rest.endpointID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-notificationendpoints-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — NotificationEndpoints. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: list-all-notification-endpoints
+      description: List all notification endpoints
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationendpoints.getnotificationendpoints
+      with:
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-notification-endpoint
+      description: Add a notification endpoint
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-notificationendpoints.createnotificationendpoint
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-notification-endpoint
+      description: Delete a notification endpoint
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-notificationendpoints.deletenotificationendpointsid
+      with:
+        endpointID: tools.endpointID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-notification-endpoint
+      description: Retrieve a notification endpoint
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationendpoints.getnotificationendpointsid
+      with:
+        endpointID: tools.endpointID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-notification-endpoint
+      description: Update a notification endpoint
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationendpoints.patchnotificationendpointsid
+      with:
+        endpointID: tools.endpointID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-notification-endpoint-2
+      description: Update a notification endpoint
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationendpoints.putnotificationendpointsid
+      with:
+        endpointID: tools.endpointID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-labels-notification-endpoint
+      description: List all labels for a notification endpoint
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-notificationendpoints.getnotificationendpointsidlabels
+      with:
+        endpointID: tools.endpointID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-label-notification-endpoint
+      description: Add a label to a notification endpoint
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-notificationendpoints.postnotificationendpointidlabels
+      with:
+        endpointID: tools.endpointID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-label-notification-endpoint
+      description: Delete a label from a notification endpoint
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-notificationendpoints.deletenotificationendpointsidlabelsid
+      with:
+        endpointID: tools.endpointID
+        labelID: tools.labelID
+      outputParameters:
+      - type: object
+        mapping: $.

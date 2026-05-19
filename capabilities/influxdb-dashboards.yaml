@@ -1,0 +1,959 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Dashboards
+  description: 'Complete InfluxDB Cloud API — Dashboards. 20 operations. Lead operation: List dashboards. Self-contained Naftiko
+    capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Dashboards
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-dashboards
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Dashboards business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-dashboards
+      path: /api/v2/dashboards
+      operations:
+      - name: getdashboards
+        method: GET
+        description: List dashboards
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: limit
+          in: query
+          type: integer
+          description: The maximum number of [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+            to return.
+        - name: owner
+          in: query
+          type: string
+          description: A user ID. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard)
+            where the specified user has the `owner` role.
+        - name: sortBy
+          in: query
+          type: string
+          description: The column to sort by.
+        - name: id
+          in: query
+          type: array
+          description: A list of dashboard IDs.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+      - name: postdashboards
+        method: POST
+        description: Create a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID
+      path: /api/v2/dashboards/{dashboardID}
+      operations:
+      - name: deletedashboardsid
+        method: DELETE
+        description: Delete a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to update.
+          required: true
+      - name: getdashboardsid
+        method: GET
+        description: Retrieve a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to update.
+          required: true
+        - name: include
+          in: query
+          type: string
+          description: If `properties`, includes the cell view properties in the response.
+      - name: patchdashboardsid
+        method: PATCH
+        description: Update a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID-cells
+      path: /api/v2/dashboards/{dashboardID}/cells
+      operations:
+      - name: postdashboardsidcells
+        method: POST
+        description: Create a dashboard cell
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: putdashboardsidcells
+        method: PUT
+        description: Replace cells in a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID-cells-cellID
+      path: /api/v2/dashboards/{dashboardID}/cells/{cellID}
+      operations:
+      - name: deletedashboardsidcellsid
+        method: DELETE
+        description: Delete a dashboard cell
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to delete.
+          required: true
+        - name: cellID
+          in: path
+          type: string
+          description: The ID of the cell to delete.
+          required: true
+      - name: patchdashboardsidcellsid
+        method: PATCH
+        description: Update the non-positional information related to a cell
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to update.
+          required: true
+        - name: cellID
+          in: path
+          type: string
+          description: The ID of the cell to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID-cells-cellID-view
+      path: /api/v2/dashboards/{dashboardID}/cells/{cellID}/view
+      operations:
+      - name: getdashboardsidcellsidview
+        method: GET
+        description: Retrieve the view for a cell
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+        - name: cellID
+          in: path
+          type: string
+          description: The cell ID.
+          required: true
+      - name: patchdashboardsidcellsidview
+        method: PATCH
+        description: Update the view for a cell
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The ID of the dashboard to update.
+          required: true
+        - name: cellID
+          in: path
+          type: string
+          description: The ID of the cell to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID-labels
+      path: /api/v2/dashboards/{dashboardID}/labels
+      operations:
+      - name: getdashboardsidlabels
+        method: GET
+        description: List all labels for a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+      - name: postdashboardsidlabels
+        method: POST
+        description: Add a label to a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID-labels-labelID
+      path: /api/v2/dashboards/{dashboardID}/labels/{labelID}
+      operations:
+      - name: deletedashboardsidlabelsid
+        method: DELETE
+        description: Delete a label from a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+        - name: labelID
+          in: path
+          type: string
+          description: The ID of the label to delete.
+          required: true
+    - name: api-v2-dashboards-dashboardID-members
+      path: /api/v2/dashboards/{dashboardID}/members
+      operations:
+      - name: getdashboardsidmembers
+        method: GET
+        description: List all dashboard members
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+      - name: postdashboardsidmembers
+        method: POST
+        description: Add a member to a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID-members-userID
+      path: /api/v2/dashboards/{dashboardID}/members/{userID}
+      operations:
+      - name: deletedashboardsidmembersid
+        method: DELETE
+        description: Remove a member from a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the member to remove.
+          required: true
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+    - name: api-v2-dashboards-dashboardID-owners
+      path: /api/v2/dashboards/{dashboardID}/owners
+      operations:
+      - name: getdashboardsidowners
+        method: GET
+        description: List all dashboard owners
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+      - name: postdashboardsidowners
+        method: POST
+        description: Add an owner to a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dashboards-dashboardID-owners-userID
+      path: /api/v2/dashboards/{dashboardID}/owners/{userID}
+      operations:
+      - name: deletedashboardsidownersid
+        method: DELETE
+        description: Remove an owner from a dashboard
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the owner to remove.
+          required: true
+        - name: dashboardID
+          in: path
+          type: string
+          description: The dashboard ID.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-dashboards-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Dashboards. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/dashboards
+      name: api-v2-dashboards
+      description: REST surface for api-v2-dashboards.
+      operations:
+      - method: GET
+        name: getdashboards
+        description: List dashboards
+        call: influxdb-dashboards.getdashboards
+        with:
+          limit: rest.limit
+          owner: rest.owner
+          sortBy: rest.sortBy
+          id: rest.id
+          orgID: rest.orgID
+          org: rest.org
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postdashboards
+        description: Create a dashboard
+        call: influxdb-dashboards.postdashboards
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}
+      name: api-v2-dashboards-dashboardid
+      description: REST surface for api-v2-dashboards-dashboardID.
+      operations:
+      - method: DELETE
+        name: deletedashboardsid
+        description: Delete a dashboard
+        call: influxdb-dashboards.deletedashboardsid
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getdashboardsid
+        description: Retrieve a dashboard
+        call: influxdb-dashboards.getdashboardsid
+        with:
+          dashboardID: rest.dashboardID
+          include: rest.include
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchdashboardsid
+        description: Update a dashboard
+        call: influxdb-dashboards.patchdashboardsid
+        with:
+          dashboardID: rest.dashboardID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/cells
+      name: api-v2-dashboards-dashboardid-cells
+      description: REST surface for api-v2-dashboards-dashboardID-cells.
+      operations:
+      - method: POST
+        name: postdashboardsidcells
+        description: Create a dashboard cell
+        call: influxdb-dashboards.postdashboardsidcells
+        with:
+          dashboardID: rest.dashboardID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putdashboardsidcells
+        description: Replace cells in a dashboard
+        call: influxdb-dashboards.putdashboardsidcells
+        with:
+          dashboardID: rest.dashboardID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/cells/{cellid}
+      name: api-v2-dashboards-dashboardid-cells-cellid
+      description: REST surface for api-v2-dashboards-dashboardID-cells-cellID.
+      operations:
+      - method: DELETE
+        name: deletedashboardsidcellsid
+        description: Delete a dashboard cell
+        call: influxdb-dashboards.deletedashboardsidcellsid
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchdashboardsidcellsid
+        description: Update the non-positional information related to a cell
+        call: influxdb-dashboards.patchdashboardsidcellsid
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/cells/{cellid}/view
+      name: api-v2-dashboards-dashboardid-cells-cellid-view
+      description: REST surface for api-v2-dashboards-dashboardID-cells-cellID-view.
+      operations:
+      - method: GET
+        name: getdashboardsidcellsidview
+        description: Retrieve the view for a cell
+        call: influxdb-dashboards.getdashboardsidcellsidview
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchdashboardsidcellsidview
+        description: Update the view for a cell
+        call: influxdb-dashboards.patchdashboardsidcellsidview
+        with:
+          dashboardID: rest.dashboardID
+          cellID: rest.cellID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/labels
+      name: api-v2-dashboards-dashboardid-labels
+      description: REST surface for api-v2-dashboards-dashboardID-labels.
+      operations:
+      - method: GET
+        name: getdashboardsidlabels
+        description: List all labels for a dashboard
+        call: influxdb-dashboards.getdashboardsidlabels
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postdashboardsidlabels
+        description: Add a label to a dashboard
+        call: influxdb-dashboards.postdashboardsidlabels
+        with:
+          dashboardID: rest.dashboardID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/labels/{labelid}
+      name: api-v2-dashboards-dashboardid-labels-labelid
+      description: REST surface for api-v2-dashboards-dashboardID-labels-labelID.
+      operations:
+      - method: DELETE
+        name: deletedashboardsidlabelsid
+        description: Delete a label from a dashboard
+        call: influxdb-dashboards.deletedashboardsidlabelsid
+        with:
+          dashboardID: rest.dashboardID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/members
+      name: api-v2-dashboards-dashboardid-members
+      description: REST surface for api-v2-dashboards-dashboardID-members.
+      operations:
+      - method: GET
+        name: getdashboardsidmembers
+        description: List all dashboard members
+        call: influxdb-dashboards.getdashboardsidmembers
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postdashboardsidmembers
+        description: Add a member to a dashboard
+        call: influxdb-dashboards.postdashboardsidmembers
+        with:
+          dashboardID: rest.dashboardID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/members/{userid}
+      name: api-v2-dashboards-dashboardid-members-userid
+      description: REST surface for api-v2-dashboards-dashboardID-members-userID.
+      operations:
+      - method: DELETE
+        name: deletedashboardsidmembersid
+        description: Remove a member from a dashboard
+        call: influxdb-dashboards.deletedashboardsidmembersid
+        with:
+          userID: rest.userID
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/owners
+      name: api-v2-dashboards-dashboardid-owners
+      description: REST surface for api-v2-dashboards-dashboardID-owners.
+      operations:
+      - method: GET
+        name: getdashboardsidowners
+        description: List all dashboard owners
+        call: influxdb-dashboards.getdashboardsidowners
+        with:
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postdashboardsidowners
+        description: Add an owner to a dashboard
+        call: influxdb-dashboards.postdashboardsidowners
+        with:
+          dashboardID: rest.dashboardID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dashboards/{dashboardid}/owners/{userid}
+      name: api-v2-dashboards-dashboardid-owners-userid
+      description: REST surface for api-v2-dashboards-dashboardID-owners-userID.
+      operations:
+      - method: DELETE
+        name: deletedashboardsidownersid
+        description: Remove an owner from a dashboard
+        call: influxdb-dashboards.deletedashboardsidownersid
+        with:
+          userID: rest.userID
+          dashboardID: rest.dashboardID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-dashboards-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Dashboards. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: list-dashboards
+      description: List dashboards
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.getdashboards
+      with:
+        limit: tools.limit
+        owner: tools.owner
+        sortBy: tools.sortBy
+        id: tools.id
+        orgID: tools.orgID
+        org: tools.org
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-dashboard
+      description: Create a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-dashboards.postdashboards
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-dashboard
+      description: Delete a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-dashboards.deletedashboardsid
+      with:
+        dashboardID: tools.dashboardID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-dashboard
+      description: Retrieve a dashboard
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.getdashboardsid
+      with:
+        dashboardID: tools.dashboardID
+        include: tools.include
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-dashboard
+      description: Update a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.patchdashboardsid
+      with:
+        dashboardID: tools.dashboardID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-dashboard-cell
+      description: Create a dashboard cell
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-dashboards.postdashboardsidcells
+      with:
+        dashboardID: tools.dashboardID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: replace-cells-dashboard
+      description: Replace cells in a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.putdashboardsidcells
+      with:
+        dashboardID: tools.dashboardID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-dashboard-cell
+      description: Delete a dashboard cell
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-dashboards.deletedashboardsidcellsid
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-non-positional-information-related
+      description: Update the non-positional information related to a cell
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.patchdashboardsidcellsid
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-view-cell
+      description: Retrieve the view for a cell
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.getdashboardsidcellsidview
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-view-cell
+      description: Update the view for a cell
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.patchdashboardsidcellsidview
+      with:
+        dashboardID: tools.dashboardID
+        cellID: tools.cellID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-labels-dashboard
+      description: List all labels for a dashboard
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.getdashboardsidlabels
+      with:
+        dashboardID: tools.dashboardID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-label-dashboard
+      description: Add a label to a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-dashboards.postdashboardsidlabels
+      with:
+        dashboardID: tools.dashboardID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-label-dashboard
+      description: Delete a label from a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-dashboards.deletedashboardsidlabelsid
+      with:
+        dashboardID: tools.dashboardID
+        labelID: tools.labelID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-dashboard-members
+      description: List all dashboard members
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.getdashboardsidmembers
+      with:
+        dashboardID: tools.dashboardID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-member-dashboard
+      description: Add a member to a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-dashboards.postdashboardsidmembers
+      with:
+        dashboardID: tools.dashboardID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-member-dashboard
+      description: Remove a member from a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-dashboards.deletedashboardsidmembersid
+      with:
+        userID: tools.userID
+        dashboardID: tools.dashboardID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-dashboard-owners
+      description: List all dashboard owners
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dashboards.getdashboardsidowners
+      with:
+        dashboardID: tools.dashboardID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-owner-dashboard
+      description: Add an owner to a dashboard
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-dashboards.postdashboardsidowners
+      with:
+        dashboardID: tools.dashboardID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-owner-dashboard
+      description: Remove an owner from a dashboard
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-dashboards.deletedashboardsidownersid
+      with:
+        userID: tools.userID
+        dashboardID: tools.dashboardID
+      outputParameters:
+      - type: object
+        mapping: $.

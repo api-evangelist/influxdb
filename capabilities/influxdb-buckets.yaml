@@ -1,0 +1,652 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Buckets
+  description: 'Complete InfluxDB Cloud API — Buckets. 14 operations. Lead operation: List buckets. Self-contained Naftiko
+    capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Buckets
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-buckets
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Buckets business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-buckets
+      path: /api/v2/buckets
+      operations:
+      - name: getbuckets
+        method: GET
+        description: List buckets
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: name
+          in: query
+          type: string
+          description: A bucket name.
+        - name: id
+          in: query
+          type: string
+          description: A bucket ID.
+      - name: postbuckets
+        method: POST
+        description: Create a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-buckets-bucketID
+      path: /api/v2/buckets/{bucketID}
+      operations:
+      - name: deletebucketsid
+        method: DELETE
+        description: Delete a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: Bucket ID.
+          required: true
+      - name: getbucketsid
+        method: GET
+        description: Retrieve a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to retrieve.
+          required: true
+      - name: patchbucketsid
+        method: PATCH
+        description: Update a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The bucket ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-buckets-bucketID-labels
+      path: /api/v2/buckets/{bucketID}/labels
+      operations:
+      - name: getbucketsidlabels
+        method: GET
+        description: List all labels for a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to retrieve labels for.
+          required: true
+      - name: postbucketsidlabels
+        method: POST
+        description: Add a label to a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: Bucket ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-buckets-bucketID-labels-labelID
+      path: /api/v2/buckets/{bucketID}/labels/{labelID}
+      operations:
+      - name: deletebucketsidlabelsid
+        method: DELETE
+        description: Delete a label from a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The bucket ID.
+          required: true
+        - name: labelID
+          in: path
+          type: string
+          description: The ID of the label to delete.
+          required: true
+    - name: api-v2-buckets-bucketID-members
+      path: /api/v2/buckets/{bucketID}/members
+      operations:
+      - name: getbucketsidmembers
+        method: GET
+        description: List all users with member privileges for a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to retrieve users for.
+          required: true
+      - name: postbucketsidmembers
+        method: POST
+        description: Add a member to a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to retrieve users for.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-buckets-bucketID-members-userID
+      path: /api/v2/buckets/{bucketID}/members/{userID}
+      operations:
+      - name: deletebucketsidmembersid
+        method: DELETE
+        description: Remove a member from a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the user to remove.
+          required: true
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to remove a user from.
+          required: true
+    - name: api-v2-buckets-bucketID-owners
+      path: /api/v2/buckets/{bucketID}/owners
+      operations:
+      - name: getbucketsidowners
+        method: GET
+        description: List all owners of a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to retrieve owners for.
+          required: true
+      - name: postbucketsidowners
+        method: POST
+        description: Add an owner to a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to add an owner for.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-buckets-bucketID-owners-userID
+      path: /api/v2/buckets/{bucketID}/owners/{userID}
+      operations:
+      - name: deletebucketsidownersid
+        method: DELETE
+        description: Remove an owner from a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the owner to remove.
+          required: true
+        - name: bucketID
+          in: path
+          type: string
+          description: The ID of the bucket to remove an owner from.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-buckets-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Buckets. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/buckets
+      name: api-v2-buckets
+      description: REST surface for api-v2-buckets.
+      operations:
+      - method: GET
+        name: getbuckets
+        description: List buckets
+        call: influxdb-buckets.getbuckets
+        with:
+          org: rest.org
+          orgID: rest.orgID
+          name: rest.name
+          id: rest.id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postbuckets
+        description: Create a bucket
+        call: influxdb-buckets.postbuckets
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}
+      name: api-v2-buckets-bucketid
+      description: REST surface for api-v2-buckets-bucketID.
+      operations:
+      - method: DELETE
+        name: deletebucketsid
+        description: Delete a bucket
+        call: influxdb-buckets.deletebucketsid
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getbucketsid
+        description: Retrieve a bucket
+        call: influxdb-buckets.getbucketsid
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchbucketsid
+        description: Update a bucket
+        call: influxdb-buckets.patchbucketsid
+        with:
+          bucketID: rest.bucketID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}/labels
+      name: api-v2-buckets-bucketid-labels
+      description: REST surface for api-v2-buckets-bucketID-labels.
+      operations:
+      - method: GET
+        name: getbucketsidlabels
+        description: List all labels for a bucket
+        call: influxdb-buckets.getbucketsidlabels
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postbucketsidlabels
+        description: Add a label to a bucket
+        call: influxdb-buckets.postbucketsidlabels
+        with:
+          bucketID: rest.bucketID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}/labels/{labelid}
+      name: api-v2-buckets-bucketid-labels-labelid
+      description: REST surface for api-v2-buckets-bucketID-labels-labelID.
+      operations:
+      - method: DELETE
+        name: deletebucketsidlabelsid
+        description: Delete a label from a bucket
+        call: influxdb-buckets.deletebucketsidlabelsid
+        with:
+          bucketID: rest.bucketID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}/members
+      name: api-v2-buckets-bucketid-members
+      description: REST surface for api-v2-buckets-bucketID-members.
+      operations:
+      - method: GET
+        name: getbucketsidmembers
+        description: List all users with member privileges for a bucket
+        call: influxdb-buckets.getbucketsidmembers
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postbucketsidmembers
+        description: Add a member to a bucket
+        call: influxdb-buckets.postbucketsidmembers
+        with:
+          bucketID: rest.bucketID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}/members/{userid}
+      name: api-v2-buckets-bucketid-members-userid
+      description: REST surface for api-v2-buckets-bucketID-members-userID.
+      operations:
+      - method: DELETE
+        name: deletebucketsidmembersid
+        description: Remove a member from a bucket
+        call: influxdb-buckets.deletebucketsidmembersid
+        with:
+          userID: rest.userID
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}/owners
+      name: api-v2-buckets-bucketid-owners
+      description: REST surface for api-v2-buckets-bucketID-owners.
+      operations:
+      - method: GET
+        name: getbucketsidowners
+        description: List all owners of a bucket
+        call: influxdb-buckets.getbucketsidowners
+        with:
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postbucketsidowners
+        description: Add an owner to a bucket
+        call: influxdb-buckets.postbucketsidowners
+        with:
+          bucketID: rest.bucketID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}/owners/{userid}
+      name: api-v2-buckets-bucketid-owners-userid
+      description: REST surface for api-v2-buckets-bucketID-owners-userID.
+      operations:
+      - method: DELETE
+        name: deletebucketsidownersid
+        description: Remove an owner from a bucket
+        call: influxdb-buckets.deletebucketsidownersid
+        with:
+          userID: rest.userID
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-buckets-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Buckets. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-buckets
+      description: List buckets
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-buckets.getbuckets
+      with:
+        org: tools.org
+        orgID: tools.orgID
+        name: tools.name
+        id: tools.id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-bucket
+      description: Create a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-buckets.postbuckets
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-bucket
+      description: Delete a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-buckets.deletebucketsid
+      with:
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-bucket
+      description: Retrieve a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-buckets.getbucketsid
+      with:
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-bucket
+      description: Update a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-buckets.patchbucketsid
+      with:
+        bucketID: tools.bucketID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-labels-bucket
+      description: List all labels for a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-buckets.getbucketsidlabels
+      with:
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-label-bucket
+      description: Add a label to a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-buckets.postbucketsidlabels
+      with:
+        bucketID: tools.bucketID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-label-bucket
+      description: Delete a label from a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-buckets.deletebucketsidlabelsid
+      with:
+        bucketID: tools.bucketID
+        labelID: tools.labelID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-users-member-privileges
+      description: List all users with member privileges for a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-buckets.getbucketsidmembers
+      with:
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-member-bucket
+      description: Add a member to a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-buckets.postbucketsidmembers
+      with:
+        bucketID: tools.bucketID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-member-bucket
+      description: Remove a member from a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-buckets.deletebucketsidmembersid
+      with:
+        userID: tools.userID
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-owners-bucket
+      description: List all owners of a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-buckets.getbucketsidowners
+      with:
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-owner-bucket
+      description: Add an owner to a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-buckets.postbucketsidowners
+      with:
+        bucketID: tools.bucketID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-owner-bucket
+      description: Remove an owner from a bucket
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-buckets.deletebucketsidownersid
+      with:
+        userID: tools.userID
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.

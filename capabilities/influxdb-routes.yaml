@@ -1,0 +1,72 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Routes
+  description: 'Complete InfluxDB Cloud API — Routes. 1 operations. Lead operation: List all top level routes. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Routes
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-routes
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Routes business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2
+      path: /api/v2
+      operations:
+      - name: getroutes
+        method: GET
+        description: List all top level routes
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-routes-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Routes. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2
+      name: api-v2
+      description: REST surface for api-v2.
+      operations:
+      - method: GET
+        name: getroutes
+        description: List all top level routes
+        call: influxdb-routes.getroutes
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-routes-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Routes. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-all-top-level-routes
+      description: List all top level routes
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-routes.getroutes
+      outputParameters:
+      - type: object
+        mapping: $.

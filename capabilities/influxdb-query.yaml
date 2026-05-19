@@ -1,0 +1,273 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Query
+  description: 'Complete InfluxDB Cloud API — Query. 5 operations. Lead operation: Query data. Self-contained Naftiko capability
+    covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Query
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-query
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Query business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-query
+      path: /api/v2/query
+      operations:
+      - name: postquery
+        method: POST
+        description: Query data
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Accept-Encoding
+          in: header
+          type: string
+          description: The content encoding (usually a compression algorithm) that the client can understand.
+        - name: Content-Type
+          in: header
+          type: string
+        - name: org
+          in: query
+          type: string
+          description: An organization name or ID.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-v2-query-analyze
+      path: /api/v2/query/analyze
+      operations:
+      - name: postqueryanalyze
+        method: POST
+        description: Analyze a Flux query
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Content-Type
+          in: header
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-v2-query-ast
+      path: /api/v2/query/ast
+      operations:
+      - name: postqueryast
+        method: POST
+        description: Generate a query Abstract Syntax Tree (AST)
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Content-Type
+          in: header
+          type: string
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-v2-query-suggestions
+      path: /api/v2/query/suggestions
+      operations:
+      - name: getquerysuggestions
+        method: GET
+        description: List Flux query suggestions
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: api-v2-query-suggestions-name
+      path: /api/v2/query/suggestions/{name}
+      operations:
+      - name: getquerysuggestionsname
+        method: GET
+        description: Retrieve a query suggestion for a branching suggestion
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: name
+          in: path
+          type: string
+          description: A [Flux function](https://docs.influxdata.com/flux/v0.x/stdlib/all-functions/) name.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-query-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Query. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/query
+      name: api-v2-query
+      description: REST surface for api-v2-query.
+      operations:
+      - method: POST
+        name: postquery
+        description: Query data
+        call: influxdb-query.postquery
+        with:
+          Accept-Encoding: rest.Accept-Encoding
+          Content-Type: rest.Content-Type
+          org: rest.org
+          orgID: rest.orgID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/query/analyze
+      name: api-v2-query-analyze
+      description: REST surface for api-v2-query-analyze.
+      operations:
+      - method: POST
+        name: postqueryanalyze
+        description: Analyze a Flux query
+        call: influxdb-query.postqueryanalyze
+        with:
+          Content-Type: rest.Content-Type
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/query/ast
+      name: api-v2-query-ast
+      description: REST surface for api-v2-query-ast.
+      operations:
+      - method: POST
+        name: postqueryast
+        description: Generate a query Abstract Syntax Tree (AST)
+        call: influxdb-query.postqueryast
+        with:
+          Content-Type: rest.Content-Type
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/query/suggestions
+      name: api-v2-query-suggestions
+      description: REST surface for api-v2-query-suggestions.
+      operations:
+      - method: GET
+        name: getquerysuggestions
+        description: List Flux query suggestions
+        call: influxdb-query.getquerysuggestions
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/query/suggestions/{name}
+      name: api-v2-query-suggestions-name
+      description: REST surface for api-v2-query-suggestions-name.
+      operations:
+      - method: GET
+        name: getquerysuggestionsname
+        description: Retrieve a query suggestion for a branching suggestion
+        call: influxdb-query.getquerysuggestionsname
+        with:
+          name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-query-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Query. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: query-data
+      description: Query data
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: influxdb-query.postquery
+      with:
+        Accept-Encoding: tools.Accept-Encoding
+        Content-Type: tools.Content-Type
+        org: tools.org
+        orgID: tools.orgID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: analyze-flux-query
+      description: Analyze a Flux query
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: influxdb-query.postqueryanalyze
+      with:
+        Content-Type: tools.Content-Type
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: generate-query-abstract-syntax-tree
+      description: Generate a query Abstract Syntax Tree (AST)
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: false
+      call: influxdb-query.postqueryast
+      with:
+        Content-Type: tools.Content-Type
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-flux-query-suggestions
+      description: List Flux query suggestions
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-query.getquerysuggestions
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-query-suggestion-branching-suggestion
+      description: Retrieve a query suggestion for a branching suggestion
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-query.getquerysuggestionsname
+      with:
+        name: tools.name
+      outputParameters:
+      - type: object
+        mapping: $.

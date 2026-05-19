@@ -1,0 +1,97 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Ping
+  description: 'Complete InfluxDB Cloud API — Ping. 2 operations. Lead operation: Get the status of the instance. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Ping
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-ping
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Ping business capability. Self-contained, no shared references.
+    resources:
+    - name: ping
+      path: /ping
+      operations:
+      - name: getping
+        method: GET
+        description: Get the status of the instance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: headping
+        method: HEAD
+        description: Get the status of the instance
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-ping-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Ping. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/ping
+      name: ping
+      description: REST surface for ping.
+      operations:
+      - method: GET
+        name: getping
+        description: Get the status of the instance
+        call: influxdb-ping.getping
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: HEAD
+        name: headping
+        description: Get the status of the instance
+        call: influxdb-ping.headping
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-ping-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Ping. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: get-status-instance
+      description: Get the status of the instance
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-ping.getping
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-status-instance-2
+      description: Get the status of the instance
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-ping.headping
+      outputParameters:
+      - type: object
+        mapping: $.

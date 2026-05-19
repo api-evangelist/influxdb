@@ -1,0 +1,381 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Templates
+  description: 'Complete InfluxDB Cloud API — Templates. 8 operations. Lead operation: List installed stacks. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Templates
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-templates
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Templates business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-stacks
+      path: /api/v2/stacks
+      operations:
+      - name: liststacks
+        method: GET
+        description: List installed stacks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+          required: true
+        - name: name
+          in: query
+          type: string
+          description: A stack name.
+        - name: stackID
+          in: query
+          type: string
+          description: A stack ID.
+      - name: createstack
+        method: POST
+        description: Create a stack
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-stacks-stack_id
+      path: /api/v2/stacks/{stack_id}
+      operations:
+      - name: deletestack
+        method: DELETE
+        description: Delete a stack and associated resources
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: stack_id
+          in: path
+          type: string
+          description: The identifier of the stack.
+          required: true
+        - name: orgID
+          in: query
+          type: string
+          description: The identifier of the organization.
+          required: true
+      - name: readstack
+        method: GET
+        description: Retrieve a stack
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: stack_id
+          in: path
+          type: string
+          description: The identifier of the stack.
+          required: true
+      - name: updatestack
+        method: PATCH
+        description: Update a stack
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: stack_id
+          in: path
+          type: string
+          description: The identifier of the stack.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-stacks-stack_id-uninstall
+      path: /api/v2/stacks/{stack_id}/uninstall
+      operations:
+      - name: uninstallstack
+        method: POST
+        description: Uninstall a stack
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: stack_id
+          in: path
+          type: string
+          description: The identifier of the stack.
+          required: true
+    - name: api-v2-templates-apply
+      path: /api/v2/templates/apply
+      operations:
+      - name: applytemplate
+        method: POST
+        description: Apply or dry-run a template
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-templates-export
+      path: /api/v2/templates/export
+      operations:
+      - name: exporttemplate
+        method: POST
+        description: Export a new template
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-templates-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Templates. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/stacks
+      name: api-v2-stacks
+      description: REST surface for api-v2-stacks.
+      operations:
+      - method: GET
+        name: liststacks
+        description: List installed stacks
+        call: influxdb-templates.liststacks
+        with:
+          orgID: rest.orgID
+          name: rest.name
+          stackID: rest.stackID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createstack
+        description: Create a stack
+        call: influxdb-templates.createstack
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/stacks/{stack-id}
+      name: api-v2-stacks-stack-id
+      description: REST surface for api-v2-stacks-stack_id.
+      operations:
+      - method: DELETE
+        name: deletestack
+        description: Delete a stack and associated resources
+        call: influxdb-templates.deletestack
+        with:
+          stack_id: rest.stack_id
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: readstack
+        description: Retrieve a stack
+        call: influxdb-templates.readstack
+        with:
+          stack_id: rest.stack_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: updatestack
+        description: Update a stack
+        call: influxdb-templates.updatestack
+        with:
+          stack_id: rest.stack_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/stacks/{stack-id}/uninstall
+      name: api-v2-stacks-stack-id-uninstall
+      description: REST surface for api-v2-stacks-stack_id-uninstall.
+      operations:
+      - method: POST
+        name: uninstallstack
+        description: Uninstall a stack
+        call: influxdb-templates.uninstallstack
+        with:
+          stack_id: rest.stack_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/templates/apply
+      name: api-v2-templates-apply
+      description: REST surface for api-v2-templates-apply.
+      operations:
+      - method: POST
+        name: applytemplate
+        description: Apply or dry-run a template
+        call: influxdb-templates.applytemplate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/templates/export
+      name: api-v2-templates-export
+      description: REST surface for api-v2-templates-export.
+      operations:
+      - method: POST
+        name: exporttemplate
+        description: Export a new template
+        call: influxdb-templates.exporttemplate
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-templates-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Templates. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-installed-stacks
+      description: List installed stacks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-templates.liststacks
+      with:
+        orgID: tools.orgID
+        name: tools.name
+        stackID: tools.stackID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-stack
+      description: Create a stack
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-templates.createstack
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-stack-and-associated-resources
+      description: Delete a stack and associated resources
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-templates.deletestack
+      with:
+        stack_id: tools.stack_id
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-stack
+      description: Retrieve a stack
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-templates.readstack
+      with:
+        stack_id: tools.stack_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-stack
+      description: Update a stack
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-templates.updatestack
+      with:
+        stack_id: tools.stack_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: uninstall-stack
+      description: Uninstall a stack
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-templates.uninstallstack
+      with:
+        stack_id: tools.stack_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: apply-dry-run-template
+      description: Apply or dry-run a template
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-templates.applytemplate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: export-new-template
+      description: Export a new template
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-templates.exporttemplate
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,639 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Telegrafs
+  description: 'Complete InfluxDB Cloud API — Telegrafs. 14 operations. Lead operation: List all Telegraf configurations.
+    Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Telegrafs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-telegrafs
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Telegrafs business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-telegrafs
+      path: /api/v2/telegrafs
+      operations:
+      - name: gettelegrafs
+        method: GET
+        description: List all Telegraf configurations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: The organization ID the Telegraf config belongs to.
+      - name: posttelegrafs
+        method: POST
+        description: Create a Telegraf configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-telegrafs-telegrafID
+      path: /api/v2/telegrafs/{telegrafID}
+      operations:
+      - name: deletetelegrafsid
+        method: DELETE
+        description: Delete a Telegraf configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf configuration ID.
+          required: true
+      - name: gettelegrafsid
+        method: GET
+        description: Retrieve a Telegraf configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf configuration ID.
+          required: true
+        - name: Accept
+          in: header
+          type: string
+      - name: puttelegrafsid
+        method: PUT
+        description: Update a Telegraf configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-telegrafs-telegrafID-labels
+      path: /api/v2/telegrafs/{telegrafID}/labels
+      operations:
+      - name: gettelegrafsidlabels
+        method: GET
+        description: List all labels for a Telegraf config
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+      - name: posttelegrafsidlabels
+        method: POST
+        description: Add a label to a Telegraf config
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-telegrafs-telegrafID-labels-labelID
+      path: /api/v2/telegrafs/{telegrafID}/labels/{labelID}
+      operations:
+      - name: deletetelegrafsidlabelsid
+        method: DELETE
+        description: Delete a label from a Telegraf config
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+        - name: labelID
+          in: path
+          type: string
+          description: The label ID.
+          required: true
+    - name: api-v2-telegrafs-telegrafID-members
+      path: /api/v2/telegrafs/{telegrafID}/members
+      operations:
+      - name: gettelegrafsidmembers
+        method: GET
+        description: List all users with member privileges for a Telegraf config
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+      - name: posttelegrafsidmembers
+        method: POST
+        description: Add a member to a Telegraf config
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-telegrafs-telegrafID-members-userID
+      path: /api/v2/telegrafs/{telegrafID}/members/{userID}
+      operations:
+      - name: deletetelegrafsidmembersid
+        method: DELETE
+        description: Remove a member from a Telegraf config
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the member to remove.
+          required: true
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+    - name: api-v2-telegrafs-telegrafID-owners
+      path: /api/v2/telegrafs/{telegrafID}/owners
+      operations:
+      - name: gettelegrafsidowners
+        method: GET
+        description: List all owners of a Telegraf configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf configuration ID.
+          required: true
+      - name: posttelegrafsidowners
+        method: POST
+        description: Add an owner to a Telegraf configuration
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf configuration ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-telegrafs-telegrafID-owners-userID
+      path: /api/v2/telegrafs/{telegrafID}/owners/{userID}
+      operations:
+      - name: deletetelegrafsidownersid
+        method: DELETE
+        description: Remove an owner from a Telegraf config
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the owner to remove.
+          required: true
+        - name: telegrafID
+          in: path
+          type: string
+          description: The Telegraf config ID.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-telegrafs-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Telegrafs. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/telegrafs
+      name: api-v2-telegrafs
+      description: REST surface for api-v2-telegrafs.
+      operations:
+      - method: GET
+        name: gettelegrafs
+        description: List all Telegraf configurations
+        call: influxdb-telegrafs.gettelegrafs
+        with:
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: posttelegrafs
+        description: Create a Telegraf configuration
+        call: influxdb-telegrafs.posttelegrafs
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/telegrafs/{telegrafid}
+      name: api-v2-telegrafs-telegrafid
+      description: REST surface for api-v2-telegrafs-telegrafID.
+      operations:
+      - method: DELETE
+        name: deletetelegrafsid
+        description: Delete a Telegraf configuration
+        call: influxdb-telegrafs.deletetelegrafsid
+        with:
+          telegrafID: rest.telegrafID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: gettelegrafsid
+        description: Retrieve a Telegraf configuration
+        call: influxdb-telegrafs.gettelegrafsid
+        with:
+          telegrafID: rest.telegrafID
+          Accept: rest.Accept
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: puttelegrafsid
+        description: Update a Telegraf configuration
+        call: influxdb-telegrafs.puttelegrafsid
+        with:
+          telegrafID: rest.telegrafID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/telegrafs/{telegrafid}/labels
+      name: api-v2-telegrafs-telegrafid-labels
+      description: REST surface for api-v2-telegrafs-telegrafID-labels.
+      operations:
+      - method: GET
+        name: gettelegrafsidlabels
+        description: List all labels for a Telegraf config
+        call: influxdb-telegrafs.gettelegrafsidlabels
+        with:
+          telegrafID: rest.telegrafID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: posttelegrafsidlabels
+        description: Add a label to a Telegraf config
+        call: influxdb-telegrafs.posttelegrafsidlabels
+        with:
+          telegrafID: rest.telegrafID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/telegrafs/{telegrafid}/labels/{labelid}
+      name: api-v2-telegrafs-telegrafid-labels-labelid
+      description: REST surface for api-v2-telegrafs-telegrafID-labels-labelID.
+      operations:
+      - method: DELETE
+        name: deletetelegrafsidlabelsid
+        description: Delete a label from a Telegraf config
+        call: influxdb-telegrafs.deletetelegrafsidlabelsid
+        with:
+          telegrafID: rest.telegrafID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/telegrafs/{telegrafid}/members
+      name: api-v2-telegrafs-telegrafid-members
+      description: REST surface for api-v2-telegrafs-telegrafID-members.
+      operations:
+      - method: GET
+        name: gettelegrafsidmembers
+        description: List all users with member privileges for a Telegraf config
+        call: influxdb-telegrafs.gettelegrafsidmembers
+        with:
+          telegrafID: rest.telegrafID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: posttelegrafsidmembers
+        description: Add a member to a Telegraf config
+        call: influxdb-telegrafs.posttelegrafsidmembers
+        with:
+          telegrafID: rest.telegrafID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/telegrafs/{telegrafid}/members/{userid}
+      name: api-v2-telegrafs-telegrafid-members-userid
+      description: REST surface for api-v2-telegrafs-telegrafID-members-userID.
+      operations:
+      - method: DELETE
+        name: deletetelegrafsidmembersid
+        description: Remove a member from a Telegraf config
+        call: influxdb-telegrafs.deletetelegrafsidmembersid
+        with:
+          userID: rest.userID
+          telegrafID: rest.telegrafID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/telegrafs/{telegrafid}/owners
+      name: api-v2-telegrafs-telegrafid-owners
+      description: REST surface for api-v2-telegrafs-telegrafID-owners.
+      operations:
+      - method: GET
+        name: gettelegrafsidowners
+        description: List all owners of a Telegraf configuration
+        call: influxdb-telegrafs.gettelegrafsidowners
+        with:
+          telegrafID: rest.telegrafID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: posttelegrafsidowners
+        description: Add an owner to a Telegraf configuration
+        call: influxdb-telegrafs.posttelegrafsidowners
+        with:
+          telegrafID: rest.telegrafID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/telegrafs/{telegrafid}/owners/{userid}
+      name: api-v2-telegrafs-telegrafid-owners-userid
+      description: REST surface for api-v2-telegrafs-telegrafID-owners-userID.
+      operations:
+      - method: DELETE
+        name: deletetelegrafsidownersid
+        description: Remove an owner from a Telegraf config
+        call: influxdb-telegrafs.deletetelegrafsidownersid
+        with:
+          userID: rest.userID
+          telegrafID: rest.telegrafID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-telegrafs-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Telegrafs. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-all-telegraf-configurations
+      description: List all Telegraf configurations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-telegrafs.gettelegrafs
+      with:
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-telegraf-configuration
+      description: Create a Telegraf configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-telegrafs.posttelegrafs
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-telegraf-configuration
+      description: Delete a Telegraf configuration
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-telegrafs.deletetelegrafsid
+      with:
+        telegrafID: tools.telegrafID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-telegraf-configuration
+      description: Retrieve a Telegraf configuration
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-telegrafs.gettelegrafsid
+      with:
+        telegrafID: tools.telegrafID
+        Accept: tools.Accept
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-telegraf-configuration
+      description: Update a Telegraf configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-telegrafs.puttelegrafsid
+      with:
+        telegrafID: tools.telegrafID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-labels-telegraf-config
+      description: List all labels for a Telegraf config
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-telegrafs.gettelegrafsidlabels
+      with:
+        telegrafID: tools.telegrafID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-label-telegraf-config
+      description: Add a label to a Telegraf config
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-telegrafs.posttelegrafsidlabels
+      with:
+        telegrafID: tools.telegrafID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-label-telegraf-config
+      description: Delete a label from a Telegraf config
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-telegrafs.deletetelegrafsidlabelsid
+      with:
+        telegrafID: tools.telegrafID
+        labelID: tools.labelID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-users-member-privileges
+      description: List all users with member privileges for a Telegraf config
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-telegrafs.gettelegrafsidmembers
+      with:
+        telegrafID: tools.telegrafID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-member-telegraf-config
+      description: Add a member to a Telegraf config
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-telegrafs.posttelegrafsidmembers
+      with:
+        telegrafID: tools.telegrafID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-member-telegraf-config
+      description: Remove a member from a Telegraf config
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-telegrafs.deletetelegrafsidmembersid
+      with:
+        userID: tools.userID
+        telegrafID: tools.telegrafID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-owners-telegraf-configuration
+      description: List all owners of a Telegraf configuration
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-telegrafs.gettelegrafsidowners
+      with:
+        telegrafID: tools.telegrafID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-owner-telegraf-configuration
+      description: Add an owner to a Telegraf configuration
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-telegrafs.posttelegrafsidowners
+      with:
+        telegrafID: tools.telegrafID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-owner-telegraf-config
+      description: Remove an owner from a Telegraf config
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-telegrafs.deletetelegrafsidownersid
+      with:
+        userID: tools.userID
+        telegrafID: tools.telegrafID
+      outputParameters:
+      - type: object
+        mapping: $.

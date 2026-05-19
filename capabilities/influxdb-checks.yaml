@@ -1,0 +1,453 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Checks
+  description: 'Complete InfluxDB Cloud API — Checks. 10 operations. Lead operation: List all checks. Self-contained Naftiko
+    capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Checks
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-checks
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Checks business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-checks
+      path: /api/v2/checks
+      operations:
+      - name: getchecks
+        method: GET
+        description: List all checks
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: Only show checks that belong to a specific organization ID.
+          required: true
+      - name: createcheck
+        method: POST
+        description: Add new check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-checks-checkID
+      path: /api/v2/checks/{checkID}
+      operations:
+      - name: deletechecksid
+        method: DELETE
+        description: Delete a check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+      - name: getchecksid
+        method: GET
+        description: Retrieve a check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+      - name: patchchecksid
+        method: PATCH
+        description: Update a check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: putchecksid
+        method: PUT
+        description: Update a check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-checks-checkID-labels
+      path: /api/v2/checks/{checkID}/labels
+      operations:
+      - name: getchecksidlabels
+        method: GET
+        description: List all labels for a check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+      - name: postchecksidlabels
+        method: POST
+        description: Add a label to a check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-checks-checkID-labels-labelID
+      path: /api/v2/checks/{checkID}/labels/{labelID}
+      operations:
+      - name: deletechecksidlabelsid
+        method: DELETE
+        description: Delete label from a check
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+        - name: labelID
+          in: path
+          type: string
+          description: The ID of the label to delete.
+          required: true
+    - name: api-v2-checks-checkID-query
+      path: /api/v2/checks/{checkID}/query
+      operations:
+      - name: getchecksidquery
+        method: GET
+        description: Retrieve a check query
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: checkID
+          in: path
+          type: string
+          description: The check ID.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-checks-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Checks. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/checks
+      name: api-v2-checks
+      description: REST surface for api-v2-checks.
+      operations:
+      - method: GET
+        name: getchecks
+        description: List all checks
+        call: influxdb-checks.getchecks
+        with:
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createcheck
+        description: Add new check
+        call: influxdb-checks.createcheck
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/checks/{checkid}
+      name: api-v2-checks-checkid
+      description: REST surface for api-v2-checks-checkID.
+      operations:
+      - method: DELETE
+        name: deletechecksid
+        description: Delete a check
+        call: influxdb-checks.deletechecksid
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getchecksid
+        description: Retrieve a check
+        call: influxdb-checks.getchecksid
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchchecksid
+        description: Update a check
+        call: influxdb-checks.patchchecksid
+        with:
+          checkID: rest.checkID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putchecksid
+        description: Update a check
+        call: influxdb-checks.putchecksid
+        with:
+          checkID: rest.checkID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/checks/{checkid}/labels
+      name: api-v2-checks-checkid-labels
+      description: REST surface for api-v2-checks-checkID-labels.
+      operations:
+      - method: GET
+        name: getchecksidlabels
+        description: List all labels for a check
+        call: influxdb-checks.getchecksidlabels
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postchecksidlabels
+        description: Add a label to a check
+        call: influxdb-checks.postchecksidlabels
+        with:
+          checkID: rest.checkID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/checks/{checkid}/labels/{labelid}
+      name: api-v2-checks-checkid-labels-labelid
+      description: REST surface for api-v2-checks-checkID-labels-labelID.
+      operations:
+      - method: DELETE
+        name: deletechecksidlabelsid
+        description: Delete label from a check
+        call: influxdb-checks.deletechecksidlabelsid
+        with:
+          checkID: rest.checkID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/checks/{checkid}/query
+      name: api-v2-checks-checkid-query
+      description: REST surface for api-v2-checks-checkID-query.
+      operations:
+      - method: GET
+        name: getchecksidquery
+        description: Retrieve a check query
+        call: influxdb-checks.getchecksidquery
+        with:
+          checkID: rest.checkID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-checks-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Checks. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-all-checks
+      description: List all checks
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-checks.getchecks
+      with:
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-new-check
+      description: Add new check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-checks.createcheck
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-check
+      description: Delete a check
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-checks.deletechecksid
+      with:
+        checkID: tools.checkID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-check
+      description: Retrieve a check
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-checks.getchecksid
+      with:
+        checkID: tools.checkID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-check
+      description: Update a check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-checks.patchchecksid
+      with:
+        checkID: tools.checkID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-check-2
+      description: Update a check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-checks.putchecksid
+      with:
+        checkID: tools.checkID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-labels-check
+      description: List all labels for a check
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-checks.getchecksidlabels
+      with:
+        checkID: tools.checkID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-label-check
+      description: Add a label to a check
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-checks.postchecksidlabels
+      with:
+        checkID: tools.checkID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-label-check
+      description: Delete label from a check
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-checks.deletechecksidlabelsid
+      with:
+        checkID: tools.checkID
+        labelID: tools.labelID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-check-query
+      description: Retrieve a check query
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-checks.getchecksidquery
+      with:
+        checkID: tools.checkID
+      outputParameters:
+      - type: object
+        mapping: $.

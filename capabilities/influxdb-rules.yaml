@@ -1,0 +1,82 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Rules
+  description: 'Complete InfluxDB Cloud API — Rules. 1 operations. Lead operation: Retrieve a notification rule query. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Rules
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-rules
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Rules business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-notificationRules-ruleID-query
+      path: /api/v2/notificationRules/{ruleID}/query
+      operations:
+      - name: getnotificationrulesidquery
+        method: GET
+        description: Retrieve a notification rule query
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: ruleID
+          in: path
+          type: string
+          description: The notification rule ID.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-rules-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Rules. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/notificationrules/{ruleid}/query
+      name: api-v2-notificationrules-ruleid-query
+      description: REST surface for api-v2-notificationRules-ruleID-query.
+      operations:
+      - method: GET
+        name: getnotificationrulesidquery
+        description: Retrieve a notification rule query
+        call: influxdb-rules.getnotificationrulesidquery
+        with:
+          ruleID: rest.ruleID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-rules-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Rules. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: retrieve-notification-rule-query
+      description: Retrieve a notification rule query
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-rules.getnotificationrulesidquery
+      with:
+        ruleID: tools.ruleID
+      outputParameters:
+      - type: object
+        mapping: $.

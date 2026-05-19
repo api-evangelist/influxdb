@@ -1,0 +1,101 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Usage
+  description: 'Complete InfluxDB Cloud API — Usage. 1 operations. Lead operation: Retrieve usage for an organization. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Usage
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-usage
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Usage business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-orgs-orgID-usage
+      path: /api/v2/orgs/{orgID}/usage
+      operations:
+      - name: getorgusageid
+        method: GET
+        description: Retrieve usage for an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization.
+          required: true
+        - name: start
+          in: query
+          type: integer
+          description: Earliest time to include in results.
+          required: true
+        - name: stop
+          in: query
+          type: integer
+          description: Latest time to include in results.
+        - name: raw
+          in: query
+          type: boolean
+          description: return raw usage data
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-usage-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Usage. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/orgs/{orgid}/usage
+      name: api-v2-orgs-orgid-usage
+      description: REST surface for api-v2-orgs-orgID-usage.
+      operations:
+      - method: GET
+        name: getorgusageid
+        description: Retrieve usage for an organization
+        call: influxdb-usage.getorgusageid
+        with:
+          orgID: rest.orgID
+          start: rest.start
+          stop: rest.stop
+          raw: rest.raw
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-usage-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Usage. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: retrieve-usage-organization
+      description: Retrieve usage for an organization
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-usage.getorgusageid
+      with:
+        orgID: tools.orgID
+        start: tools.start
+        stop: tools.stop
+        raw: tools.raw
+      outputParameters:
+      - type: object
+        mapping: $.

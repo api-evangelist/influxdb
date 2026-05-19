@@ -1,0 +1,81 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Telegraf Plugins
+  description: 'Complete InfluxDB Cloud API — Telegraf Plugins. 1 operations. Lead operation: List all Telegraf plugins. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Telegraf Plugins
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-telegraf-plugins
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Telegraf Plugins business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-telegraf-plugins
+      path: /api/v2/telegraf/plugins
+      operations:
+      - name: gettelegrafplugins
+        method: GET
+        description: List all Telegraf plugins
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: type
+          in: query
+          type: string
+          description: The type of plugin desired.
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-telegraf-plugins-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Telegraf Plugins. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/telegraf/plugins
+      name: api-v2-telegraf-plugins
+      description: REST surface for api-v2-telegraf-plugins.
+      operations:
+      - method: GET
+        name: gettelegrafplugins
+        description: List all Telegraf plugins
+        call: influxdb-telegraf-plugins.gettelegrafplugins
+        with:
+          type: rest.type
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-telegraf-plugins-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Telegraf Plugins. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: list-all-telegraf-plugins
+      description: List all Telegraf plugins
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-telegraf-plugins.gettelegrafplugins
+      with:
+        type: tools.type
+      outputParameters:
+      - type: object
+        mapping: $.

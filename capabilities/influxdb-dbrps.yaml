@@ -1,0 +1,307 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — DBRPs
+  description: 'Complete InfluxDB Cloud API — DBRPs. 5 operations. Lead operation: List database retention policy mappings.
+    Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - DBRPs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-dbrps
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — DBRPs business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-dbrps
+      path: /api/v2/dbrps
+      operations:
+      - name: getdbrps
+        method: GET
+        description: List database retention policy mappings
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: id
+          in: query
+          type: string
+          description: A DBPR mapping ID.
+        - name: bucketID
+          in: query
+          type: string
+          description: A bucket ID.
+        - name: default
+          in: query
+          type: boolean
+          description: Specifies filtering on default
+        - name: db
+          in: query
+          type: string
+          description: A database.
+        - name: rp
+          in: query
+          type: string
+          description: A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp).
+      - name: postdbrp
+        method: POST
+        description: Add a database retention policy mapping
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-dbrps-dbrpID
+      path: /api/v2/dbrps/{dbrpID}
+      operations:
+      - name: deletedbrpid
+        method: DELETE
+        description: Delete a database retention policy
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: dbrpID
+          in: path
+          type: string
+          description: A DBRP mapping ID.
+          required: true
+      - name: getdbrpsid
+        method: GET
+        description: Retrieve a database retention policy mapping
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: dbrpID
+          in: path
+          type: string
+          description: A DBRP mapping ID.
+          required: true
+      - name: patchdbrpid
+        method: PATCH
+        description: Update a database retention policy mapping
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: dbrpID
+          in: path
+          type: string
+          description: A DBRP mapping ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-dbrps-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — DBRPs. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/dbrps
+      name: api-v2-dbrps
+      description: REST surface for api-v2-dbrps.
+      operations:
+      - method: GET
+        name: getdbrps
+        description: List database retention policy mappings
+        call: influxdb-dbrps.getdbrps
+        with:
+          orgID: rest.orgID
+          org: rest.org
+          id: rest.id
+          bucketID: rest.bucketID
+          default: rest.default
+          db: rest.db
+          rp: rest.rp
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postdbrp
+        description: Add a database retention policy mapping
+        call: influxdb-dbrps.postdbrp
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/dbrps/{dbrpid}
+      name: api-v2-dbrps-dbrpid
+      description: REST surface for api-v2-dbrps-dbrpID.
+      operations:
+      - method: DELETE
+        name: deletedbrpid
+        description: Delete a database retention policy
+        call: influxdb-dbrps.deletedbrpid
+        with:
+          orgID: rest.orgID
+          org: rest.org
+          dbrpID: rest.dbrpID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getdbrpsid
+        description: Retrieve a database retention policy mapping
+        call: influxdb-dbrps.getdbrpsid
+        with:
+          orgID: rest.orgID
+          org: rest.org
+          dbrpID: rest.dbrpID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchdbrpid
+        description: Update a database retention policy mapping
+        call: influxdb-dbrps.patchdbrpid
+        with:
+          orgID: rest.orgID
+          org: rest.org
+          dbrpID: rest.dbrpID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-dbrps-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — DBRPs. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-database-retention-policy-mappings
+      description: List database retention policy mappings
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dbrps.getdbrps
+      with:
+        orgID: tools.orgID
+        org: tools.org
+        id: tools.id
+        bucketID: tools.bucketID
+        default: tools.default
+        db: tools.db
+        rp: tools.rp
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-database-retention-policy-mapping
+      description: Add a database retention policy mapping
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-dbrps.postdbrp
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-database-retention-policy
+      description: Delete a database retention policy
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-dbrps.deletedbrpid
+      with:
+        orgID: tools.orgID
+        org: tools.org
+        dbrpID: tools.dbrpID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-database-retention-policy-mapping
+      description: Retrieve a database retention policy mapping
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-dbrps.getdbrpsid
+      with:
+        orgID: tools.orgID
+        org: tools.org
+        dbrpID: tools.dbrpID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-database-retention-policy-mapping
+      description: Update a database retention policy mapping
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-dbrps.patchdbrpid
+      with:
+        orgID: tools.orgID
+        org: tools.org
+        dbrpID: tools.dbrpID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

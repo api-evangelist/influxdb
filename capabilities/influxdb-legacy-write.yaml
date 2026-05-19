@@ -1,0 +1,120 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Legacy Write
+  description: 'Complete InfluxDB Cloud API — Legacy Write. 1 operations. Lead operation: Write time series data into InfluxDB
+    in a V1-compatible format. Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Legacy Write
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-legacy-write
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Legacy Write business capability. Self-contained, no shared references.
+    resources:
+    - name: write
+      path: /write
+      operations:
+      - name: postlegacywrite
+        method: POST
+        description: Write time series data into InfluxDB in a V1-compatible format
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: u
+          in: query
+          type: string
+          description: The InfluxDB 1.x username to authenticate the request.
+        - name: p
+          in: query
+          type: string
+          description: The InfluxDB 1.x password to authenticate the request.
+        - name: db
+          in: query
+          type: string
+          description: Bucket to write to. If none exists, InfluxDB creates a bucket with a default 3-day retention policy.
+          required: true
+        - name: rp
+          in: query
+          type: string
+          description: Retention policy name.
+        - name: precision
+          in: query
+          type: string
+          description: Write precision.
+        - name: Content-Encoding
+          in: header
+          type: string
+          description: When present, its value indicates to the database that compression is applied to the line protocol
+            body.
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-legacy-write-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Legacy Write. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/write
+      name: write
+      description: REST surface for write.
+      operations:
+      - method: POST
+        name: postlegacywrite
+        description: Write time series data into InfluxDB in a V1-compatible format
+        call: influxdb-legacy-write.postlegacywrite
+        with:
+          u: rest.u
+          p: rest.p
+          db: rest.db
+          rp: rest.rp
+          precision: rest.precision
+          Content-Encoding: rest.Content-Encoding
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-legacy-write-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Legacy Write. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: write-time-series-data-influxdb
+      description: Write time series data into InfluxDB in a V1-compatible format
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-legacy-write.postlegacywrite
+      with:
+        u: tools.u
+        p: tools.p
+        db: tools.db
+        rp: tools.rp
+        precision: tools.precision
+        Content-Encoding: tools.Content-Encoding
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

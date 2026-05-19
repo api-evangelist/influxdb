@@ -1,0 +1,314 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Legacy Authorizations
+  description: 'Complete InfluxDB Cloud API — Legacy Authorizations. 6 operations. Lead operation: List all legacy authorizations.
+    Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Legacy Authorizations
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-legacy-authorizations
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Legacy Authorizations business capability. Self-contained, no shared references.
+    resources:
+    - name: legacy-authorizations
+      path: /legacy/authorizations
+      operations:
+      - name: getlegacyauthorizations
+        method: GET
+        description: List all legacy authorizations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: query
+          type: string
+          description: A user ID.
+        - name: user
+          in: query
+          type: string
+          description: A user name.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: token
+          in: query
+          type: string
+          description: An authorization name token.
+        - name: authID
+          in: query
+          type: string
+          description: An authorization ID.
+      - name: postlegacyauthorizations
+        method: POST
+        description: Create a legacy authorization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: legacy-authorizations-authID
+      path: /legacy/authorizations/{authID}
+      operations:
+      - name: deletelegacyauthorizationsid
+        method: DELETE
+        description: Delete a legacy authorization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: authID
+          in: path
+          type: string
+          description: The ID of the legacy authorization to delete.
+          required: true
+      - name: getlegacyauthorizationsid
+        method: GET
+        description: Retrieve a legacy authorization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: authID
+          in: path
+          type: string
+          description: The ID of the legacy authorization to get.
+          required: true
+      - name: patchlegacyauthorizationsid
+        method: PATCH
+        description: Update a legacy authorization to be active or inactive
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: authID
+          in: path
+          type: string
+          description: The ID of the legacy authorization to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: legacy-authorizations-authID-password
+      path: /legacy/authorizations/{authID}/password
+      operations:
+      - name: postlegacyauthorizationsidpassword
+        method: POST
+        description: Set a legacy authorization password
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: authID
+          in: path
+          type: string
+          description: The ID of the legacy authorization to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-legacy-authorizations-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Legacy Authorizations. One Spectral-compliant resource per
+      consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/legacy/authorizations
+      name: legacy-authorizations
+      description: REST surface for legacy-authorizations.
+      operations:
+      - method: GET
+        name: getlegacyauthorizations
+        description: List all legacy authorizations
+        call: influxdb-legacy-authorizations.getlegacyauthorizations
+        with:
+          userID: rest.userID
+          user: rest.user
+          orgID: rest.orgID
+          org: rest.org
+          token: rest.token
+          authID: rest.authID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postlegacyauthorizations
+        description: Create a legacy authorization
+        call: influxdb-legacy-authorizations.postlegacyauthorizations
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/legacy/authorizations/{authid}
+      name: legacy-authorizations-authid
+      description: REST surface for legacy-authorizations-authID.
+      operations:
+      - method: DELETE
+        name: deletelegacyauthorizationsid
+        description: Delete a legacy authorization
+        call: influxdb-legacy-authorizations.deletelegacyauthorizationsid
+        with:
+          authID: rest.authID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getlegacyauthorizationsid
+        description: Retrieve a legacy authorization
+        call: influxdb-legacy-authorizations.getlegacyauthorizationsid
+        with:
+          authID: rest.authID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchlegacyauthorizationsid
+        description: Update a legacy authorization to be active or inactive
+        call: influxdb-legacy-authorizations.patchlegacyauthorizationsid
+        with:
+          authID: rest.authID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/legacy/authorizations/{authid}/password
+      name: legacy-authorizations-authid-password
+      description: REST surface for legacy-authorizations-authID-password.
+      operations:
+      - method: POST
+        name: postlegacyauthorizationsidpassword
+        description: Set a legacy authorization password
+        call: influxdb-legacy-authorizations.postlegacyauthorizationsidpassword
+        with:
+          authID: rest.authID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-legacy-authorizations-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Legacy Authorizations. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: list-all-legacy-authorizations
+      description: List all legacy authorizations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-legacy-authorizations.getlegacyauthorizations
+      with:
+        userID: tools.userID
+        user: tools.user
+        orgID: tools.orgID
+        org: tools.org
+        token: tools.token
+        authID: tools.authID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-legacy-authorization
+      description: Create a legacy authorization
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-legacy-authorizations.postlegacyauthorizations
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-legacy-authorization
+      description: Delete a legacy authorization
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-legacy-authorizations.deletelegacyauthorizationsid
+      with:
+        authID: tools.authID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-legacy-authorization
+      description: Retrieve a legacy authorization
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-legacy-authorizations.getlegacyauthorizationsid
+      with:
+        authID: tools.authID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-legacy-authorization-be-active
+      description: Update a legacy authorization to be active or inactive
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-legacy-authorizations.patchlegacyauthorizationsid
+      with:
+        authID: tools.authID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: set-legacy-authorization-password
+      description: Set a legacy authorization password
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-legacy-authorizations.postlegacyauthorizationsidpassword
+      with:
+        authID: tools.authID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

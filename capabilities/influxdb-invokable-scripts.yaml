@@ -1,0 +1,338 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Invokable Scripts
+  description: 'Complete InfluxDB Cloud API — Invokable Scripts. 7 operations. Lead operation: List scripts. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Invokable Scripts
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-invokable-scripts
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Invokable Scripts business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-scripts
+      path: /api/v2/scripts
+      operations:
+      - name: getscripts
+        method: GET
+        description: List scripts
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: offset
+          in: query
+          type: integer
+          description: The offset for pagination.
+        - name: limit
+          in: query
+          type: integer
+          description: The maximum number of scripts to return. Default is `100`.
+        - name: name
+          in: query
+          type: string
+          description: The script name. Lists scripts with the specified name.
+      - name: postscripts
+        method: POST
+        description: Create a script
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-scripts-scriptID
+      path: /api/v2/scripts/{scriptID}
+      operations:
+      - name: deletescriptsid
+        method: DELETE
+        description: Delete a script
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: scriptID
+          in: path
+          type: string
+          description: A script ID.
+          required: true
+      - name: getscriptsid
+        method: GET
+        description: Retrieve a script
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: scriptID
+          in: path
+          type: string
+          description: A script ID.
+          required: true
+      - name: patchscriptsid
+        method: PATCH
+        description: Update a script
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: scriptID
+          in: path
+          type: string
+          description: A script ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-scripts-scriptID-invoke
+      path: /api/v2/scripts/{scriptID}/invoke
+      operations:
+      - name: postscriptsidinvoke
+        method: POST
+        description: Invoke a script
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: scriptID
+          in: path
+          type: string
+          description: A script ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+    - name: api-v2-scripts-scriptID-params
+      path: /api/v2/scripts/{scriptID}/params
+      operations:
+      - name: getscriptsidparams
+        method: GET
+        description: Find script parameters.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: scriptID
+          in: path
+          type: string
+          description: A script ID.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-invokable-scripts-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Invokable Scripts. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/scripts
+      name: api-v2-scripts
+      description: REST surface for api-v2-scripts.
+      operations:
+      - method: GET
+        name: getscripts
+        description: List scripts
+        call: influxdb-invokable-scripts.getscripts
+        with:
+          offset: rest.offset
+          limit: rest.limit
+          name: rest.name
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postscripts
+        description: Create a script
+        call: influxdb-invokable-scripts.postscripts
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/scripts/{scriptid}
+      name: api-v2-scripts-scriptid
+      description: REST surface for api-v2-scripts-scriptID.
+      operations:
+      - method: DELETE
+        name: deletescriptsid
+        description: Delete a script
+        call: influxdb-invokable-scripts.deletescriptsid
+        with:
+          scriptID: rest.scriptID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getscriptsid
+        description: Retrieve a script
+        call: influxdb-invokable-scripts.getscriptsid
+        with:
+          scriptID: rest.scriptID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchscriptsid
+        description: Update a script
+        call: influxdb-invokable-scripts.patchscriptsid
+        with:
+          scriptID: rest.scriptID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/scripts/{scriptid}/invoke
+      name: api-v2-scripts-scriptid-invoke
+      description: REST surface for api-v2-scripts-scriptID-invoke.
+      operations:
+      - method: POST
+        name: postscriptsidinvoke
+        description: Invoke a script
+        call: influxdb-invokable-scripts.postscriptsidinvoke
+        with:
+          scriptID: rest.scriptID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/scripts/{scriptid}/params
+      name: api-v2-scripts-scriptid-params
+      description: REST surface for api-v2-scripts-scriptID-params.
+      operations:
+      - method: GET
+        name: getscriptsidparams
+        description: Find script parameters.
+        call: influxdb-invokable-scripts.getscriptsidparams
+        with:
+          scriptID: rest.scriptID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-invokable-scripts-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Invokable Scripts. One tool per consumed operation, routed
+      inline through this capability's consumes block.
+    tools:
+    - name: list-scripts
+      description: List scripts
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-invokable-scripts.getscripts
+      with:
+        offset: tools.offset
+        limit: tools.limit
+        name: tools.name
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-script
+      description: Create a script
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-invokable-scripts.postscripts
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-script
+      description: Delete a script
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-invokable-scripts.deletescriptsid
+      with:
+        scriptID: tools.scriptID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-script
+      description: Retrieve a script
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-invokable-scripts.getscriptsid
+      with:
+        scriptID: tools.scriptID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-script
+      description: Update a script
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-invokable-scripts.patchscriptsid
+      with:
+        scriptID: tools.scriptID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: invoke-script
+      description: Invoke a script
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-invokable-scripts.postscriptsidinvoke
+      with:
+        scriptID: tools.scriptID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: find-script-parameters
+      description: Find script parameters.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-invokable-scripts.getscriptsidparams
+      with:
+        scriptID: tools.scriptID
+      outputParameters:
+      - type: object
+        mapping: $.

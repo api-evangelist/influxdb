@@ -1,0 +1,416 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Variables
+  description: 'Complete InfluxDB Cloud API — Variables. 9 operations. Lead operation: List all variables. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Variables
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-variables
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Variables business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-variables
+      path: /api/v2/variables
+      operations:
+      - name: getvariables
+        method: GET
+        description: List all variables
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: The name of the organization.
+        - name: orgID
+          in: query
+          type: string
+          description: The organization ID.
+      - name: postvariables
+        method: POST
+        description: Create a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-variables-variableID
+      path: /api/v2/variables/{variableID}
+      operations:
+      - name: deletevariablesid
+        method: DELETE
+        description: Delete a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: variableID
+          in: path
+          type: string
+          description: The variable ID.
+          required: true
+      - name: getvariablesid
+        method: GET
+        description: Retrieve a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: variableID
+          in: path
+          type: string
+          description: The variable ID.
+          required: true
+      - name: patchvariablesid
+        method: PATCH
+        description: Update a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: variableID
+          in: path
+          type: string
+          description: The variable ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: putvariablesid
+        method: PUT
+        description: Replace a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: variableID
+          in: path
+          type: string
+          description: The variable ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-variables-variableID-labels
+      path: /api/v2/variables/{variableID}/labels
+      operations:
+      - name: getvariablesidlabels
+        method: GET
+        description: List all labels for a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: variableID
+          in: path
+          type: string
+          description: The variable ID.
+          required: true
+      - name: postvariablesidlabels
+        method: POST
+        description: Add a label to a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: variableID
+          in: path
+          type: string
+          description: The variable ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-variables-variableID-labels-labelID
+      path: /api/v2/variables/{variableID}/labels/{labelID}
+      operations:
+      - name: deletevariablesidlabelsid
+        method: DELETE
+        description: Delete a label from a variable
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: variableID
+          in: path
+          type: string
+          description: The variable ID.
+          required: true
+        - name: labelID
+          in: path
+          type: string
+          description: The label ID to delete.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-variables-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Variables. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/variables
+      name: api-v2-variables
+      description: REST surface for api-v2-variables.
+      operations:
+      - method: GET
+        name: getvariables
+        description: List all variables
+        call: influxdb-variables.getvariables
+        with:
+          org: rest.org
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postvariables
+        description: Create a variable
+        call: influxdb-variables.postvariables
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/variables/{variableid}
+      name: api-v2-variables-variableid
+      description: REST surface for api-v2-variables-variableID.
+      operations:
+      - method: DELETE
+        name: deletevariablesid
+        description: Delete a variable
+        call: influxdb-variables.deletevariablesid
+        with:
+          variableID: rest.variableID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getvariablesid
+        description: Retrieve a variable
+        call: influxdb-variables.getvariablesid
+        with:
+          variableID: rest.variableID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchvariablesid
+        description: Update a variable
+        call: influxdb-variables.patchvariablesid
+        with:
+          variableID: rest.variableID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: putvariablesid
+        description: Replace a variable
+        call: influxdb-variables.putvariablesid
+        with:
+          variableID: rest.variableID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/variables/{variableid}/labels
+      name: api-v2-variables-variableid-labels
+      description: REST surface for api-v2-variables-variableID-labels.
+      operations:
+      - method: GET
+        name: getvariablesidlabels
+        description: List all labels for a variable
+        call: influxdb-variables.getvariablesidlabels
+        with:
+          variableID: rest.variableID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postvariablesidlabels
+        description: Add a label to a variable
+        call: influxdb-variables.postvariablesidlabels
+        with:
+          variableID: rest.variableID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/variables/{variableid}/labels/{labelid}
+      name: api-v2-variables-variableid-labels-labelid
+      description: REST surface for api-v2-variables-variableID-labels-labelID.
+      operations:
+      - method: DELETE
+        name: deletevariablesidlabelsid
+        description: Delete a label from a variable
+        call: influxdb-variables.deletevariablesidlabelsid
+        with:
+          variableID: rest.variableID
+          labelID: rest.labelID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-variables-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Variables. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: list-all-variables
+      description: List all variables
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-variables.getvariables
+      with:
+        org: tools.org
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-variable
+      description: Create a variable
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-variables.postvariables
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-variable
+      description: Delete a variable
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-variables.deletevariablesid
+      with:
+        variableID: tools.variableID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-variable
+      description: Retrieve a variable
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-variables.getvariablesid
+      with:
+        variableID: tools.variableID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-variable
+      description: Update a variable
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-variables.patchvariablesid
+      with:
+        variableID: tools.variableID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: replace-variable
+      description: Replace a variable
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-variables.putvariablesid
+      with:
+        variableID: tools.variableID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-labels-variable
+      description: List all labels for a variable
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-variables.getvariablesidlabels
+      with:
+        variableID: tools.variableID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-label-variable
+      description: Add a label to a variable
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-variables.postvariablesidlabels
+      with:
+        variableID: tools.variableID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-label-variable
+      description: Delete a label from a variable
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-variables.deletevariablesidlabelsid
+      with:
+        variableID: tools.variableID
+        labelID: tools.labelID
+      outputParameters:
+      - type: object
+        mapping: $.

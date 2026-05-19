@@ -1,0 +1,132 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Write
+  description: 'Complete InfluxDB Cloud API — Write. 1 operations. Lead operation: Write data. Self-contained Naftiko capability
+    covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Write
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-write
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Write business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-write
+      path: /api/v2/write
+      operations:
+      - name: postwrite
+        method: POST
+        description: Write data
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: Content-Encoding
+          in: header
+          type: string
+          description: The compression applied to the line protocol in the request payload.
+        - name: Content-Type
+          in: header
+          type: string
+          description: The format of the data in the request body.
+        - name: Content-Length
+          in: header
+          type: integer
+          description: The size of the entity-body, in bytes, sent to InfluxDB.
+        - name: Accept
+          in: header
+          type: string
+          description: The content type that the client can understand.
+        - name: org
+          in: query
+          type: string
+          description: An organization name or ID.
+          required: true
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: bucket
+          in: query
+          type: string
+          description: A bucket name or ID.
+          required: true
+        - name: precision
+          in: query
+          type: string
+          description: The precision for unix timestamps in the line protocol batch.
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-write-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Write. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/write
+      name: api-v2-write
+      description: REST surface for api-v2-write.
+      operations:
+      - method: POST
+        name: postwrite
+        description: Write data
+        call: influxdb-write.postwrite
+        with:
+          Content-Encoding: rest.Content-Encoding
+          Content-Type: rest.Content-Type
+          Content-Length: rest.Content-Length
+          Accept: rest.Accept
+          org: rest.org
+          orgID: rest.orgID
+          bucket: rest.bucket
+          precision: rest.precision
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-write-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Write. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: write-data
+      description: Write data
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-write.postwrite
+      with:
+        Content-Encoding: tools.Content-Encoding
+        Content-Type: tools.Content-Type
+        Content-Length: tools.Content-Length
+        Accept: tools.Accept
+        org: tools.org
+        orgID: tools.orgID
+        bucket: tools.bucket
+        precision: tools.precision
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

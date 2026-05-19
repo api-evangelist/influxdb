@@ -1,0 +1,276 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Bucket Schemas
+  description: 'Complete InfluxDB Cloud API — Bucket Schemas. 4 operations. Lead operation: List measurement schemas of a
+    bucket. Self-contained Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Bucket Schemas
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-bucket-schemas
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Bucket Schemas business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-buckets-bucketID-schema-measurements
+      path: /api/v2/buckets/{bucketID}/schema/measurements
+      operations:
+      - name: getmeasurementschemas
+        method: GET
+        description: List measurement schemas of a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: name
+          in: query
+          type: string
+          description: A measurement name.
+        - name: bucketID
+          in: path
+          type: string
+          description: A bucket ID.
+          required: true
+      - name: createmeasurementschema
+        method: POST
+        description: Create a measurement schema for a bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: bucketID
+          in: path
+          type: string
+          description: A bucket ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-buckets-bucketID-schema-measurements-measurementID
+      path: /api/v2/buckets/{bucketID}/schema/measurements/{measurementID}
+      operations:
+      - name: getmeasurementschema
+        method: GET
+        description: Retrieve a measurement schema
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: Organization name.
+        - name: orgID
+          in: query
+          type: string
+          description: Organization ID.
+        - name: bucketID
+          in: path
+          type: string
+          description: A bucket ID.
+          required: true
+        - name: measurementID
+          in: path
+          type: string
+          description: The measurement schema ID.
+          required: true
+      - name: updatemeasurementschema
+        method: PATCH
+        description: Update a measurement schema
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: bucketID
+          in: path
+          type: string
+          description: A bucket ID.
+          required: true
+        - name: measurementID
+          in: path
+          type: string
+          description: A measurement schema ID.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-bucket-schemas-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Bucket Schemas. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/buckets/{bucketid}/schema/measurements
+      name: api-v2-buckets-bucketid-schema-measurements
+      description: REST surface for api-v2-buckets-bucketID-schema-measurements.
+      operations:
+      - method: GET
+        name: getmeasurementschemas
+        description: List measurement schemas of a bucket
+        call: influxdb-bucket-schemas.getmeasurementschemas
+        with:
+          org: rest.org
+          orgID: rest.orgID
+          name: rest.name
+          bucketID: rest.bucketID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createmeasurementschema
+        description: Create a measurement schema for a bucket
+        call: influxdb-bucket-schemas.createmeasurementschema
+        with:
+          org: rest.org
+          orgID: rest.orgID
+          bucketID: rest.bucketID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/buckets/{bucketid}/schema/measurements/{measurementid}
+      name: api-v2-buckets-bucketid-schema-measurements-measurementid
+      description: REST surface for api-v2-buckets-bucketID-schema-measurements-measurementID.
+      operations:
+      - method: GET
+        name: getmeasurementschema
+        description: Retrieve a measurement schema
+        call: influxdb-bucket-schemas.getmeasurementschema
+        with:
+          org: rest.org
+          orgID: rest.orgID
+          bucketID: rest.bucketID
+          measurementID: rest.measurementID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: updatemeasurementschema
+        description: Update a measurement schema
+        call: influxdb-bucket-schemas.updatemeasurementschema
+        with:
+          org: rest.org
+          orgID: rest.orgID
+          bucketID: rest.bucketID
+          measurementID: rest.measurementID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-bucket-schemas-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Bucket Schemas. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: list-measurement-schemas-bucket
+      description: List measurement schemas of a bucket
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-bucket-schemas.getmeasurementschemas
+      with:
+        org: tools.org
+        orgID: tools.orgID
+        name: tools.name
+        bucketID: tools.bucketID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-measurement-schema-bucket
+      description: Create a measurement schema for a bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-bucket-schemas.createmeasurementschema
+      with:
+        org: tools.org
+        orgID: tools.orgID
+        bucketID: tools.bucketID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-measurement-schema
+      description: Retrieve a measurement schema
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-bucket-schemas.getmeasurementschema
+      with:
+        org: tools.org
+        orgID: tools.orgID
+        bucketID: tools.bucketID
+        measurementID: tools.measurementID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-measurement-schema
+      description: Update a measurement schema
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-bucket-schemas.updatemeasurementschema
+      with:
+        org: tools.org
+        orgID: tools.orgID
+        bucketID: tools.bucketID
+        measurementID: tools.measurementID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,513 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Organizations
+  description: 'Complete InfluxDB Cloud API — Organizations. 11 operations. Lead operation: List organizations. Self-contained
+    Naftiko capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Organizations
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-organizations
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Organizations business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-orgs
+      path: /api/v2/orgs
+      operations:
+      - name: getorgs
+        method: GET
+        description: List organizations
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: org
+          in: query
+          type: string
+          description: An organization name.
+        - name: orgID
+          in: query
+          type: string
+          description: An organization ID.
+        - name: userID
+          in: query
+          type: string
+          description: A user ID.
+      - name: postorgs
+        method: POST
+        description: Create an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-orgs-orgID
+      path: /api/v2/orgs/{orgID}
+      operations:
+      - name: deleteorgsid
+        method: DELETE
+        description: Delete an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization to delete.
+          required: true
+      - name: getorgsid
+        method: GET
+        description: Retrieve an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization to retrieve.
+          required: true
+      - name: patchorgsid
+        method: PATCH
+        description: Update an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization to update.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-orgs-orgID-members
+      path: /api/v2/orgs/{orgID}/members
+      operations:
+      - name: getorgsidmembers
+        method: GET
+        description: List all members of an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization to retrieve users for.
+          required: true
+      - name: postorgsidmembers
+        method: POST
+        description: Add a member to an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-orgs-orgID-members-userID
+      path: /api/v2/orgs/{orgID}/members/{userID}
+      operations:
+      - name: deleteorgsidmembersid
+        method: DELETE
+        description: Remove a member from an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the user to remove.
+          required: true
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization to remove a user from.
+          required: true
+    - name: api-v2-orgs-orgID-owners
+      path: /api/v2/orgs/{orgID}/owners
+      operations:
+      - name: getorgsidowners
+        method: GET
+        description: List all owners of an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization to list owners for.
+          required: true
+      - name: postorgsidowners
+        method: POST
+        description: Add an owner to an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization that you want to add an owner for.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-orgs-orgID-owners-userID
+      path: /api/v2/orgs/{orgID}/owners/{userID}
+      operations:
+      - name: deleteorgsidownersid
+        method: DELETE
+        description: Remove an owner from an organization
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: userID
+          in: path
+          type: string
+          description: The ID of the user to remove.
+          required: true
+        - name: orgID
+          in: path
+          type: string
+          description: The ID of the organization to remove an owner from.
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-organizations-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Organizations. One Spectral-compliant resource per consumed
+      operation, prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/orgs
+      name: api-v2-orgs
+      description: REST surface for api-v2-orgs.
+      operations:
+      - method: GET
+        name: getorgs
+        description: List organizations
+        call: influxdb-organizations.getorgs
+        with:
+          org: rest.org
+          orgID: rest.orgID
+          userID: rest.userID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postorgs
+        description: Create an organization
+        call: influxdb-organizations.postorgs
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/orgs/{orgid}
+      name: api-v2-orgs-orgid
+      description: REST surface for api-v2-orgs-orgID.
+      operations:
+      - method: DELETE
+        name: deleteorgsid
+        description: Delete an organization
+        call: influxdb-organizations.deleteorgsid
+        with:
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: getorgsid
+        description: Retrieve an organization
+        call: influxdb-organizations.getorgsid
+        with:
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: patchorgsid
+        description: Update an organization
+        call: influxdb-organizations.patchorgsid
+        with:
+          orgID: rest.orgID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/orgs/{orgid}/members
+      name: api-v2-orgs-orgid-members
+      description: REST surface for api-v2-orgs-orgID-members.
+      operations:
+      - method: GET
+        name: getorgsidmembers
+        description: List all members of an organization
+        call: influxdb-organizations.getorgsidmembers
+        with:
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postorgsidmembers
+        description: Add a member to an organization
+        call: influxdb-organizations.postorgsidmembers
+        with:
+          orgID: rest.orgID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/orgs/{orgid}/members/{userid}
+      name: api-v2-orgs-orgid-members-userid
+      description: REST surface for api-v2-orgs-orgID-members-userID.
+      operations:
+      - method: DELETE
+        name: deleteorgsidmembersid
+        description: Remove a member from an organization
+        call: influxdb-organizations.deleteorgsidmembersid
+        with:
+          userID: rest.userID
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/orgs/{orgid}/owners
+      name: api-v2-orgs-orgid-owners
+      description: REST surface for api-v2-orgs-orgID-owners.
+      operations:
+      - method: GET
+        name: getorgsidowners
+        description: List all owners of an organization
+        call: influxdb-organizations.getorgsidowners
+        with:
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postorgsidowners
+        description: Add an owner to an organization
+        call: influxdb-organizations.postorgsidowners
+        with:
+          orgID: rest.orgID
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/orgs/{orgid}/owners/{userid}
+      name: api-v2-orgs-orgid-owners-userid
+      description: REST surface for api-v2-orgs-orgID-owners-userID.
+      operations:
+      - method: DELETE
+        name: deleteorgsidownersid
+        description: Remove an owner from an organization
+        call: influxdb-organizations.deleteorgsidownersid
+        with:
+          userID: rest.userID
+          orgID: rest.orgID
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-organizations-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Organizations. One tool per consumed operation, routed inline
+      through this capability's consumes block.
+    tools:
+    - name: list-organizations
+      description: List organizations
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-organizations.getorgs
+      with:
+        org: tools.org
+        orgID: tools.orgID
+        userID: tools.userID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-organization
+      description: Create an organization
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-organizations.postorgs
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-organization
+      description: Delete an organization
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-organizations.deleteorgsid
+      with:
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: retrieve-organization
+      description: Retrieve an organization
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-organizations.getorgsid
+      with:
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-organization
+      description: Update an organization
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: influxdb-organizations.patchorgsid
+      with:
+        orgID: tools.orgID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-members-organization
+      description: List all members of an organization
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-organizations.getorgsidmembers
+      with:
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-member-organization
+      description: Add a member to an organization
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-organizations.postorgsidmembers
+      with:
+        orgID: tools.orgID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-member-organization
+      description: Remove a member from an organization
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-organizations.deleteorgsidmembersid
+      with:
+        userID: tools.userID
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-all-owners-organization
+      description: List all owners of an organization
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-organizations.getorgsidowners
+      with:
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: add-owner-organization
+      description: Add an owner to an organization
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-organizations.postorgsidowners
+      with:
+        orgID: tools.orgID
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: remove-owner-organization
+      description: Remove an owner from an organization
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: influxdb-organizations.deleteorgsidownersid
+      with:
+        userID: tools.userID
+        orgID: tools.orgID
+      outputParameters:
+      - type: object
+        mapping: $.

@@ -1,0 +1,149 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Complete InfluxDB Cloud API — Setup
+  description: 'Complete InfluxDB Cloud API — Setup. 3 operations. Lead operation: Retrieve setup status. Self-contained Naftiko
+    capability covering one Influxdb business surface.'
+  tags:
+  - Influxdb
+  - Setup
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    INFLUXDB_API_KEY: INFLUXDB_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: influxdb-setup
+    baseUri: ''
+    description: Complete InfluxDB Cloud API — Setup business capability. Self-contained, no shared references.
+    resources:
+    - name: api-v2-setup
+      path: /api/v2/setup
+      operations:
+      - name: getsetup
+        method: GET
+        description: Retrieve setup status
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: postsetup
+        method: POST
+        description: Create an initial user, organization, and bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-v2-setup-user
+      path: /api/v2/setup/user
+      operations:
+      - name: postsetupuser
+        method: POST
+        description: Create a new user, organization, and bucket
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: apikey
+      key: Authorization
+      value: '{{env.INFLUXDB_API_KEY}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: influxdb-setup-rest
+    port: 8080
+    description: REST adapter for Complete InfluxDB Cloud API — Setup. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/api/v2/setup
+      name: api-v2-setup
+      description: REST surface for api-v2-setup.
+      operations:
+      - method: GET
+        name: getsetup
+        description: Retrieve setup status
+        call: influxdb-setup.getsetup
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: postsetup
+        description: Create an initial user, organization, and bucket
+        call: influxdb-setup.postsetup
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api/v2/setup/user
+      name: api-v2-setup-user
+      description: REST surface for api-v2-setup-user.
+      operations:
+      - method: POST
+        name: postsetupuser
+        description: Create a new user, organization, and bucket
+        call: influxdb-setup.postsetupuser
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: influxdb-setup-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Complete InfluxDB Cloud API — Setup. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: retrieve-setup-status
+      description: Retrieve setup status
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: influxdb-setup.getsetup
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-initial-user-organization-and
+      description: Create an initial user, organization, and bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-setup.postsetup
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-new-user-organization-and
+      description: Create a new user, organization, and bucket
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: influxdb-setup.postsetupuser
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
