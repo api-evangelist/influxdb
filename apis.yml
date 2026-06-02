@@ -8,7 +8,7 @@ kind: contract
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 url: https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/apis.yml
 created: '2024-09-25'
-modified: '2026-05-19'
+modified: '2026-05-30'
 specificationVersion: '0.20'
 position: Consuming
 access: 3rd-Party
@@ -36,6 +36,8 @@ apis:
     url: https://docs.influxdata.com/influxdb/cloud/api/v2/
   - type: OpenAPI
     url: https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-openapi.yml
+  - type: AsyncAPI
+    url: https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-asyncapi.yml
   - type: Authentication
     url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication
   - type: GettingStarted

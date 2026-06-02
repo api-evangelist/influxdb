@@ -1,0 +1,505 @@
+asyncapi: 2.6.0
+info:
+  title: InfluxDB Notification Endpoints and Write Surfaces
+  version: 1.0.0
+  description: |
+    AsyncAPI 2.6 description of the documented asynchronous surfaces of InfluxDB Cloud / v2.
+
+    Two classes of channels are modeled:
+
+    * Outbound notification endpoints used by InfluxDB to publish alerts to third-party services. The
+      endpoint types (`http`, `slack`, `pagerduty`, `telegram`) and their configuration fields are
+      sourced from the InfluxDB Cloud v2 OpenAPI `NotificationEndpoint` discriminator and component
+      schemas (`HTTPNotificationEndpoint`, `SlackNotificationEndpoint`, `PagerDutyNotificationEndpoint`,
+      `TelegramNotificationEndpoint`).
+    * Inbound write surfaces that accept line protocol payloads from clients, agents (Telegraf), and
+      v1-compatible workloads. The `/api/v2/write` and legacy `/write` operations are sourced from the
+      InfluxDB Cloud v2 OpenAPI.
+
+    Only surfaces that are explicitly documented in InfluxData's developer documentation and OpenAPI
+    are modeled here. Outbound webhook payload schemas for `http` notification endpoints are
+    operator-defined via the `contentTemplate` field on the endpoint and are therefore modeled as
+    free-form strings rather than fabricated objects.
+  contact:
+    name: InfluxData Support
+    url: https://support.influxdata.com/
+    email: support@influxdata.com
+  license:
+    name: MIT
+    url: https://github.com/influxdata/openapi/blob/master/LICENSE
+  externalDocs:
+    description: InfluxDB Cloud v2 API documentation
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/
+
+defaultContentType: application/json
+
+servers:
+  cloud-v2:
+    url: cloud2.influxdata.com
+    protocol: https
+    description: |
+      InfluxDB Cloud v2 API host. Hosts the inbound `/api/v2/write` and legacy `/write` HTTP write
+      surfaces and is the publisher of outbound notification endpoint deliveries.
+    security:
+      - influxToken: []
+  slack-webhook:
+    url: hooks.slack.com
+    protocol: https
+    description: |
+      Slack Incoming Webhook host. InfluxDB Slack notification endpoints publish to a Slack
+      Incoming Webhook URL configured on the endpoint.
+  pagerduty-events:
+    url: events.pagerduty.com
+    protocol: https
+    description: |
+      PagerDuty Events API host. InfluxDB PagerDuty notification endpoints publish trigger events
+      using the routing key configured on the endpoint.
+  telegram-bot:
+    url: api.telegram.org
+    protocol: https
+    description: |
+      Telegram Bot API host. InfluxDB Telegram notification endpoints publish messages using the
+      bot token and chat ID configured on the endpoint.
+  operator-http:
+    url: '{operatorHost}'
+    protocol: https
+    description: |
+      Operator-controlled HTTP destination. InfluxDB HTTP notification endpoints POST/PUT/GET to a
+      URL supplied at endpoint creation time. The host is fully operator-defined; no fixed host is
+      documented by InfluxDB.
+    variables:
+      operatorHost:
+        default: example.com
+        description: Hostname of the operator-supplied HTTP notification destination URL.
+
+channels:
+
+  api/v2/write:
+    description: |
+      Inbound line protocol write surface for InfluxDB Cloud v2 and OSS v2. Clients publish batches
+      of points encoded in InfluxDB line protocol to a bucket inside an organization. The request is
+      delivered over HTTP POST; for Cloud the server validates and queues the write asynchronously
+      and acknowledges with HTTP 204 before the data is durable.
+    parameters:
+      org:
+        description: An organization name or ID. Required by the documented operation.
+        schema:
+          type: string
+      orgID:
+        description: An organization ID. Optional alternative to `org` for OSS.
+        schema:
+          type: string
+      bucket:
+        description: A bucket name or ID. InfluxDB writes all points in the batch to this bucket.
+        schema:
+          type: string
+      precision:
+        description: The precision for unix timestamps in the line protocol batch.
+        schema:
+          $ref: '#/components/schemas/WritePrecision'
+    bindings:
+      http:
+        type: request
+        method: POST
+        bindingVersion: 0.3.0
+    publish:
+      operationId: publishLineProtocol
+      summary: Publish a batch of line protocol points to an InfluxDB bucket.
+      description: |
+        Documented at `/api/v2/write` (operationId `PostWrite`). Body is line protocol with content
+        type `text/plain; charset=utf-8`. Optional `Content-Encoding: gzip` may be used.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: 0.3.0
+      message:
+        $ref: '#/components/messages/LineProtocolBatch'
+
+  write:
+    description: |
+      Legacy v1-compatible write surface. Accepts line protocol via HTTP POST and is intended for
+      migrating existing v1 workloads. Documented as `PostLegacyWrite` in the InfluxDB v2 OpenAPI.
+    parameters:
+      db:
+        description: Bucket to write to. If none exists, InfluxDB creates one with a default 3-day retention policy.
+        schema:
+          type: string
+      rp:
+        description: Retention policy name.
+        schema:
+          type: string
+      precision:
+        description: Write precision.
+        schema:
+          type: string
+    bindings:
+      http:
+        type: request
+        method: POST
+        bindingVersion: 0.3.0
+    publish:
+      operationId: publishLineProtocolLegacy
+      summary: Publish line protocol via the v1-compatible legacy write endpoint.
+      description: |
+        Documented at `/write` (operationId `PostLegacyWrite`). Body is line protocol. Authentication
+        may be provided via the `u` and `p` query parameters or via standard InfluxDB token auth.
+      bindings:
+        http:
+          type: request
+          method: POST
+          bindingVersion: 0.3.0
+      message:
+        $ref: '#/components/messages/LineProtocolBatch'
+
+  notify/http:
+    description: |
+      Outbound HTTP notification endpoint. InfluxDB publishes a request to an operator-supplied URL
+      using a documented method (`POST`, `GET`, or `PUT`) and a documented authMethod
+      (`none`, `basic`, or `bearer`). Customized headers and a `contentTemplate` are configured on
+      the endpoint and determine the body shape.
+    servers:
+      - operator-http
+    bindings:
+      http:
+        type: request
+        bindingVersion: 0.3.0
+    subscribe:
+      operationId: receiveHttpNotification
+      summary: Receive an HTTP alert notification from InfluxDB.
+      description: |
+        InfluxDB sends a request to the URL configured on the HTTP notification endpoint. The HTTP
+        method, authMethod, headers, and body content template are all configured on the endpoint;
+        the body is therefore operator-defined and modeled as a free-form string.
+      message:
+        $ref: '#/components/messages/HttpNotification'
+
+  notify/slack:
+    description: |
+      Outbound Slack notification endpoint. InfluxDB publishes a message to a Slack Incoming
+      Webhook URL configured on the endpoint. Per the documented schema, either a `url` or a
+      `token` is supplied.
+    servers:
+      - slack-webhook
+    bindings:
+      http:
+        type: request
+        method: POST
+        bindingVersion: 0.3.0
+    subscribe:
+      operationId: receiveSlackNotification
+      summary: Receive a Slack alert notification from InfluxDB.
+      description: |
+        InfluxDB sends a Slack Incoming Webhook POST to the URL configured on the Slack notification
+        endpoint. The InfluxDB Slack notification rule supplies the channel and message template.
+      message:
+        $ref: '#/components/messages/SlackNotification'
+
+  notify/pagerduty:
+    description: |
+      Outbound PagerDuty notification endpoint. InfluxDB publishes a trigger event using the
+      `routingKey` configured on the endpoint. The PagerDuty notification rule supplies a
+      `messageTemplate`; the endpoint may include an optional `clientURL` that is sent as the
+      `client_url` property in PagerDuty trigger events.
+    servers:
+      - pagerduty-events
+    bindings:
+      http:
+        type: request
+        method: POST
+        bindingVersion: 0.3.0
+    subscribe:
+      operationId: receivePagerDutyNotification
+      summary: Receive a PagerDuty alert notification from InfluxDB.
+      description: |
+        InfluxDB sends a PagerDuty trigger event keyed by the endpoint's `routingKey`. The
+        notification rule provides the message template.
+      message:
+        $ref: '#/components/messages/PagerDutyNotification'
+
+  notify/telegram:
+    description: |
+      Outbound Telegram notification endpoint. InfluxDB publishes a message via the Telegram Bot
+      API using the bot `token` and `channel` (chat ID) configured on the endpoint.
+    servers:
+      - telegram-bot
+    bindings:
+      http:
+        type: request
+        method: POST
+        bindingVersion: 0.3.0
+    subscribe:
+      operationId: receiveTelegramNotification
+      summary: Receive a Telegram alert notification from InfluxDB.
+      description: |
+        InfluxDB sends a Telegram bot message to the configured `channel` using the configured bot
+        `token`. The Telegram notification rule supplies the message template and optional flags
+        such as `disableWebPagePreview`.
+      message:
+        $ref: '#/components/messages/TelegramNotification'
+
+components:
+
+  securitySchemes:
+    influxToken:
+      type: httpApiKey
+      name: Authorization
+      in: header
+      description: |
+        InfluxDB token presented as `Authorization: Token <token>`. Required for inbound write
+        requests to `/api/v2/write`.
+
+  messages:
+
+    LineProtocolBatch:
+      name: LineProtocolBatch
+      title: InfluxDB line protocol batch
+      summary: A batch of points serialized in InfluxDB line protocol.
+      contentType: text/plain
+      headers:
+        type: object
+        properties:
+          Content-Encoding:
+            type: string
+            enum:
+              - gzip
+              - identity
+            default: identity
+            description: Use `gzip` for compressed data or `identity` for unmodified data.
+          Content-Type:
+            type: string
+            enum:
+              - text/plain
+              - text/plain; charset=utf-8
+            default: text/plain; charset=utf-8
+            description: '`text/plain` is the content type for line protocol.'
+          Content-Length:
+            type: integer
+            description: The length in decimal number of octets.
+          Accept:
+            type: string
+            enum:
+              - application/json
+            default: application/json
+            description: Error content type returned by InfluxDB on write failure.
+      payload:
+        $ref: '#/components/schemas/LineProtocol'
+      examples:
+        - name: airSensors
+          summary: Two air sensor points
+          payload: |
+            airSensors,sensor_id=TLM0201 temperature=73.97038159354763,humidity=35.23103248356096,co=0.48445310567793615 1630424257000000000
+            airSensors,sensor_id=TLM0202 temperature=75.30007505999716,humidity=35.651929918691714,co=0.5141876544505826 1630424257000000000
+
+    HttpNotification:
+      name: HttpNotification
+      title: HTTP notification endpoint delivery
+      summary: A request published by an InfluxDB HTTP notification endpoint.
+      description: |
+        Body shape is determined by the `contentTemplate` configured on the HTTP notification
+        endpoint and is not fixed by InfluxDB; it is modeled here as an arbitrary string. The
+        endpoint's `headers` map and `authMethod` determine request headers.
+      contentType: text/plain
+      payload:
+        $ref: '#/components/schemas/HttpNotificationBody'
+
+    SlackNotification:
+      name: SlackNotification
+      title: Slack incoming webhook delivery
+      summary: A Slack incoming webhook request published by an InfluxDB Slack notification endpoint.
+      description: |
+        InfluxDB delivers to the Slack Incoming Webhook URL configured on the endpoint. The Slack
+        notification rule provides the channel and message template.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/SlackNotificationBody'
+
+    PagerDutyNotification:
+      name: PagerDutyNotification
+      title: PagerDuty Events trigger delivery
+      summary: A PagerDuty trigger event published by an InfluxDB PagerDuty notification endpoint.
+      description: |
+        InfluxDB sends a trigger event keyed by the endpoint's `routingKey`. If the endpoint sets
+        `clientURL`, that value is sent as the `client_url` property in the trigger event.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PagerDutyNotificationBody'
+
+    TelegramNotification:
+      name: TelegramNotification
+      title: Telegram Bot API delivery
+      summary: A Telegram bot message published by an InfluxDB Telegram notification endpoint.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TelegramNotificationBody'
+
+  schemas:
+
+    LineProtocol:
+      type: string
+      format: byte
+      description: |
+        InfluxDB line protocol. Each line is `<measurement>[,<tag_key>=<tag_value>] <field_key>=<field_value> [<timestamp>]`.
+        Lines are separated by `\n`. See the line protocol reference for full grammar.
+      externalDocs:
+        description: Line protocol reference
+        url: https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/
+
+    WritePrecision:
+      type: string
+      enum:
+        - ms
+        - s
+        - us
+        - ns
+      default: ns
+      description: Precision for unix timestamps in the line protocol batch.
+
+    HttpNotificationEndpointConfig:
+      description: |
+        Configuration of an HTTP notification endpoint. Sourced from `HTTPNotificationEndpoint` in
+        the InfluxDB Cloud v2 OpenAPI.
+      type: object
+      required:
+        - url
+        - authMethod
+        - method
+      properties:
+        url:
+          type: string
+          description: Destination URL for the HTTP notification.
+        authMethod:
+          type: string
+          enum:
+            - none
+            - basic
+            - bearer
+        method:
+          type: string
+          enum:
+            - POST
+            - GET
+            - PUT
+        contentTemplate:
+          type: string
+          description: Body template applied to outbound notifications.
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Customized headers added to the outbound request.
+        username:
+          type: string
+          description: Username used when `authMethod` is `basic`.
+        password:
+          type: string
+          description: Password used when `authMethod` is `basic`.
+        token:
+          type: string
+          description: Bearer token used when `authMethod` is `bearer`.
+
+    HttpNotificationBody:
+      type: string
+      description: |
+        Operator-defined body produced by the endpoint's `contentTemplate`. InfluxDB does not
+        document a fixed schema for the HTTP notification body.
+
+    SlackNotificationEndpointConfig:
+      description: |
+        Configuration of a Slack notification endpoint. Sourced from `SlackNotificationEndpoint` in
+        the InfluxDB Cloud v2 OpenAPI. Either `url` or `token` is specified.
+      type: object
+      properties:
+        url:
+          type: string
+          description: Slack Incoming Webhook URL.
+        token:
+          type: string
+          description: Slack API token. Specify either `url` or `token`.
+
+    SlackNotificationBody:
+      description: |
+        Body delivered to the configured Slack Incoming Webhook URL. The Slack notification rule
+        supplies the channel and message template. Only fields explicitly documented by InfluxDB
+        are modeled here.
+      type: object
+      properties:
+        channel:
+          type: string
+          description: The channel from the Slack notification rule.
+        text:
+          type: string
+          description: The rendered `messageTemplate` from the Slack notification rule.
+
+    PagerDutyNotificationEndpointConfig:
+      description: |
+        Configuration of a PagerDuty notification endpoint. Sourced from
+        `PagerDutyNotificationEndpoint` in the InfluxDB Cloud v2 OpenAPI.
+      type: object
+      required:
+        - routingKey
+      properties:
+        routingKey:
+          type: string
+          description: PagerDuty integration key for the target service.
+        clientURL:
+          type: string
+          description: Optional client URL sent as `client_url` in PagerDuty trigger events.
+
+    PagerDutyNotificationBody:
+      description: |
+        PagerDuty Events API trigger payload. Only fields explicitly documented by InfluxDB are
+        modeled here. The endpoint's `routingKey` is sent as `routing_key`; the endpoint's
+        `clientURL` is sent as `client_url`; the rule's `messageTemplate` provides the summary.
+      type: object
+      properties:
+        routing_key:
+          type: string
+          description: Endpoint `routingKey`.
+        event_action:
+          type: string
+          description: PagerDuty event action. InfluxDB sends `trigger` events.
+        client_url:
+          type: string
+          description: Endpoint `clientURL`. Optional.
+        payload:
+          type: object
+          properties:
+            summary:
+              type: string
+              description: Rendered `messageTemplate` from the PagerDuty notification rule.
+
+    TelegramNotificationEndpointConfig:
+      description: |
+        Configuration of a Telegram notification endpoint. Sourced from
+        `TelegramNotificationEndpoint` in the InfluxDB Cloud v2 OpenAPI.
+      type: object
+      required:
+        - token
+        - channel
+      properties:
+        token:
+          type: string
+          description: Telegram bot token.
+        channel:
+          type: string
+          description: Telegram `chat_id` to deliver to.
+
+    TelegramNotificationBody:
+      description: |
+        Telegram Bot API `sendMessage` payload. Only fields explicitly documented by InfluxDB on
+        the Telegram notification rule are modeled here.
+      type: object
+      properties:
+        chat_id:
+          type: string
+          description: Endpoint `channel`.
+        text:
+          type: string
+          description: Rendered `messageTemplate` from the Telegram notification rule.
+        parse_mode:
+          type: string
+          description: Optional Telegram parse mode set by the notification rule.
+        disable_web_page_preview:
+          type: boolean
+          description: Set from the notification rule's `disableWebPagePreview` flag.
