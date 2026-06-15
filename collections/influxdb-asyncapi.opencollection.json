@@ -1,0 +1,9 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "InfluxDB Notification Endpoints and Write Surfaces",
+    "version": "1.0.0"
+  },
+  "items": [],
+  "bundled": true
+}
