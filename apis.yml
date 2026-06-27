@@ -63,7 +63,7 @@ common:
     url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start
   - type: Pricing
     url: https://www.influxdata.com/influxdb-pricing/
-  - type: Use Cases
+  - type: UseCases
     url: https://www.influxdata.com/solutions/
   - type: Resources
     url: https://www.influxdata.com/_resources/?pg=1
