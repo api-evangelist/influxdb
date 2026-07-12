@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: searched
+probe: true
+source: https://www.influxdata.com/security/
+url: https://www.influxdata.com/security/
+certifications:
+- SOC 2
+- ISO 27001
+- ISO 27018
+evidence:
+- source: https://www.influxdata.com/security/
+  keywords:
+  - soc 2
+  - soc2
+  - iso 27001
+  - iso/iec 27001

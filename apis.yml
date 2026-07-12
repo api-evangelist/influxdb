@@ -55,6 +55,14 @@ apis:
         email: support@influxdata.com
         url: https://support.influxdata.com/
 common:
+  - type: TrustCenter
+    url: security/influxdb-trust-center.yml
+  - type: VulnerabilityDisclosure
+    url: security/influxdb-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/influxdb-domain-security.yml
+  - type: Authentication
+    url: authentication/influxdb-authentication.yml
   - type: Website
     url: https://www.influxdata.com/
   - type: Documentation

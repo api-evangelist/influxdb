@@ -1,0 +1,48 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/influxdb-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: BasicAuthentication
+  type: http
+  scheme: basic
+  description: |-
+    ### Basic authentication scheme
+
+    Use the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:
+
+    ### Syntax
+
+    `Authorization: Basic BASE64_ENCODED_CREDENTIALS`
+
+    To construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and
+    the password with a colon (`USERNAME:PASSWORD`), and then encode the
+    resulting string in [base64](https://developer.mozilla.org/en-US/d
+  sources:
+  - openapi/influxdb-openapi.yml
+- name: TokenAuthentication
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: |-
+    Use the [Token authentication](#section/Authentication/TokenAuthentication)
+    scheme to authenticate to the InfluxDB API.
+
+    In your API requests, send an `Authorization` header.
+    For the header value, provide the word `Token` followed by a space and an InfluxDB API token.
+    The word `Token` is case-sensitive.
+
+    ### Syntax
+
+    `Authorization: Token INFLUX_API_TOKEN`
+
+    ### Example
+
+    #### Use Token authenticatio
+  sources:
+  - openapi/influxdb-openapi.yml
