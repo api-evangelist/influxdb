@@ -18,7 +18,7 @@ schemes:
 
     ### Syntax
 
-    `Authorization: Basic BASE64_ENCODED_CREDENTIALS`
+    `Authorization: Basic [example key]`
 
     To construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and
     the password with a colon (`USERNAME:PASSWORD`), and then encode the
