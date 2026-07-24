@@ -1,0 +1,842 @@
+openapi: 3.0.0
+info:
+  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) NotificationRules API
+  description: 'Create and manage authorizations (API tokens).
+
+
+    An _authorization_ contains a list of `read` and `write`
+
+    permissions for organization resources and provides an API token for authentication.
+
+    An authorization belongs to an organization and only contains permissions for that organization.
+
+
+    We recommend the following for managing your tokens:
+
+
+    - Create a generic user to create and manage tokens for writing data.
+
+    - Store your tokens in a secure password vault for future access.
+
+
+    ### User sessions with authorizations
+
+
+    Optionally, when creating an authorization, you can scope it to a specific user.
+
+    If the user signs in with username and password, creating a _user session_,
+
+    the session carries the permissions granted by all the user''s authorizations.
+
+    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
+
+    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
+
+
+    ### Related endpoints
+
+
+    - [Signin](#tag/Signin)
+
+    - [Signout](#tag/Signout)
+
+
+    ### Related guides
+
+
+    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
+
+    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
+
+    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
+
+    '
+servers:
+- url: ''
+security:
+- TokenAuthentication: []
+tags:
+- name: NotificationRules
+paths:
+  /api/v2/notificationRules:
+    get:
+      operationId: GetNotificationRules
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Limit'
+      - description: Only show notification rules that belong to a specific organization ID.
+        in: query
+        name: orgID
+        required: true
+        schema:
+          type: string
+      - description: Only show notifications that belong to the specific check ID.
+        in: query
+        name: checkID
+        schema:
+          type: string
+      - description: Only return notification rules that "would match" statuses which contain the tag key value pairs provided.
+        in: query
+        name: tag
+        schema:
+          example: env:prod
+          pattern: ^[a-zA-Z0-9_]+:[a-zA-Z0-9_]+$
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRules'
+          description: A list of notification rules
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all notification rules
+      tags:
+      - NotificationRules
+    post:
+      operationId: CreateNotificationRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostNotificationRule'
+        description: Notification rule to create
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: Notification rule created
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add a notification rule
+      tags:
+      - NotificationRules
+  /api/v2/notificationRules/{ruleID}:
+    delete:
+      operationId: DeleteNotificationRulesID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The notification rule ID.
+        in: path
+        name: ruleID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Delete has been accepted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The check was not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a notification rule
+      tags:
+      - NotificationRules
+    get:
+      operationId: GetNotificationRulesID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The notification rule ID.
+        in: path
+        name: ruleID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: The notification rule requested
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Retrieve a notification rule
+      tags:
+      - NotificationRules
+    patch:
+      operationId: PatchNotificationRulesID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The notification rule ID.
+        in: path
+        name: ruleID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRuleUpdate'
+        description: Notification rule update to apply
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: An updated notification rule
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The notification rule was not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Update a notification rule
+      tags:
+      - NotificationRules
+    put:
+      operationId: PutNotificationRulesID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The notification rule ID.
+        in: path
+        name: ruleID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRule'
+        description: Notification rule update to apply
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationRule'
+          description: An updated notification rule
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The notification rule was not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Update a notification rule
+      tags:
+      - NotificationRules
+  /api/v2/notificationRules/{ruleID}/labels:
+    get:
+      operationId: GetNotificationRulesIDLabels
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The notification rule ID.
+        in: path
+        name: ruleID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabelsResponse'
+          description: A list of all labels for a notification rule
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all labels for a notification rule
+      tags:
+      - NotificationRules
+    post:
+      operationId: PostNotificationRuleIDLabels
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The notification rule ID.
+        in: path
+        name: ruleID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabelMapping'
+        description: Label to add
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabelResponse'
+          description: The label was added to the notification rule
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add a label to a notification rule
+      tags:
+      - NotificationRules
+  /api/v2/notificationRules/{ruleID}/labels/{labelID}:
+    delete:
+      operationId: DeleteNotificationRulesIDLabelsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The notification rule ID.
+        in: path
+        name: ruleID
+        required: true
+        schema:
+          type: string
+      - description: The ID of the label to delete.
+        in: path
+        name: labelID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Delete has been accepted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Rule or label not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete label from a notification rule
+      tags:
+      - NotificationRules
+components:
+  parameters:
+    Offset:
+      description: 'The offset for pagination.
+
+        The number of records to skip.
+
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    Limit:
+      description: 'Limits the number of records returned. Default is `20`.
+
+        '
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 20
+        maximum: 100
+        minimum: 1
+        type: integer
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
+  schemas:
+    TelegramNotificationRuleBase:
+      properties:
+        disableWebPagePreview:
+          description: Disables preview of web links in the sent messages when "true". Defaults to "false".
+          type: boolean
+        messageTemplate:
+          description: The message template as a flux interpolated string.
+          type: string
+        parseMode:
+          description: Parse mode of the message text per https://core.telegram.org/bots/api#formatting-options. Defaults to "MarkdownV2".
+          enum:
+          - MarkdownV2
+          - HTML
+          - Markdown
+          type: string
+        type:
+          description: The discriminator between other types of notification rules is "telegram".
+          enum:
+          - telegram
+          type: string
+      required:
+      - type
+      - messageTemplate
+      - channel
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    TagRule:
+      properties:
+        key:
+          type: string
+        operator:
+          enum:
+          - equal
+          - notequal
+          - equalregex
+          - notequalregex
+          type: string
+        value:
+          type: string
+      type: object
+    NotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
+    RuleStatusLevel:
+      description: The state to record if check matches a criteria.
+      enum:
+      - UNKNOWN
+      - OK
+      - INFO
+      - CRIT
+      - WARN
+      - ANY
+      type: string
+    PagerDutyNotificationRuleBase:
+      properties:
+        messageTemplate:
+          type: string
+        type:
+          enum:
+          - pagerduty
+          type: string
+      required:
+      - type
+      - messageTemplate
+      type: object
+    StatusRule:
+      properties:
+        count:
+          type: integer
+        currentLevel:
+          $ref: '#/components/schemas/RuleStatusLevel'
+        period:
+          type: string
+        previousLevel:
+          $ref: '#/components/schemas/RuleStatusLevel'
+      type: object
+    SMTPNotificationRuleBase:
+      properties:
+        bodyTemplate:
+          type: string
+        subjectTemplate:
+          type: string
+        to:
+          type: string
+        type:
+          enum:
+          - smtp
+          type: string
+      required:
+      - type
+      - subjectTemplate
+      - to
+      type: object
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    HTTPNotificationRuleBase:
+      properties:
+        type:
+          enum:
+          - http
+          type: string
+        url:
+          type: string
+      required:
+      - type
+      type: object
+    NotificationRuleUpdate:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        status:
+          enum:
+          - active
+          - inactive
+          type: string
+      type: object
+    NotificationRules:
+      properties:
+        links:
+          $ref: '#/components/schemas/Links'
+        notificationRules:
+          items:
+            $ref: '#/components/schemas/NotificationRule'
+          type: array
+    NotificationRuleDiscriminator:
+      discriminator:
+        mapping:
+          http: '#/components/schemas/HTTPNotificationRule'
+          pagerduty: '#/components/schemas/PagerDutyNotificationRule'
+          slack: '#/components/schemas/SlackNotificationRule'
+          smtp: '#/components/schemas/SMTPNotificationRule'
+          telegram: '#/components/schemas/TelegramNotificationRule'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/SlackNotificationRule'
+      - $ref: '#/components/schemas/SMTPNotificationRule'
+      - $ref: '#/components/schemas/PagerDutyNotificationRule'
+      - $ref: '#/components/schemas/HTTPNotificationRule'
+      - $ref: '#/components/schemas/TelegramNotificationRule'
+    TelegramNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/TelegramNotificationRuleBase'
+    PagerDutyNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/PagerDutyNotificationRuleBase'
+    PostNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    TaskStatusType:
+      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
+
+        '
+      enum:
+      - active
+      - inactive
+      type: string
+    HTTPNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/HTTPNotificationRuleBase'
+    SMTPNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/SMTPNotificationRuleBase'
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    SlackNotificationRuleBase:
+      properties:
+        channel:
+          type: string
+        messageTemplate:
+          type: string
+        type:
+          enum:
+          - slack
+          type: string
+      required:
+      - type
+      - messageTemplate
+      type: object
+    NotificationRuleBase:
+      properties:
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        description:
+          description: An optional description of the notification rule.
+          type: string
+        endpointID:
+          type: string
+        every:
+          description: The notification repetition interval.
+          type: string
+        id:
+          readOnly: true
+          type: string
+        labels:
+          $ref: '#/components/schemas/Labels'
+        lastRunError:
+          readOnly: true
+          type: string
+        lastRunStatus:
+          enum:
+          - failed
+          - success
+          - canceled
+          readOnly: true
+          type: string
+        latestCompleted:
+          description: A timestamp ([RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)) of the latest scheduled and completed run.
+          format: date-time
+          readOnly: true
+          type: string
+        limit:
+          description: Don't notify me more than <limit> times every <limitEvery> seconds. If set, limitEvery cannot be empty.
+          type: integer
+        limitEvery:
+          description: Don't notify me more than <limit> times every <limitEvery> seconds. If set, limit cannot be empty.
+          type: integer
+        links:
+          example:
+            labels: /api/v2/notificationRules/1/labels
+            members: /api/v2/notificationRules/1/members
+            owners: /api/v2/notificationRules/1/owners
+            query: /api/v2/notificationRules/1/query
+            self: /api/v2/notificationRules/1
+          properties:
+            labels:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve labels for this notification rule.
+            members:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve members for this notification rule.
+            owners:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve owners for this notification rule.
+            query:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve the Flux script for this notification rule.
+            self:
+              $ref: '#/components/schemas/Link'
+              description: The URL for this endpoint.
+          readOnly: true
+          type: object
+        name:
+          description: Human-readable name describing the notification rule.
+          type: string
+        offset:
+          description: Duration to delay after the schedule, before executing check.
+          type: string
+        orgID:
+          description: The ID of the organization that owns this notification rule.
+          type: string
+        ownerID:
+          description: The ID of creator used to create this notification rule.
+          readOnly: true
+          type: string
+        runbookLink:
+          type: string
+        sleepUntil:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatusType'
+        statusRules:
+          description: List of status rules the notification rule attempts to match.
+          items:
+            $ref: '#/components/schemas/StatusRule'
+          minItems: 1
+          type: array
+        tagRules:
+          description: List of tag rules the notification rule attempts to match.
+          items:
+            $ref: '#/components/schemas/TagRule'
+          type: array
+        taskID:
+          description: The ID of the task associated with this notification rule.
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - orgID
+      - status
+      - name
+      - statusRules
+      - endpointID
+      type: object
+    SlackNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/SlackNotificationRuleBase'
+  securitySchemes:
+    BasicAuthentication:
+      description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"
+      scheme: basic
+      type: http
+    TokenAuthentication:
+      description: "Use the [Token authentication](#section/Authentication/TokenAuthentication)\nscheme to authenticate to the InfluxDB API.\n\nIn your API requests, send an `Authorization` header.\nFor the header value, provide the word `Token` followed by a space and an InfluxDB API token.\nThe word `Token` is case-sensitive.\n\n### Syntax\n\n`Authorization: Token INFLUX_API_TOKEN`\n\n### Example\n\n#### Use Token authentication with cURL\n\nThe following example shows how to use cURL to send an API request that uses Token authentication:\n\n```sh\ncurl --request GET \"INFLUX_URL/api/v2/buckets\" \\\n     --header \"Authorization: Token INFLUX_API_TOKEN\"\n```\n\nReplace the following:\n\n  - *`INFLUX_URL`*: your InfluxDB Cloud URL\n  - *`INFLUX_API_TOKEN`*: your [InfluxDB API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n\n### Related endpoints\n\n- [`/authorizations` endpoints](#tag/Authorizations-(API-tokens))\n\n### Related guides\n\n- [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)\n- [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)\n"
+      in: header
+      name: Authorization
+      type: apiKey
+x-tagGroups:
+- name: Overview
+  tags:
+  - Quick start
+  - Authentication
+  - Supported operations
+  - Headers
+  - Pagination
+  - Response codes
+- name: Popular endpoints
+  tags:
+  - Data I/O endpoints
+  - Security and access endpoints
+  - System information endpoints
+- name: All endpoints
+  tags: []

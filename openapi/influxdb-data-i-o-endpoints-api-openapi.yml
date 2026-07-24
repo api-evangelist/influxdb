@@ -1,0 +1,2526 @@
+openapi: 3.0.0
+info:
+  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Data I/O endpoints API
+  description: 'Create and manage authorizations (API tokens).
+
+
+    An _authorization_ contains a list of `read` and `write`
+
+    permissions for organization resources and provides an API token for authentication.
+
+    An authorization belongs to an organization and only contains permissions for that organization.
+
+
+    We recommend the following for managing your tokens:
+
+
+    - Create a generic user to create and manage tokens for writing data.
+
+    - Store your tokens in a secure password vault for future access.
+
+
+    ### User sessions with authorizations
+
+
+    Optionally, when creating an authorization, you can scope it to a specific user.
+
+    If the user signs in with username and password, creating a _user session_,
+
+    the session carries the permissions granted by all the user''s authorizations.
+
+    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
+
+    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
+
+
+    ### Related endpoints
+
+
+    - [Signin](#tag/Signin)
+
+    - [Signout](#tag/Signout)
+
+
+    ### Related guides
+
+
+    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
+
+    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
+
+    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
+
+    '
+servers:
+- url: ''
+security:
+- TokenAuthentication: []
+tags:
+- name: Data I/O endpoints
+paths:
+  /api/v2/delete:
+    post:
+      description: "Deletes data from a bucket.\n\nUse this endpoint to delete points from a bucket in a specified time range.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a delete request:\n\n  1. Validates the request and queues the delete.\n  2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.\n  3. Handles the delete asynchronously and reaches eventual consistency.\n\nTo ensure that InfluxDB Cloud handles writes and deletes in the order you request them,\nwait for a success response (HTTP `2xx` status code) before you send the next request.\n\nBecause writes and deletes are asynchronous, your change might not yet be readable\nwhen you receive the response.\n\n#### InfluxDB OSS\n\n- Validates the request, handles the delete synchronously,\n  and then responds with success or failure.\n\n#### Required permissions\n\n- `write-buckets` or `write-bucket BUCKET_ID`.\n\n*`BUCKET_ID`* is the ID of the destination bucket.\n\n#### Rate limits (with InfluxDB Cloud)\n\n`write` rate limits apply.\nFor more information, see [limits and adjustable quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/).\n\n#### Related guides\n\n- [Delete data](https://docs.influxdata.com/influxdb/cloud/write-data/delete-data/)\n- Learn how to use [delete predicate syntax](https://docs.influxdata.com/influxdb/cloud/reference/syntax/delete-predicate/).\n- Learn how InfluxDB handles [deleted tags](https://docs.influxdata.com/flux/v0.x/stdlib/influxdata/influxdb/schema/measurementtagkeys/)\n  and [deleted fields](https://docs.influxdata.com/flux/v0.x/stdlib/influxdata/influxdb/schema/measurementfieldkeys/).\n"
+      operationId: PostDelete
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Deletes data from the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- Deletes data from the bucket in the specified organization.\n- If you pass both `orgID` and `org`, they must both be valid.\n"
+        in: query
+        name: org
+        schema:
+          description: The organization name or ID.
+          type: string
+      - description: 'A bucket name or ID.
+
+          Specifies the bucket to delete data from.
+
+          If you pass both `bucket` and `bucketID`, `bucketID` takes precedence.
+
+          '
+        in: query
+        name: bucket
+        schema:
+          description: The bucket name or ID.
+          type: string
+      - description: "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Deletes data from the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- Deletes data from the bucket in the specified organization.\n- If you pass both `orgID` and `org`, they must both be valid.\n"
+        in: query
+        name: orgID
+        schema:
+          description: The organization ID.
+          type: string
+      - description: 'A bucket ID.
+
+          Specifies the bucket to delete data from.
+
+          If you pass both `bucket` and `bucketID`, `bucketID` takes precedence.
+
+          '
+        in: query
+        name: bucketID
+        schema:
+          description: The bucket ID.
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeletePredicateRequest'
+        description: 'Time range parameters and an optional **delete predicate expression**.
+
+
+          To select points to delete within the specified time range, pass a
+
+          **delete predicate expression** in the `predicate` property of the request body.
+
+          If you don''t pass a `predicate`, InfluxDB deletes all data with timestamps
+
+          in the specified time range.
+
+
+          #### Related guides
+
+
+          - [Delete data](https://docs.influxdata.com/influxdb/cloud/write-data/delete-data/)
+
+          - Learn how to use [delete predicate syntax](https://docs.influxdata.com/influxdb/cloud/reference/syntax/delete-predicate/).
+
+          '
+        required: true
+      responses:
+        '204':
+          description: 'Success.
+
+
+            #### InfluxDB Cloud
+
+
+            - Validated and queued the request.
+
+            - Handles the delete asynchronously - the deletion might not have completed yet.
+
+
+            An HTTP `2xx` status code acknowledges that the write or delete is queued.
+
+            To ensure that InfluxDB Cloud handles writes and deletes in the order you request them,
+
+            wait for a response before you send the next request.
+
+
+            Because writes are asynchronous, data might not yet be written
+
+            when you receive the response.
+
+
+            #### InfluxDB OSS
+
+
+            - Deleted the data.
+
+            '
+        '400':
+          content:
+            application/json:
+              examples:
+                orgNotFound:
+                  summary: Organization not found
+                  value:
+                    code: invalid
+                    message: 'failed to decode request body: organization not found'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad request.
+
+            The response body contains detail about the error.
+
+
+            #### InfluxDB OSS
+
+
+            - Returns this error if the `org` parameter or `orgID` parameter doesn''t match an organization.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/GeneralServerError'
+      summary: Delete data
+      tags:
+      - Data I/O endpoints
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request POST INFLUX_URL/api/v2/delete?org=INFLUX_ORG&bucket=INFLUX_BUCKET \\\n  --header 'Authorization: Token INFLUX_API_TOKEN' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n    \"start\": \"2020-03-01T00:00:00Z\",\n    \"stop\": \"2020-11-14T00:00:00Z\",\n    \"predicate\": \"tag1=\\\"value1\\\" and (tag2=\\\"value2\\\" and tag3!=\\\"value3\\\")\"\n  }'\n"
+  /api/v2/query:
+    post:
+      description: 'Retrieves data from buckets.
+
+
+        Use this endpoint to send a Flux query request and retrieve data from a bucket.
+
+
+        #### Rate limits (with InfluxDB Cloud)
+
+
+        `read` rate limits apply.
+
+        For more information, see [limits and adjustable quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/).
+
+
+        #### Related guides
+
+
+        - [Query with the InfluxDB API](https://docs.influxdata.com/influxdb/cloud/query-data/execute-queries/influx-api/)
+
+        - [Get started with Flux](https://docs.influxdata.com/flux/v0.x/get-started/)
+
+        '
+      operationId: PostQuery
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The content encoding (usually a compression algorithm) that the client can understand.
+        in: header
+        name: Accept-Encoding
+        schema:
+          default: identity
+          description: The content coding.  Use `gzip` for compressed data or `identity` for unmodified, uncompressed data.
+          enum:
+          - gzip
+          - identity
+          type: string
+      - in: header
+        name: Content-Type
+        schema:
+          enum:
+          - application/json
+          - application/vnd.flux
+          type: string
+      - description: 'An organization name or ID.
+
+
+          #### InfluxDB Cloud
+
+
+          - Doesn''t use the `org` parameter or `orgID` parameter.
+
+          - Queries the bucket in the organization associated with the authorization (API token).
+
+
+          #### InfluxDB OSS
+
+
+          - Requires either the `org` parameter or `orgID` parameter.
+
+          - Queries the bucket in the specified organization.
+
+          '
+        in: query
+        name: org
+        schema:
+          type: string
+      - description: 'An organization ID.
+
+
+          #### InfluxDB Cloud
+
+
+          - Doesn''t use the `org` parameter or `orgID` parameter.
+
+          - Queries the bucket in the organization associated with the authorization (API token).
+
+
+          #### InfluxDB OSS
+
+
+          - Requires either the `org` parameter or `orgID` parameter.
+
+          - Queries the bucket in the specified organization.
+
+          '
+        in: query
+        name: orgID
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Query'
+          application/vnd.flux:
+            example: "from(bucket: \"example-bucket\")\n    |> range(start: -5m)\n    |> filter(fn: (r) => r._measurement == \"example-measurement\")\n"
+            schema:
+              type: string
+        description: Flux query or specification to execute
+      responses:
+        '200':
+          content:
+            application/csv:
+              example: 'result,table,_start,_stop,_time,region,host,_value
+
+                mean,0,2018-05-08T20:50:00Z,2018-05-08T20:51:00Z,2018-05-08T20:50:00Z,east,A,15.43
+
+                mean,0,2018-05-08T20:50:00Z,2018-05-08T20:51:00Z,2018-05-08T20:50:20Z,east,B,59.25
+
+                mean,0,2018-05-08T20:50:00Z,2018-05-08T20:51:00Z,2018-05-08T20:50:40Z,east,C,52.62
+
+                '
+              schema:
+                type: string
+          description: Success. The response body contains query results.
+          headers:
+            Content-Encoding:
+              description: Lists encodings (usually compression algorithms) that have been applied to the response payload.
+              schema:
+                default: identity
+                description: 'The content coding: `gzip` for compressed data or `identity` for unmodified, uncompressed data.
+
+                  '
+                enum:
+                - gzip
+                - identity
+                type: string
+            Trace-Id:
+              description: The trace ID, if generated, of the request.
+              schema:
+                description: Trace ID of a request.
+                type: string
+        '400':
+          content:
+            application/json:
+              examples:
+                orgNotFound:
+                  summary: Organization not found
+                  value:
+                    code: invalid
+                    message: 'failed to decode request body: organization not found'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad request.
+
+            The response body contains detail about the error.
+
+
+            #### InfluxDB OSS
+
+
+            - Returns this error if the `org` parameter or `orgID` parameter doesn''t match an organization.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '429':
+          description: "#### InfluxDB Cloud:\n  - returns this error if a **read** or **write** request exceeds your\n    plan's [adjustable service quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/#adjustable-service-quotas)\n    or if a **delete** request exceeds the maximum\n    [global limit](https://docs.influxdata.com/influxdb/cloud/account-management/limits/#global-limits)\n  - returns `Retry-After` header that describes when to try the write again.\n\n#### InfluxDB OSS:\n  - doesn't return this error.\n"
+          headers:
+            Retry-After:
+              description: Non-negative decimal integer indicating seconds to wait before retrying the request.
+              schema:
+                format: int32
+                type: integer
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/GeneralServerError'
+      summary: Query data
+      tags:
+      - Data I/O endpoints
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request POST 'INFLUX_URL/api/v2/query?org=INFLUX_ORG' \\\n--header 'Content-Type: application/vnd.flux' \\\n--header 'Accept: application/csv \\\n--header 'Authorization: Token INFLUX_API_TOKEN' \\\n--data 'from(bucket: \"example-bucket\")\n          |> range(start: -5m)\n          |> filter(fn: (r) => r._measurement == \"example-measurement\")'\n"
+  /api/v2/scripts:
+    get:
+      description: 'Lists [scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/).
+
+
+        #### Related guides
+
+
+        - [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)
+
+        '
+      operationId: GetScripts
+      parameters:
+      - description: 'The offset for pagination.
+
+          The number of records to skip.
+
+
+          For more information about pagination parameters, see [Pagination]({{% INFLUXDB_DOCS_URL %}}/api/#tag/Pagination).
+
+          '
+        in: query
+        name: offset
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+      - description: 'The maximum number of scripts to return. Default is `100`.
+
+          '
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          maximum: 500
+          minimum: 0
+          type: integer
+      - description: The script name. Lists scripts with the specified name.
+        in: query
+        name: name
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    scripts:
+                    - createdAt: '2022-07-17T23:49:45.731237Z'
+                      description: find the last point from Sample Bucket
+                      id: 09afa3b220fe4000
+                      language: flux
+                      name: getLastPointFromSampleBucket
+                      orgID: bea7ea952287f70d
+                      script: 'from(bucket: SampleBucket) |> range(start: -7d) |> limit(n:1)'
+                      updatedAt: '2022-07-17T23:49:45.731237Z'
+                    - createdAt: '2022-07-17T23:43:26.660308Z'
+                      description: getLastPoint finds the last point in a bucket
+                      id: 09afa23ff13e4000
+                      language: flux
+                      name: getLastPoint
+                      orgID: bea7ea952287f70d
+                      script: 'from(bucket: params.mybucket) |> range(start: -7d) |> limit(n:1)'
+                      updatedAt: '2022-07-17T23:43:26.660308Z'
+              schema:
+                $ref: '#/components/schemas/Scripts'
+          description: 'Success.
+
+            The response body contains the list of scripts.
+
+            '
+        '400':
+          content:
+            application/json:
+              examples:
+                invalidSyntaxError:
+                  summary: Query parameter contains invalid syntax.
+                  value:
+                    code: 3
+                    details: []
+                    message: 'parsing field "limit": strconv.ParseUint: parsing "-1": invalid syntax'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad request.
+
+            InfluxDB is unable to parse the request.
+
+            The response body contains detail about the error.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error.
+      summary: List scripts
+      tags:
+      - Data I/O endpoints
+      x-codeSamples:
+      - label: 'cURL: retrieves the first 100 scripts.'
+        lang: Shell
+        source: "curl --request GET \"INFLUX_URL/api/v2/scripts?limit=100&offset=0\" \\\n  --header \"Authorization: Token INFLUX_API_TOKEN\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Content-Type: application/json\"\n"
+  /api/v2/scripts/{scriptID}:
+    get:
+      description: 'Retrieves a [script](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/).
+
+
+        #### Related Guides
+
+
+        - [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)
+
+        '
+      operationId: GetScriptsID
+      parameters:
+      - description: 'A script ID.
+
+          Retrieves the specified script.
+
+          '
+        in: path
+        name: scriptID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    createdAt: '2022-07-17T23:49:45.731237Z'
+                    description: getLastPoint finds the last point in a bucket
+                    id: 09afa3b220fe4000
+                    language: flux
+                    name: getLastPoint
+                    orgID: bea7ea952287f70d
+                    script: 'from(bucket: my-bucket) |> range(start: -7d) |> limit(n:1)'
+                    updatedAt: '2022-07-17T23:49:45.731237Z'
+              schema:
+                $ref: '#/components/schemas/Script'
+          description: Success. The response body contains the script.
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          content:
+            application/json:
+              examples:
+                notFound:
+                  summary: 'The requested script was not found.
+
+                    '
+                  value:
+                    code: not found
+                    message: script "09afa3b220fe400" not found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Not found.
+
+            '
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/ServerError'
+          description: Internal server error.
+      summary: Retrieve a script
+      tags:
+      - Data I/O endpoints
+  /api/v2/scripts/{scriptID}/invoke:
+    post:
+      description: "Runs a script and returns the result.\nWhen the script runs, InfluxDB replaces `params` keys referenced in the script with\n`params` key-values passed in the request body--for example:\n\nThe following sample script contains a _`mybucket`_ parameter :\n\n```json\n\"script\": \"from(bucket: params.mybucket)\n            |> range(start: -7d)\n            |> limit(n:1)\"\n```\n\nThe following example `POST /api/v2/scripts/SCRIPT_ID/invoke` request body\npasses a value for the _`mybucket`_ parameter:\n\n```json\n{\n  \"params\": {\n    \"mybucket\": \"air_sensor\"\n  }\n}\n```\n\n#### Related guides\n\n- [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n"
+      operationId: PostScriptsIDInvoke
+      parameters:
+      - description: 'A script ID.
+
+          Runs the specified script.
+
+          '
+        in: path
+        name: scriptID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScriptInvocationParams'
+      responses:
+        '200':
+          content:
+            text/csv:
+              examples:
+                successResponse:
+                  value: ',result,table,_start,_stop,_time,_value,_field,_measurement,host
+
+                    ,_result,0,2019-10-30T01:28:02.52716421Z,2022-07-26T01:28:02.52716421Z,2020-01-01T00:00:00Z,72.01,used_percent,mem,host2
+
+                    '
+              schema:
+                $ref: '#/components/schemas/ScriptHTTPResponseData'
+          description: 'Success.
+
+            The response body contains the result of the script execution.
+
+            '
+        '400':
+          content:
+            application/json:
+              examples:
+                invalidParameters:
+                  summary: The parameters passed to the script are invalid.
+                  value:
+                    code: invalid
+                    message: invalid parameters provided
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad request.
+
+            InfluxDB is unable to parse the request.
+
+            The response body contains detail about the error.
+
+            '
+          headers:
+            X-Platform-Error-Code:
+              description: 'The reason for the error.
+
+                '
+              schema:
+                example: invalid
+                type: string
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          content:
+            application/json:
+              examples:
+                bucketNotFound:
+                  description: InfluxDB can't find the requested bucket.
+                  summary: 'Bucket not found
+
+                    '
+                  value:
+                    code: not found
+                    message: 'failed to initialize execute state: could not find bucket "test-bucket"'
+                scriptNotFound:
+                  description: InfluxDB can't find the requested script.
+                  summary: 'Script not found
+
+                    '
+                  value:
+                    code: not found
+                    message: script "09afa3b220fe400" not found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Not found.
+
+            '
+          headers:
+            X-Platform-Error-Code:
+              description: 'The reason for the error.
+
+                '
+              schema:
+                example: not found
+                type: string
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error.
+      summary: Invoke a script
+      tags:
+      - Data I/O endpoints
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request POST \"INFLUX_URL/api/v2/scripts/SCRIPT_ID/invoke\" \\\n          --header \"Authorization: Token INFLUX_TOKEN\" \\\n          --header 'Accept: application/csv' \\\n          --header 'Content-Type: application/json' \\\n          --data '{\n            \"params\": {\n                \"mybucket\": \"air_sensor\"\n                }\n            }'\n"
+  /api/v2/tasks:
+    get:
+      description: 'Retrieves a list of [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
+
+
+        To limit which tasks are returned, pass query parameters in your request.
+
+        If no query parameters are passed, InfluxDB returns all tasks up to the default `limit`.
+
+        '
+      operationId: GetTasks
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) name.
+
+          Only returns tasks with the specified name.
+
+          Different tasks may have the same name.
+
+          '
+        in: query
+        name: name
+        schema:
+          type: string
+      - description: 'A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID.
+
+          Only returns tasks created after the specified task.
+
+          '
+        in: query
+        name: after
+        schema:
+          type: string
+      - description: 'A [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) ID.
+
+          Only returns tasks owned by the specified user.
+
+          '
+        in: query
+        name: user
+        schema:
+          type: string
+      - description: 'An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) name.
+
+          Only returns tasks owned by the specified organization.
+
+          '
+        in: query
+        name: org
+        schema:
+          type: string
+      - description: 'An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) ID.
+
+          Only returns tasks owned by the specified organization.
+
+          '
+        in: query
+        name: orgID
+        schema:
+          type: string
+      - description: 'A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) status.
+
+          Only returns tasks that have the specified status (`active` or `inactive`).
+
+          '
+        in: query
+        name: status
+        schema:
+          enum:
+          - active
+          - inactive
+          type: string
+      - description: 'The maximum number of [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) to return.
+
+          Default is `100`.
+
+          The minimum is `1` and the maximum is `500`.
+
+
+          To reduce the payload size, combine _`type=basic`_ and _`limit`_ (see _Request samples_).
+
+          For more information about the `basic` response, see the _`type`_ parameter.
+
+          '
+        examples:
+          all:
+            summary: Return all tasks, without pagination.
+            value: '-1'
+          minPaginated:
+            summary: Return a maximum of 50 tasks.
+            value: '50'
+        in: query
+        name: limit
+        schema:
+          default: 100
+          maximum: 500
+          minimum: -1
+          type: integer
+      - description: The number of records to skip.
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 0
+          minimum: 0
+          type: integer
+      - description: 'The sort field. Only `name` is supported.
+
+          Specifies the field used to sort records in the list.
+
+          '
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          enum:
+          - name
+          type: string
+      - description: 'A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) type (`basic` or `system`).
+
+          Default is `system`.
+
+          Specifies the level of detail for tasks in the response.
+
+          The default (`system`) response contains all the metadata properties for tasks.
+
+          To reduce the response size, pass `basic` to omit some task properties (`flux`, `createdAt`, `updatedAt`).
+
+          '
+        in: query
+        name: type
+        required: false
+        schema:
+          default: ''
+          enum:
+          - basic
+          - system
+          type: string
+      - description: 'A [script](#tag/Invokable-Scripts) ID.
+
+          Only returns tasks that use the specified invokable script.
+
+          '
+        in: query
+        name: scriptID
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                basicTypeTaskOutput:
+                  description: 'A sample response body for the `?type=basic` parameter.
+
+                    `type=basic` omits some task fields (`createdAt` and `updatedAt`)
+
+                    and field values (`org`, `flux`) in the response.
+
+                    '
+                  summary: Basic output
+                  value:
+                    links:
+                      self: /api/v2/tasks?limit=100
+                    tasks:
+                    - every: 30m
+                      flux: ''
+                      id: 09956cbb6d378000
+                      labels: []
+                      lastRunStatus: success
+                      latestCompleted: '2022-06-30T15:00:00Z'
+                      links:
+                        labels: /api/v2/tasks/09956cbb6d378000/labels
+                        logs: /api/v2/tasks/09956cbb6d378000/logs
+                        members: /api/v2/tasks/09956cbb6d378000/members
+                        owners: /api/v2/tasks/09956cbb6d378000/owners
+                        runs: /api/v2/tasks/09956cbb6d378000/runs
+                        self: /api/v2/tasks/09956cbb6d378000
+                      name: task1
+                      org: ''
+                      orgID: 48c88459ee424a04
+                      ownerID: 0772396d1f411000
+                      status: active
+                systemTypeTaskOutput:
+                  description: 'A sample response body for the `?type=system` parameter.
+
+                    `type=system` returns all task fields.
+
+                    '
+                  summary: System output
+                  value:
+                    links:
+                      self: /api/v2/tasks?limit=100
+                    tasks:
+                    - createdAt: '2022-06-27T15:09:06Z'
+                      description: IoT Center 90-day environment average.
+                      every: 30m
+                      flux: "option task = {name: \"task1\", every: 30m}\n\nfrom(bucket: \"iot_center\")\n    |> range(start: -90d)\n    |> filter(fn: (r) => r._measurement == \"environment\")\n    |> aggregateWindow(every: 1h, fn: mean)"
+                      id: 09956cbb6d378000
+                      labels: []
+                      lastRunStatus: success
+                      latestCompleted: '2022-06-30T15:00:00Z'
+                      links:
+                        labels: /api/v2/tasks/09956cbb6d378000/labels
+                        logs: /api/v2/tasks/09956cbb6d378000/logs
+                        members: /api/v2/tasks/09956cbb6d378000/members
+                        owners: /api/v2/tasks/09956cbb6d378000/owners
+                        runs: /api/v2/tasks/09956cbb6d378000/runs
+                        self: /api/v2/tasks/09956cbb6d378000
+                      name: task1
+                      org: my-iot-center
+                      orgID: 48c88459ee424a04
+                      ownerID: 0772396d1f411000
+                      status: active
+                      updatedAt: '2022-06-28T18:10:15Z'
+              schema:
+                $ref: '#/components/schemas/Tasks'
+          description: 'Success.
+
+            The response body contains the list of tasks.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/GeneralServerError'
+      summary: List all tasks
+      tags:
+      - Data I/O endpoints
+      x-codeSamples:
+      - label: 'cURL: all tasks, basic output'
+        lang: Shell
+        source: "curl INFLUX_URL/api/v2/tasks/?limit=-1&type=basic \\\n  --header 'Content-Type: application/json' \\\n  --header 'Authorization: Token INFLUX_API_TOKEN'\n"
+    post:
+      description: "Creates a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) and returns the task.\n\nUse this endpoint to create a scheduled task that runs a Flux script.\n\n#### InfluxDB Cloud\n\n- You can use either `flux` or `scriptID` to provide the task script.\n\n  - `flux`: a string of \"raw\" Flux that contains task options and the script--for example:\n\n    ```json\n    {\n      \"flux\": \"option task = {name: \\\"CPU Total 1 Hour New\\\", every: 1h}\\\n      from(bucket: \\\"telegraf\\\")\n        |> range(start: -1h)\n        |> filter(fn: (r) => (r._measurement == \\\"cpu\\\"))\n        |> filter(fn: (r) =>\\n\\t\\t(r._field == \\\"usage_system\\\"))\n        |> filter(fn: (r) => (r.cpu == \\\"cpu-total\\\"))\n        |> aggregateWindow(every: 1h, fn: max)\n        |> to(bucket: \\\"cpu_usage_user_total_1h\\\", org: \\\"INFLUX_ORG\\\")\",\n      \"status\": \"active\",\n      \"description\": \"This task downsamples CPU data every hour\"\n    }\n    ```\n\n  - `scriptID`: the ID of an [invokable script](#tag/Invokable-Scripts)\n    for the task to run.\n    To pass task options when using `scriptID`, pass the options as\n    properties in the request body--for example:\n\n    ```json\n    {\n      \"name\": \"CPU Total 1 Hour New\",\n      \"description\": \"This task downsamples CPU data every hour\",\n      \"every\": \"1h\",\n      \"scriptID\": \"SCRIPT_ID\",\n      \"scriptParameters\":\n        {\n          \"rangeStart\": \"-1h\",\n          \"bucket\": \"telegraf\",\n          \"filterField\": \"cpu-total\"\n        }\n      }\n    ```\n\n#### Limitations:\n\n- You can't use `flux` and `scriptID` for the same task.\n\n#### Related guides\n\n- [Get started with tasks](https://docs.influxdata.com/influxdb/cloud/process-data/get-started/)\n- [Create a task](https://docs.influxdata.com/influxdb/cloud/process-data/manage-tasks/create-task/)\n- [Common tasks](https://docs.influxdata.com/influxdb/cloud/process-data/common-tasks/)\n- [Task configuration options](https://docs.influxdata.com/influxdb/cloud/process-data/task-options/)\n"
+      operationId: PostTasks
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+        description: The task to create
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Success. The response body contains a `tasks` list with the new task.
+        '400':
+          content:
+            application/json:
+              examples:
+                fluxAndScriptError:
+                  summary: The request body can't contain both flux and scriptID
+                  value:
+                    code: invalid
+                    message: 'failed to decode request: can not provide both scriptID and flux'
+                missingFluxError:
+                  summary: The request body requires either a flux parameter or scriptID parameter
+                  value:
+                    code: invalid
+                    message: 'failed to decode request: flux required'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad request.
+
+            The response body contains detail about the error.
+
+
+            #### InfluxDB Cloud
+
+
+            - Returns this error if the task doesn''t contain one of _`flux`_ or _`scriptID`_.
+
+            - Returns this error if the task contains _`flux`_ _and_ _`scriptID`_.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Create a task
+      tags:
+      - Data I/O endpoints
+      x-codeSamples:
+      - label: 'cURL: create a Flux script task'
+        lang: Shell
+        source: "curl INFLUX_URL/api/v2/tasks \\\n--header \"Content-type: application/json\" \\\n--header \"Authorization: Token INFLUX_API_TOKEN\" \\\n--data-binary @- << EOF\n  {\n    \"orgID\": \"INFLUX_ORG_ID\",\n    \"description\": \"IoT Center 30d environment average.\",\n    \"flux\": \"option task = {name: \\\"iot-center-task-1\\\", every: 30m}\\\n            from(bucket: \\\"iot_center\\\")\\\n              |> range(start: -30d)\\\n              |> filter(fn: (r) => r._measurement == \\\"environment\\\")\\\n              |> aggregateWindow(every: 1h, fn: mean)\"\n  }\nEOF\n"
+      - label: 'cURL: create a Flux script reference task'
+        lang: Shell
+        source: "curl INFLUX_URL/api/v2/tasks \\\n--header \"Content-type: application/json\" \\\n--header \"Authorization: Token INFLUX_API_TOKEN\" \\\n--data-binary @- << EOF\n  {\n    \"orgID\": \"INFLUX_ORG_ID\",\n    \"description\": \"IoT Center 30d environment average.\",\n    \"scriptID\": \"085138a111448000\",\n    \"scriptParameters\":\n      {\n        \"rangeStart\": \"-30d\",\n        \"bucket\": \"air_sensor\",\n        \"filterField\": \"temperature\",\n        \"groupColumn\": \"_time\"\n      }\n  }\nEOF\n"
+  /api/v2/tasks/{taskID}:
+    get:
+      description: 'Retrieves a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
+
+        '
+      operationId: GetTasksID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID.
+
+          Specifies the task to retrieve.
+
+          '
+        in: path
+        name: taskID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: Success. The response body contains the task.
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/GeneralServerError'
+      summary: Retrieve a task
+      tags:
+      - Data I/O endpoints
+  /api/v2/tasks/{taskID}/runs:
+    post:
+      description: 'Schedules a task run to start immediately, ignoring scheduled runs.
+
+
+        Use this endpoint to manually start a task run.
+
+        Scheduled runs will continue to run as scheduled.
+
+        This may result in concurrently running tasks.
+
+
+        To _retry_ a previous run (and avoid creating a new run),
+
+        use the [`POST /api/v2/tasks/{taskID}/runs/{runID}/retry` endpoint](#operation/PostTasksIDRunsIDRetry).
+
+        '
+      operationId: PostTasksIDRuns
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - in: path
+        name: taskID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunManually'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Run'
+          description: Success. The run is scheduled to start.
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          $ref: '#/components/responses/GeneralServerError'
+      summary: Start a task run, overriding the schedule
+      tags:
+      - Data I/O endpoints
+  /api/v2/write:
+    post:
+      description: "Writes data to a bucket.\n\nUse this endpoint to send data in [line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/) format to InfluxDB.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a write request:\n\n  1. Validates the request and queues the write.\n  2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.\n  3. Handles the delete asynchronously and reaches eventual consistency.\n\n  To ensure that InfluxDB Cloud handles writes and deletes in the order you request them,\n  wait for a success response (HTTP `2xx` status code) before you send the next request.\n\n  Because writes and deletes are asynchronous, your change might not yet be readable\n  when you receive the response.\n\n#### InfluxDB OSS\n\n- Validates the request and handles the write synchronously.\n- If all points were written successfully, responds with HTTP `2xx` status code;\n  otherwise, returns the first line that failed.\n\n#### Required permissions\n\n- `write-buckets` or `write-bucket BUCKET_ID`.\n\n *`BUCKET_ID`* is the ID of the destination bucket.\n\n#### Rate limits (with InfluxDB Cloud)\n\n`write` rate limits apply.\nFor more information, see [limits and adjustable quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/).\n\n#### Related guides\n\n- [Write data with the InfluxDB API](https://docs.influxdata.com/influxdb/cloud/write-data/developer-tools/api)\n- [Optimize writes to InfluxDB](https://docs.influxdata.com/influxdb/cloud/write-data/best-practices/optimize-writes/)\n- [Troubleshoot issues writing data](https://docs.influxdata.com/influxdb/cloud/write-data/troubleshoot/)\n"
+      operationId: PostWrite
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The compression applied to the line protocol in the request payload.
+
+          To send a GZIP payload, pass `Content-Encoding: gzip` header.
+
+          '
+        in: header
+        name: Content-Encoding
+        schema:
+          default: identity
+          description: 'Content coding.
+
+            Use `gzip` for compressed data or `identity` for unmodified, uncompressed data.
+
+            '
+          enum:
+          - gzip
+          - identity
+          type: string
+      - description: 'The format of the data in the request body.
+
+          To send a line protocol payload, pass `Content-Type: text/plain; charset=utf-8`.
+
+          '
+        in: header
+        name: Content-Type
+        schema:
+          default: text/plain; charset=utf-8
+          description: '`text/plain` is the content type for line protocol. `UTF-8` is the default character set.
+
+            '
+          enum:
+          - text/plain
+          - text/plain; charset=utf-8
+          type: string
+      - description: 'The size of the entity-body, in bytes, sent to InfluxDB.
+
+          If the length is greater than the `max body` configuration option,
+
+          the server responds with status code `413`.
+
+          '
+        in: header
+        name: Content-Length
+        schema:
+          description: The length in decimal number of octets.
+          type: integer
+      - description: "The content type that the client can understand.\nWrites only return a response body if they fail--for example,\ndue to a formatting problem or quota limit.\n\n#### InfluxDB Cloud\n\n  - Returns only `application/json` for format and limit errors.\n  - Returns only `text/html` for some quota limit errors.\n\n#### InfluxDB OSS\n\n  - Returns only `application/json` for format and limit errors.\n\n#### Related guides\n\n- [Troubleshoot issues writing data](https://docs.influxdata.com/influxdb/cloud/write-data/troubleshoot/)\n"
+        in: header
+        name: Accept
+        schema:
+          default: application/json
+          description: Error content type.
+          enum:
+          - application/json
+          type: string
+      - description: "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Writes data to the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- If you pass both `orgID` and `org`, they must both be valid.\n- Writes data to the bucket in the specified organization.\n"
+        in: query
+        name: org
+        required: true
+        schema:
+          description: The organization name or ID.
+          type: string
+      - description: "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Writes data to the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- If you pass both `orgID` and `org`, they must both be valid.\n- Writes data to the bucket in the specified organization.\n"
+        in: query
+        name: orgID
+        schema:
+          type: string
+      - description: 'A bucket name or ID.
+
+          InfluxDB writes all points in the batch to the specified bucket.
+
+          '
+        in: query
+        name: bucket
+        required: true
+        schema:
+          description: The bucket name or ID.
+          type: string
+      - description: The precision for unix timestamps in the line protocol batch.
+        in: query
+        name: precision
+        schema:
+          $ref: '#/components/schemas/WritePrecision'
+      requestBody:
+        content:
+          text/plain:
+            examples:
+              plain-utf8:
+                value: 'airSensors,sensor_id=TLM0201 temperature=73.97038159354763,humidity=35.23103248356096,co=0.48445310567793615 1630424257000000000
+
+                  airSensors,sensor_id=TLM0202 temperature=75.30007505999716,humidity=35.651929918691714,co=0.5141876544505826 1630424257000000000
+
+                  '
+            schema:
+              format: byte
+              type: string
+        description: "In the request body, provide data in [line protocol format](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/).\n\nTo send compressed data, do the following:\n\n  1. Use [GZIP](https://www.gzip.org/) to compress the line protocol data.\n  2. In your request, send the compressed data and the\n     `Content-Encoding: gzip` header.\n\n#### Related guides\n\n- [Best practices for optimizing writes](https://docs.influxdata.com/influxdb/cloud/write-data/best-practices/optimize-writes/)\n"
+        required: true
+      responses:
+        '204':
+          description: 'Success.
+
+
+            #### InfluxDB Cloud
+
+
+            - Validated and queued the request.
+
+            - Handles the write asynchronously - the write might not have completed yet.
+
+
+            #### InfluxDB OSS
+
+
+            - Successfully wrote all points in the batch.
+
+
+            #### Related guides
+
+
+            - [How to check for write errors](https://docs.influxdata.com/influxdb/cloud/write-data/troubleshoot/)
+
+            '
+        '400':
+          content:
+            application/json:
+              examples:
+                measurementSchemaFieldTypeConflict:
+                  summary: (Cloud) field type conflict thrown by an explicit bucket schema
+                  value:
+                    code: invalid
+                    message: 'partial write error (2 written): unable to parse ''air_sensor,service=S1,sensor=L1 temperature="90.5",humidity=70.0 1632850122'': schema: field type for field "temperature" not permitted by schema; got String but expected Float'
+                orgNotFound:
+                  summary: (OSS) organization not found
+                  value:
+                    code: invalid
+                    message: 'failed to decode request body: organization not found'
+              schema:
+                $ref: '#/components/schemas/LineProtocolError'
+          description: 'Bad request. The response body contains detail about the error.
+
+
+            InfluxDB returns this error if the line protocol data in the request is malformed.
+
+            The response body contains the first malformed line in the data, and indicates what was expected.
+
+            For partial writes, the number of points written and the number of points rejected are also included.
+
+            For more information, check the `rejected_points` measurement in your `_monitoring` bucket.
+
+
+            #### InfluxDB Cloud
+
+
+            - Returns this error for bucket schema conflicts.
+
+
+            #### InfluxDB OSS
+
+
+            - Returns this error if the `org` parameter or `orgID` parameter doesn''t match an organization.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '413':
+          content:
+            application/json:
+              examples:
+                dataExceedsSizeLimitOSS:
+                  summary: InfluxDB OSS response
+                  value: '{"code":"request too large","message":"unable to read data: points batch is too large"}
+
+                    '
+              schema:
+                $ref: '#/components/schemas/LineProtocolLengthError'
+            text/html:
+              examples:
+                dataExceedsSizeLimit:
+                  summary: InfluxDB Cloud response
+                  value: "<html>\n  <head><title>413 Request Entity Too Large</title></head>\n  <body>\n    <center><h1>413 Request Entity Too Large</h1></center>\n    <hr>\n    <center>nginx</center>\n  </body>\n</html>\n"
+              schema:
+                type: string
+          description: "The request payload is too large.\nInfluxDB rejected the batch and did not write any data.\n\n#### InfluxDB Cloud:\n\n - Returns this error if the payload exceeds the 50MB size limit.\n - Returns `Content-Type: text/html` for this error.\n\n#### InfluxDB OSS:\n\n - Returns this error only if the [Go (golang) `ioutil.ReadAll()`](https://pkg.go.dev/io/ioutil#ReadAll) function raises an error.\n - Returns `Content-Type: application/json` for this error.\n"
+        '429':
+          description: "Too many requests.\n\n#### InfluxDB Cloud\n\n  - Returns this error if a **read** or **write** request exceeds your plan's [adjustable service quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/#adjustable-service-quotas)\n    or if a **delete** request exceeds the maximum [global limit](https://docs.influxdata.com/influxdb/cloud/account-management/limits/#global-limits).\n  - For rate limits that reset automatically, returns a `Retry-After` header that describes when to try the write again.\n  - For limits that can't reset (for example, **cardinality limit**), doesn't return a `Retry-After` header.\n\n  Rates (data-in (writes), queries (reads), and deletes) accrue within a fixed five-minute window.\n  Once a rate limit is exceeded, InfluxDB returns an error response until the current five-minute window resets.\n\n#### InfluxDB OSS\n\n  - Doesn't return this error.\n"
+          headers:
+            Retry-After:
+              description: Non-negative decimal integer indicating seconds to wait before retrying the request.
+              schema:
+                format: int32
+                type: integer
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          description: "Service unavailable.\n\n- Returns this error if\n  the server is temporarily unavailable to accept writes.\n- Returns a `Retry-After` header that describes when to try the write again.\n"
+          headers:
+            Retry-After:
+              description: Non-negative decimal integer indicating seconds to wait before retrying the request.
+              schema:
+                format: int32
+                type: integer
+        default:
+          $ref: '#/components/responses/GeneralServerError'
+      summary: Write data
+      tags:
+      - Data I/O endpoints
+components:
+  schemas:
+    Task:
+      properties:
+        authorizationID:
+          description: 'An authorization ID.
+
+            Specifies the authorization used when the task communicates with the query engine.
+
+
+            To find an authorization ID, use the
+
+            [`GET /api/v2/authorizations` endpoint](#operation/GetAuthorizations) to
+
+            list authorizations.
+
+            '
+          type: string
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        cron:
+          description: A [Cron expression](https://en.wikipedia.org/wiki/Cron#Overview) that defines the schedule on which the task runs. InfluxDB uses the system time when evaluating Cron expressions.
+          type: string
+        description:
+          description: A description of the task.
+          type: string
+        every:
+          description: The interval ([duration literal](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)) at which the task runs. `every` also determines when the task first runs, depending on the specified time.
+          format: duration
+          type: string
+        flux:
+          description: "The Flux script that the task executes.\n\n#### Limitations\n  - If you use the `flux` property, you can't use the `scriptID` and `scriptParameters` properties.\n"
+          format: flux
+          type: string
+        id:
+          readOnly: true
+          type: string
+        labels:
+          $ref: '#/components/schemas/Labels'
+        lastRunError:
+          readOnly: true
+          type: string
+        lastRunStatus:
+          enum:
+          - failed
+          - success
+          - canceled
+          readOnly: true
+          type: string
+        latestCompleted:
+          description: A timestamp ([RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)) of the latest scheduled and completed run.
+          format: date-time
+          readOnly: true
+          type: string
+        links:
+          example:
+            labels: /api/v2/tasks/1/labels
+            logs: /api/v2/tasks/1/logs
+            members: /api/v2/tasks/1/members
+            owners: /api/v2/tasks/1/owners
+            runs: /api/v2/tasks/1/runs
+            self: /api/v2/tasks/1
+          properties:
+            labels:
+              $ref: '#/components/schemas/Link'
+            logs:
+              $ref: '#/components/schemas/Link'
+            members:
+              $ref: '#/components/schemas/Link'
+            owners:
+              $ref: '#/components/schemas/Link'
+            runs:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+          readOnly: true
+          type: object
+        name:
+          description: The name of the task.
+          type: string
+        offset:
+          description: A [duration](https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#duration-literals) to delay execution of the task after the scheduled time has elapsed. `0` removes the offset.
+          format: duration
+          type: string
+        org:
+          description: 'An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) name.
+
+            Specifies the organization that owns the task.
+
+            '
+          type: string
+        orgID:
+          description: 'An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) ID.
+
+            Specifies the organization that owns the task.
+
+            '
+          type: string
+        ownerID:
+          description: 'A [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) ID.
+
+            Specifies the owner of the task.
+
+
+            To find a user ID, you can use the
+
+            [`GET /api/v2/users` endpoint](#operation/GetUsers) to
+
+            list users.
+
+            '
+          type: string
+        scriptID:
+          description: 'A script ID.
+
+            Specifies the [invokable script](#tag/Invokable-Scripts) that the task executes.
+
+
+            #### Limitations
+
+
+            - If you use the `scriptID` property, you can''t use the `flux` property.
+
+
+            #### Related guides
+
+
+            - [Create a task that references a script](https://docs.influxdata.com/influxdb/cloud/process-data/manage-tasks/create-task/#create-a-task-that-references-a-script)
+
+            '
+          type: string
+        scriptParameters:
+          description: 'Key-value pairs for `params` in the script.
+
+            Defines the invocation parameter values passed to the script specified by `scriptID`.
+
+            When running the task, InfluxDB executes the script with the parameters
+
+            you provide.
+
+
+            #### Limitations
+
+
+            - To use `scriptParameters`, you must provide a `scriptID`.
+
+            - If you use the `scriptID` and `scriptParameters` properties, you can''t use the `flux` property.
+
+            '
+          type: object
+        status:
+          $ref: '#/components/schemas/TaskStatusType'
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - id
+      - name
+      - orgID
+      type: object
+    File:
+      description: Represents a source from a single file
+      properties:
+        body:
+          description: List of Flux statements
+          items:
+            $ref: '#/components/schemas/Statement'
+          type: array
+        imports:
+          description: A list of package imports
+          items:
+            $ref: '#/components/schemas/ImportDeclaration'
+          type: array
+        name:
+          description: The name of the file.
+          type: string
+        package:
+          $ref: '#/components/schemas/PackageClause'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    PackageClause:
+      description: Defines a package identifier
+      properties:
+        name:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    TaskCreateRequest:
+      properties:
+        cron:
+          description: A [Cron expression](https://en.wikipedia.org/wiki/Cron#Overview) that defines the schedule on which the task runs. InfluxDB bases cron runs on the system time.
+          type: string
+        description:
+          description: The description of the task.
+          type: string
+        every:
+          description: 'The interval ([duration literal](https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#duration-literals))) at which the task runs.
+
+            `every` also determines when the task first runs, depending on the specified time.
+
+            '
+          type: string
+        flux:
+          description: 'The Flux script that the task runs.
+
+
+            #### Limitations
+
+
+            - If you use the `flux` property, you can''t use the `scriptID` and `scriptParameters` properties.
+
+            '
+          type: string
+        name:
+          description: The name of the task
+          type: string
+        offset:
+          description: A [duration](https://docs.influxdata.com/flux/v0.x/spec/lexical-elements/#duration-literals) to delay execution of the task after the scheduled time has elapsed. `0` removes the offset.
+          format: duration
+          type: string
+        org:
+          description: The name of the organization that owns the task.
+          type: string
+        orgID:
+          description: The ID of the organization that owns the task.
+          type: string
+        scriptID:
+          description: 'The ID of the script that the task runs.
+
+
+            #### Limitations
+
+
+            - If you use the `scriptID` property, you can''t use the `flux` property.
+
+            '
+          type: string
+        scriptParameters:
+          description: 'The parameter key-value pairs passed to the script (referenced by `scriptID`) during the task run.
+
+
+            #### Limitations
+
+
+            - `scriptParameters` requires `scriptID`.
+
+            - If you use the `scriptID` and `scriptParameters` properties, you can''t use the `flux` property.
+
+            '
+          type: object
+        status:
+          $ref: '#/components/schemas/TaskStatusType'
+      type: object
+    ArrayExpression:
+      description: Used to create and directly specify the elements of an array object
+      properties:
+        elements:
+          description: Elements of the array
+          items:
+            $ref: '#/components/schemas/Expression'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    FunctionExpression:
+      description: Function expression
+      properties:
+        body:
+          $ref: '#/components/schemas/Node'
+        params:
+          description: Function parameters
+          items:
+            $ref: '#/components/schemas/Property'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    LogicalExpression:
+      description: Represents the rule conditions that collectively evaluate to either true or false
+      properties:
+        left:
+          $ref: '#/components/schemas/Expression'
+        operator:
+          type: string
+        right:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    OptionStatement:
+      description: A single variable declaration
+      properties:
+        assignment:
+          oneOf:
+          - $ref: '#/components/schemas/VariableAssignment'
+          - $ref: '#/components/schemas/MemberAssignment'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ScriptInvocationParams:
+      properties:
+        params:
+          additionalProperties: true
+          description: 'The script parameters.
+
+            `params` contains key-value pairs that map values to the **params.keys**
+
+            in a script.
+
+            When you invoke a script with `params`, InfluxDB passes the values as
+
+            invocation parameters to the script.
+
+            '
+          type: object
+      type: object
+    DictExpression:
+      description: Used to create and directly specify the elements of a dictionary
+      properties:
+        elements:
+          description: Elements of the dictionary
+          items:
+            $ref: '#/components/schemas/DictItem'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    DurationLiteral:
+      description: Represents the elapsed time between two instants as an int64 nanosecond count with syntax of golang's time.Duration
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        values:
+          description: Duration values
+          items:
+            $ref: '#/components/schemas/Duration'
+          type: array
+      type: object
+    ScriptHTTPResponseData:
+      description: 'The response body contains the results of the executed script.
+
+        The response is user-defined and dynamic.
+
+        '
+      format: binary
+      type: string
+    PipeExpression:
+      description: Call expression with pipe argument
+      properties:
+        argument:
+          $ref: '#/components/schemas/Expression'
+        call:
+          $ref: '#/components/schemas/CallExpression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    DeletePredicateRequest:
+      description: The delete predicate request.
+      properties:
+        predicate:
+          description: 'An expression in [delete predicate syntax](https://docs.influxdata.com/influxdb/cloud/reference/syntax/delete-predicate/).
+
+            '
+          example: tag1="value1" and (tag2="value2" and tag3!="value3")
+          type: string
+        start:
+          description: 'A timestamp ([RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)).
+
+            The earliest time to delete from.
+
+            '
+          format: date-time
+          type: string
+        stop:
+          description: 'A timestamp ([RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)).
+
+            The latest time to delete from.
+
+            '
+          format: date-time
+          type: string
+      required:
+      - start
+      - stop
+      type: object
+    PropertyKey:
+      oneOf:
+      - $ref: '#/components/schemas/Identifier'
+      - $ref: '#/components/schemas/StringLiteral'
+    PipeLiteral:
+      description: Represents a specialized literal value, indicating the left hand value of a pipe expression
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ParenExpression:
+      description: Represents an expression wrapped in parenthesis
+      properties:
+        expression:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Property:
+      description: The value associated with a key
+      properties:
+        key:
+          $ref: '#/components/schemas/PropertyKey'
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          $ref: '#/components/schemas/Expression'
+      type: object
+    CallExpression:
+      description: Represents a function call
+      properties:
+        arguments:
+          description: Function arguments
+          items:
+            $ref: '#/components/schemas/Expression'
+          type: array
+        callee:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ScriptLanguage:
+      enum:
+      - flux
+      - sql
+      - influxql
+      type: string
+    Duration:
+      description: A pair consisting of length of time and the unit of time measured. It is the atomic unit from which all duration literals are composed.
+      properties:
+        magnitude:
+          type: integer
+        type:
+          $ref: '#/components/schemas/NodeType'
+        unit:
+          type: string
+      type: object
+    WritePrecision:
+      enum:
+      - ms
+      - s
+      - us
+      - ns
+      type: string
+    StringLiteral:
+      description: Expressions begin and end with double quote marks
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
+      type: object
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    Query:
+      description: Query InfluxDB with the Flux language
+      properties:
+        dialect:
+          $ref: '#/components/schemas/Dialect'
+        extern:
+          $ref: '#/components/schemas/File'
+        now:
+          description: 'Specifies the time that should be reported as `now` in the query.
+
+            Default is the server `now` time.
+
+            '
+          format: date-time
+          type: string
+        params:
+          additionalProperties: true
+          description: "Key-value pairs passed as parameters during query execution.\n\nTo use parameters in your query, pass a _`query`_ with `params` references (in dot notation)--for example:\n\n```json\n  query: \"from(bucket: params.mybucket)\\\n              |> range(start: params.rangeStart) |> limit(n:1)\"\n```\n\nand pass _`params`_ with the key-value pairs--for example:\n\n```json\n  params: {\n    \"mybucket\": \"environment\",\n    \"rangeStart\": \"-30d\"\n  }\n```\n\nDuring query execution, InfluxDB passes _`params`_ to your script and substitutes the values.\n\n#### Limitations\n\n- If you use _`params`_, you can't use _`extern`_.\n"
+          type: object
+        query:
+          description: The query script to execute.
+          type: string
+        type:
+          description: The type of query. Must be "flux".
+          enum:
+          - flux
+          type: string
+      required:
+      - query
+      type: object
+    NodeType:
+      description: Type of AST node
+      type: string
+    Run:
+      properties:
+        finishedAt:
+          description: The time ([RFC3339Nano date/time format](https://go.dev/src/time/format.go)) the run finished executing.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+        flux:
+          description: Flux used for the task
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: string
+        links:
+          example:
+            retry: /api/v2/tasks/1/runs/1/retry
+            self: /api/v2/tasks/1/runs/1
+            task: /api/v2/tasks/1
+          properties:
+            retry:
+              format: uri
+              type: string
+            self:
+              format: uri
+              type: string
+            task:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        log:
+          description: An array of logs associated with the run.
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+          type: array
+        requestedAt:
+          description: The time ([RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp)) the run was manually requested.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+        scheduledFor:
+          description: The time [RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp) used for the run's `now` option.
+          format: date-time
+          type: string
+        startedAt:
+          description: The time ([RFC3339Nano date/time format](https://go.dev/src/time/format.go)) the run started executing.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+        status:
+          enum:
+          - scheduled
+          - started
+          - failed
+          - success
+          - canceled
+          readOnly: true
+          type: string
+        taskID:
+          readOnly: true
+          type: string
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    MemberExpression:
+      description: Represents accessing a property of an object
+      properties:
+        object:
+          $ref: '#/components/schemas/Expression'
+        property:
+          $ref: '#/components/schemas/PropertyKey'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    FloatLiteral:
+      description: Represents floating point numbers according to the double representations defined by the IEEE-754-1985
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: number
+      type: object
+    UnsignedIntegerLiteral:
+      description: Represents integer numbers
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
+      type: object
+    BinaryExpression:
+      description: uses binary operators to act on two operands in an expression
+      properties:
+        left:
+          $ref: '#/components/schemas/Expression'
+        operator:
+          type: string
+        right:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ExpressionStatement:
+      description: May consist of an expression that doesn't return a value and is executed solely for its side-effects
+      properties:
+        expression:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Statement:
+      oneOf:
+      - $ref: '#/components/schemas/BadStatement'
+      - $ref: '#/components/schemas/VariableAssignment'
+      - $ref: '#/components/schemas/MemberAssignment'
+      - $ref: '#/components/schemas/ExpressionStatement'
+      - $ref: '#/components/schemas/ReturnStatement'
+      - $ref: '#/components/schemas/OptionStatement'
+      - $ref: '#/components/schemas/BuiltinStatement'
+      - $ref: '#/components/schemas/TestStatement'
+    MemberAssignment:
+      description: Object property assignment
+      properties:
+        init:
+          $ref: '#/components/schemas/Expression'
+        member:
+          $ref: '#/components/schemas/MemberExpression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    LogEvent:
+      properties:
+        message:
+          description: A description of the event that occurred.
+          example: Halt and catch fire
+          readOnly: true
+          type: string
+        runID:
+          description: The ID of the task run that generated the event.
+          readOnly: true
+          type: string
+        time:
+          description: The time ([RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp)) that the event occurred.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+      type: object
+    LineProtocolError:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          enum:
+          - internal error
+          - not found
+          - conflict
+          - invalid
+          - empty value
+          - unavailable
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        line:
+          description: First line in the request body that contains malformed data.
+          format: int32
+          readOnly: true
+          type: integer
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    RunManually:
+      properties:
+        scheduledFor:
+          description: 'The time [RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)
+
+            used for the run''s `now` option.
+
+            Default is the server _now_ time.
+
+            '
+          format: date-time
+          nullable: true
+          type: string
+    Script:
+      properties:
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: string
+        language:
+          $ref: '#/components/schemas/ScriptLanguage'
+        name:
+          type: string
+        orgID:
+          type: string
+        script:
+          description: The script to execute.
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
+        url:
+          description: The invocation endpoint address.
+          type: string
+      required:
+      - name
+      - orgID
+      - script
+    BooleanLiteral:
+      description: Represents boolean values
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: boolean
+      type: object
+    Block:
+      description: A set of statements
+      properties:
+        body:
+          description: Block body
+          items:
+            $ref: '#/components/schemas/Statement'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    BuiltinStatement:
+      description: Declares a builtin identifier and its type
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    BadStatement:
+      description: A placeholder for statements for which no correct statement nodes can be created
+      properties:
+        text:
+          description: Raw source text
+          type: string
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Scripts:
+      properties:
+        scripts:
+          items:
+            $ref: '#/components/schemas/Script'
+          type: array
+      type: object
+    ObjectExpression:
+      description: Allows the declaration of an anonymous object within a declaration
+      properties:
+        properties:
+          description: Object properties
+          items:
+            $ref: '#/components/schemas/Property'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    IndexExpression:
+      description: Represents indexing into an array
+      properties:
+        array:
+          $ref: '#/components/schemas/Expression'
+        index:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ConditionalExpression:
+      description: Selects one of two expressions, `Alternate` or `Consequent`, depending on a third boolean expression, `Test`
+      properties:
+        alternate:
+          $ref: '#/components/schemas/Expression'
+        consequent:
+          $ref: '#/components/schemas/Expression'
+        test:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Identifier:
+      description: A valid Flux identifier
+      properties:
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ImportDeclaration:
+      description: Declares a package import
+      properties:
+        as:
+          $ref: '#/components/schemas/Identifier'
+        path:
+          $ref: '#/components/schemas/StringLiteral'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    TestStatement:
+      description: Declares a Flux test case
+      properties:
+        assignment:
+          $ref: '#/components/schemas/VariableAssignment'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    RegexpLiteral:
+      description: Expressions begin and end with `/` and are regular expressions with syntax accepted by RE2
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
+      type: object
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    TaskStatusType:
+      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
+
+        '
+      enum:
+      - active
+      - inactive
+      type: string
+    VariableAssignment:
+      description: Represents the declaration of a variable
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        init:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Tasks:
+      properties:
+        links:
+          $ref: '#/components/schemas/Links'
+          readOnly: true
+        tasks:
+          items:
+            $ref: '#/components/schemas/Task'
+          type: array
+      type: object
+    Dialect:
+      description: 'Options for tabular data output.
+
+        Default output is [annotated CSV](https://docs.influxdata.com/influxdb/cloud/reference/syntax/annotated-csv/#csv-response-format) with headers.
+
+
+        For more information about tabular data **dialect**,
+
+        see [W3 metadata vocabulary for tabular data](https://www.w3.org/TR/2015/REC-tabular-metadata-20151217/#dialect-descriptions).
+
+        '
+      properties:
+        annotations:
+          description: 'Annotation rows to include in the results.
+
+            An _annotation_ is metadata associated with an object (column) in the data model.
+
+
+            #### Related guides
+
+
+            - See [Annotated CSV annotations](https://docs.influxdata.com/influxdb/cloud/reference/syntax/annotated-csv/#annotations) for examples and more information.
+
+
+            For more information about **annotations** in tabular data,
+
+            see [W3 metadata vocabulary for tabular data](https://www.w3.org/TR/2015/REC-tabular-data-model-20151217/#columns).
+
+            '
+          items:
+            enum:
+            - group
+            - datatype
+            - default
+            type: string
+          type: array
+          uniqueItems: true
+        commentPrefix:
+          default: '#'
+          description: The character prefixed to comment strings. Default is a number sign (`#`).
+          maxLength: 1
+          minLength: 0
+          type: string
+        dateTimeFormat:
+          default: RFC3339
+          description: 'The format for timestamps in results.
+
+            Default is [`RFC3339` date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp).
+
+            To include nanoseconds in timestamps, use `RFC3339Nano`.
+
+
+            #### Example formatted date/time values
+
+
+            | Format      | Value                       |
+
+            |:------------|:----------------------------|
+
+            | `RFC3339`    | `"2006-01-02T15:04:05Z07:00"` |
+
+            | `RFC3339Nano` | `"2006-01-02T15:04:05.999999999Z07:00"` |
+
+            '
+          enum:
+          - RFC3339
+          - RFC3339Nano
+          type: string
+        delimiter:
+          default: ','
+          description: The separator used between cells. Default is a comma (`,`).
+          maxLength: 1
+          minLength: 1
+          type: string
+        header:
+          default: true
+          description: If true, the results contain a header row.
+          type: boolean
+      type: object
+    UnaryExpression:
+      description: Uses operators to act on a single operand in an expression
+      properties:
+        argument:
+          $ref: '#/components/schemas/Expression'
+        operator:
+          type: string
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    DateTimeLiteral:
+      description: Represents an instant in time with nanosecond precision in [RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp).
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          format: date-time
+          type: string
+      type: object
+    Expression:
+      oneOf:
+      - $ref: '#/components/schemas/ArrayExpression'
+      - $ref: '#/components/schemas/DictExpression'
+      - $ref: '#/components/schemas/FunctionExpression'
+      - $ref: '#/components/schemas/BinaryExpression'
+      - $ref: '#/components/schemas/CallExpression'
+      - $ref: '#/components/schemas/ConditionalExpression'
+      - $ref: '#/components/schemas/LogicalExpression'
+      - $ref: '#/components/schemas/MemberExpression'
+      - $ref: '#/components/schemas/IndexExpression'
+      - $ref: '#/components/schemas/ObjectExpression'
+      - $ref: '#/components/schemas/ParenExpression'
+      - $ref: '#/components/schemas/PipeExpression'
+      - $ref: '#/components/schemas/UnaryExpression'
+      - $ref: '#/components/schemas/BooleanLiteral'
+      - $ref: '#/components/schemas/DateTimeLiteral'
+      - $ref: '#/components/schemas/DurationLiteral'
+      - $ref: '#/components/schemas/FloatLiteral'
+      - $ref: '#/components/schemas/IntegerLiteral'
+      - $ref: '#/components/schemas/PipeLiteral'
+      - $ref: '#/components/schemas/RegexpLiteral'
+      - $ref: '#/components/schemas/StringLiteral'
+      - $ref: '#/components/schemas/UnsignedIntegerLiteral'
+      - $ref: '#/components/schemas/Identifier'
+    DictItem:
+      description: A key-value pair in a dictionary.
+      properties:
+        key:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+        val:
+          $ref: '#/components/schemas/Expression'
+      type: object
+    Node:
+      oneOf:
+      - $ref: '#/components/schemas/Expression'
+      - $ref: '#/components/schemas/Block'
+    ReturnStatement:
+      description: Defines an expression to return
+      properties:
+        argument:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    LineProtocolLengthError:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          enum:
+          - invalid
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+      required:
+      - code
+      - message
+    IntegerLiteral:
+      description: Represents integer numbers
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
+      type: object
+  responses:
+    GeneralServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Non 2XX error response from server.
+    AuthorizationError:
+      content:
+        application/json:
+          examples:
+            tokenNotAuthorized:
+              summary: Token is not authorized to access a resource
+              value:
+                code: unauthorized
+                message: unauthorized access
+          schema:
+            properties:
+              code:
+                description: 'The HTTP status code description. Default is `unauthorized`.
+
+                  '
+                enum:
+                - unauthorized
+                readOnly: true
+                type: string
+              message:
+                description: A human-readable message that may contain detail about the error.
+                readOnly: true
+                type: string
+      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    ServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Non 2XX error response from server.
+    BadRequestError:
+      content:
+        application/json:
+          examples:
+            orgProvidedNotFound:
+              summary: The org or orgID passed doesn't own the token passed in the header
+              value:
+                code: invalid
+                message: 'failed to decode request body: organization not found'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Bad request.
+
+        The response body contains detail about the error.
+
+
+        #### InfluxDB OSS
+
+
+        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
+
+        '
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
+    ResourceNotFoundError:
+      content:
+        application/json:
+          examples:
+            bucket-not-found:
+              summary: Bucket name not found
+              value:
+                code: not found
+                message: bucket "air_sensor" not found
+            org-not-found:
+              summary: Organization name not found
+              value:
+                code: not found
+                message: organization name "my-org" not found
+            orgID-not-found:
+              summary: Organization ID not found
+              value:
+                code: not found
+                message: organization not found
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    BasicAuthentication:
+      description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"
+      scheme: basic
+      type: http
+    TokenAuthentication:
+      description: "Use the [Token authentication](#section/Authentication/TokenAuthentication)\nscheme to authenticate to the InfluxDB API.\n\nIn your API requests, send an `Authorization` header.\nFor the header value, provide the word `Token` followed by a space and an InfluxDB API token.\nThe word `Token` is case-sensitive.\n\n### Syntax\n\n`Authorization: Token INFLUX_API_TOKEN`\n\n### Example\n\n#### Use Token authentication with cURL\n\nThe following example shows how to use cURL to send an API request that uses Token authentication:\n\n```sh\ncurl --request GET \"INFLUX_URL/api/v2/buckets\" \\\n     --header \"Authorization: Token INFLUX_API_TOKEN\"\n```\n\nReplace the following:\n\n  - *`INFLUX_URL`*: your InfluxDB Cloud URL\n  - *`INFLUX_API_TOKEN`*: your [InfluxDB API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n\n### Related endpoints\n\n- [`/authorizations` endpoints](#tag/Authorizations-(API-tokens))\n\n### Related guides\n\n- [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)\n- [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)\n"
+      in: header
+      name: Authorization
+      type: apiKey
+x-tagGroups:
+- name: Overview
+  tags:
+  - Quick start
+  - Authentication
+  - Supported operations
+  - Headers
+  - Pagination
+  - Response codes
+- name: Popular endpoints
+  tags:
+  - Data I/O endpoints
+  - Security and access endpoints
+  - System information endpoints
+- name: All endpoints
+  tags: []

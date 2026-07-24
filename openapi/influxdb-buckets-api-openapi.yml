@@ -1,0 +1,1926 @@
+openapi: 3.0.0
+info:
+  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Buckets API
+  description: 'Create and manage authorizations (API tokens).
+
+
+    An _authorization_ contains a list of `read` and `write`
+
+    permissions for organization resources and provides an API token for authentication.
+
+    An authorization belongs to an organization and only contains permissions for that organization.
+
+
+    We recommend the following for managing your tokens:
+
+
+    - Create a generic user to create and manage tokens for writing data.
+
+    - Store your tokens in a secure password vault for future access.
+
+
+    ### User sessions with authorizations
+
+
+    Optionally, when creating an authorization, you can scope it to a specific user.
+
+    If the user signs in with username and password, creating a _user session_,
+
+    the session carries the permissions granted by all the user''s authorizations.
+
+    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
+
+    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
+
+
+    ### Related endpoints
+
+
+    - [Signin](#tag/Signin)
+
+    - [Signout](#tag/Signout)
+
+
+    ### Related guides
+
+
+    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
+
+    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
+
+    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
+
+    '
+servers:
+- url: ''
+security:
+- TokenAuthentication: []
+tags:
+- description: 'Store your data in InfluxDB [buckets](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket).
+
+    A bucket is a named location where time series data is stored. All buckets
+
+    have a [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period),
+
+    a duration of time that each data point persists. InfluxDB drops all
+
+    points with timestamps older than the bucket’s retention period.
+
+    A bucket belongs to an organization.
+
+
+    ### Related guides
+
+
+    - [Manage buckets](https://docs.influxdata.com/influxdb/cloud/organizations/buckets/)
+
+    '
+  name: Buckets
+paths:
+  /api/v2/buckets:
+    get:
+      description: "Lists [buckets](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket).\n\nInfluxDB retrieves buckets owned by the\n[organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization)\nassociated with the authorization\n([API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)).\nTo limit which buckets are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all buckets up to the\ndefault `limit`.\n\n#### InfluxDB OSS\n\n- If you use an _[operator token](https://docs.influxdata.com/influxdb/cloud/security/tokens/#operator-token)_\n  to authenticate your request, InfluxDB retrieves resources for _all\n  organizations_ in the instance.\n  To retrieve resources for only a specific organization, use the\n  `org` parameter or the `orgID` parameter to specify the organization.\n\n#### Required permissions\n\n| Action                    | Permission required |\n|:--------------------------|:--------------------|\n| Retrieve _user buckets_   | `read-buckets`      |\n| Retrieve [_system buckets_](https://docs.influxdata.com/influxdb/cloud/reference/internals/system-buckets/) | `read-orgs`         |\n\n#### Related Guides\n\n- [Manage buckets](https://docs.influxdata.com/influxdb/cloud/organizations/buckets/)\n"
+      operationId: GetBuckets
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/After'
+      - description: 'An organization name.
+
+
+          #### InfluxDB Cloud
+
+
+          - Doesn''t use the `org` parameter or `orgID` parameter.
+
+          - Lists buckets for the organization associated with the authorization (API token).
+
+
+          #### InfluxDB OSS
+
+
+          - Lists buckets for the specified organization.
+
+          '
+        in: query
+        name: org
+        schema:
+          type: string
+      - description: 'An organization ID.
+
+
+          #### InfluxDB Cloud
+
+
+          - Doesn''t use the `org` parameter or `orgID` parameter.
+
+          - Lists buckets for the organization associated with the authorization (API token).
+
+
+          #### InfluxDB OSS
+
+
+          - Requires either the `org` parameter or `orgID` parameter.
+
+          - Lists buckets for the specified organization.
+
+          '
+        in: query
+        name: orgID
+        schema:
+          type: string
+      - description: 'A bucket name.
+
+          Only returns buckets with the specified name.
+
+          '
+        in: query
+        name: name
+        schema:
+          type: string
+      - description: 'A bucket ID.
+
+          Only returns the bucket with the specified ID.
+
+          '
+        in: query
+        name: id
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    buckets:
+                    - createdAt: '2022-03-15T17:22:33.72617939Z'
+                      description: System bucket for monitoring logs
+                      id: 77ca9dace40a9bfc
+                      labels: []
+                      links:
+                        labels: /api/v2/buckets/77ca9dace40a9bfc/labels
+                        members: /api/v2/buckets/77ca9dace40a9bfc/members
+                        org: /api/v2/orgs/INFLUX_ORG_ID
+                        owners: /api/v2/buckets/77ca9dace40a9bfc/owners
+                        self: /api/v2/buckets/77ca9dace40a9bfc
+                        write: /api/v2/write?org=ORG_ID&bucket=77ca9dace40a9bfc
+                      name: _monitoring
+                      orgID: INFLUX_ORG_ID
+                      retentionRules:
+                      - everySeconds: 604800
+                        type: expire
+                      schemaType: implicit
+                      type: system
+                      updatedAt: '2022-03-15T17:22:33.726179487Z'
+                    links:
+                      self: /api/v2/buckets?descending=false&limit=20&name=_monitoring&offset=0&orgID=ORG_ID
+              schema:
+                $ref: '#/components/schemas/Buckets'
+          description: 'Success.
+
+            The response body contains a list of `buckets`.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List buckets
+      tags:
+      - Buckets
+      x-codeSamples:
+      - label: 'cURL: filter buckets by name'
+        lang: Shell
+        source: "curl --request GET \"http://localhost:8086/api/v2/buckets?name=_monitoring\" \\\n  --header \"Authorization: Token INFLUX_TOKEN\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Content-Type: application/json\"\n"
+    post:
+      description: 'Creates a [bucket](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket)
+
+        and returns the bucket resource.
+
+        The default data
+
+        [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period)
+
+        is 30 days.
+
+
+        #### InfluxDB OSS
+
+
+        - A single InfluxDB OSS instance supports active writes or queries for
+
+        approximately 20 buckets across all organizations at a given time.
+
+        Reading or writing to more than 20 buckets at a time can adversely affect
+
+        performance.
+
+
+        #### Limitations
+
+
+        - InfluxDB Cloud Free Plan allows users to create up to two buckets.
+
+        Exceeding the bucket quota will result in an HTTP `403` status code.
+
+        For additional information regarding InfluxDB Cloud offerings, see
+
+        [InfluxDB Cloud Pricing](https://www.influxdata.com/influxdb-cloud-pricing/).
+
+
+        #### Related Guides
+
+
+        - [Create a bucket](https://docs.influxdata.com/influxdb/cloud/organizations/buckets/create-bucket/)
+
+        - [Create bucket CLI reference](https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/bucket/create)
+
+        '
+      operationId: PostBuckets
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostBucketRequest'
+        description: The bucket to create.
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    createdAt: '2022-08-03T23:04:41.073704121Z'
+                    description: A bucket holding air sensor data
+                    id: 37407e232b3911d8
+                    labels: []
+                    links:
+                      labels: /api/v2/buckets/37407e232b3911d8/labels
+                      members: /api/v2/buckets/37407e232b3911d8/members
+                      org: /api/v2/orgs/INFLUX_ORG_ID
+                      owners: /api/v2/buckets/37407e232b3911d8/owners
+                      self: /api/v2/buckets/37407e232b3911d8
+                      write: /api/v2/write?org=INFLUX_ORG_ID&bucket=37407e232b3911d8
+                    name: air_sensor
+                    orgID: INFLUX_ORG_ID
+                    retentionRules:
+                    - everySeconds: 2592000
+                      type: expire
+                    schemaType: implicit
+                    type: user
+                    updatedAt: '2022-08-03T23:04:41.073704228Z'
+              schema:
+                $ref: '#/components/schemas/Bucket'
+          description: 'Success.
+
+            The bucket is created.
+
+            '
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad request.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '403':
+          content:
+            application/json:
+              examples:
+                quotaExceeded:
+                  summary: Bucket quota exceeded
+                  value:
+                    code: forbidden
+                    message: creating bucket would exceed quota
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Forbidden.
+
+            The bucket quota is exceeded.
+
+            '
+          headers:
+            X-Platform-Error-Code:
+              description: 'The reason for the error.
+
+                '
+              schema:
+                example: forbidden
+                type: string
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unprocessable Entity.
+
+            The request body failed validation.
+
+            '
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Create a bucket
+      tags:
+      - Buckets
+      x-codeSamples:
+      - label: 'cURL: create a bucket with retention period'
+        lang: Shell
+        source: "curl --request POST \"http://localhost:8086/api/v2/buckets \\\n  --header \"Authorization: Token INFLUX_TOKEN\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Content-Type: application/json\" \\\n  --data '{\n      \"name\": \"air_sensor\",\n      \"description\": \"A bucket holding air sensor data\",\n      \"orgID\": \"INFLUX_ORG_ID\",\n      \"retentionRules\": [\n          {\n              \"type\": \"expire\",\n              \"everySeconds\": 2592000,\n          }\n      ]\n    }'\n"
+      - label: cURL
+        lang: Shell
+        source: ''
+  /api/v2/buckets/{bucketID}:
+    delete:
+      description: "Deletes a bucket and all associated records.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a delete request:\n\n  1. Validates the request and queues the delete.\n  2. Returns an HTTP `204` status code if queued; _error_ otherwise.\n  3. Handles the delete asynchronously.\n\n#### InfluxDB OSS\n\n- Validates the request, handles the delete synchronously,\nand then responds with success or failure.\n\n#### Limitations\n\n- Only one bucket can be deleted per request.\n\n#### Related Guides\n\n- [Delete a bucket](https://docs.influxdata.com/influxdb/cloud/organizations/buckets/delete-bucket/#delete-a-bucket-in-the-influxdb-ui)\n"
+      operationId: DeleteBucketsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'Bucket ID.
+
+          The ID of the bucket to delete.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: "Success.\n\n#### InfluxDB Cloud\n  - The bucket is queued for deletion.\n\n#### InfluxDB OSS\n  - The bucket is deleted.\n"
+        '400':
+          content:
+            application/json:
+              examples:
+                invalidID:
+                  summary: 'Invalid ID.
+
+                    '
+                  value:
+                    code: invalid
+                    message: id must have a length of 16 bytes
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad Request.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          content:
+            application/json:
+              examples:
+                notFound:
+                  summary: 'The requested bucket was not found.
+
+                    '
+                  value:
+                    code: not found
+                    message: bucket not found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Not found.
+
+            Bucket not found.
+
+            '
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a bucket
+      tags:
+      - Buckets
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request DELETE \"http://localhost:8086/api/v2/buckets/BUCKET_ID\" \\\n  --header \"Authorization: Token INFLUX_TOKEN\" \\\n  --header 'Accept: application/json'\n"
+    get:
+      description: 'Retrieves a bucket.
+
+
+        Use this endpoint to retrieve information for a specific bucket.
+
+        '
+      operationId: GetBucketsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the bucket to retrieve.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    createdAt: '2022-08-03T23:04:41.073704121Z'
+                    description: bucket for air sensor data
+                    id: 37407e232b3911d8
+                    labels: []
+                    links:
+                      labels: /api/v2/buckets/37407e232b3911d8/labels
+                      members: /api/v2/buckets/37407e232b3911d8/members
+                      org: /api/v2/orgs/INFLUX_ORG_ID
+                      owners: /api/v2/buckets/37407e232b3911d8/owners
+                      self: /api/v2/buckets/37407e232b3911d8
+                      write: /api/v2/write?org=INFLUX_ORG_ID&bucket=37407e232b3911d8
+                    name: air-sensor
+                    orgID: bea7ea952287f70d
+                    retentionRules:
+                    - everySeconds: 2592000
+                      type: expire
+                    schemaType: implicit
+                    type: user
+                    updatedAt: '2022-08-03T23:04:41.073704228Z'
+              schema:
+                $ref: '#/components/schemas/Bucket'
+          description: 'Success.
+
+            The response body contains the bucket information.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          content:
+            application/json:
+              examples:
+                notFound:
+                  summary: 'The requested bucket wasn''t found.
+
+                    '
+                  value:
+                    code: not found
+                    message: bucket not found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Not found.
+
+            Bucket not found.
+
+            '
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Retrieve a bucket
+      tags:
+      - Buckets
+    patch:
+      description: 'Updates a bucket.
+
+
+        Use this endpoint to update properties
+
+        (`name`, `description`, and `retentionRules`) of a bucket.
+
+
+        #### InfluxDB Cloud
+
+
+        - Requires the `retentionRules` property in the request body. If you don''t
+
+        provide `retentionRules`, InfluxDB responds with an HTTP `403` status code.
+
+
+        #### InfluxDB OSS
+
+
+        - Doesn''t require `retentionRules`.
+
+
+        #### Related Guides
+
+
+        - [Update a bucket](https://docs.influxdata.com/influxdb/cloud/organizations/buckets/update-bucket/)
+
+        '
+      operationId: PatchBucketsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The bucket ID.
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchBucketRequest'
+        description: The bucket update to apply.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    createdAt: '2022-08-03T23:04:41.073704121Z'
+                    description: bucket holding air sensor data
+                    id: 37407e232b3911d8
+                    labels: []
+                    links:
+                      labels: /api/v2/buckets/37407e232b3911d8/labels
+                      members: /api/v2/buckets/37407e232b3911d8/members
+                      org: /api/v2/orgs/INFLUX_ORG_ID
+                      owners: /api/v2/buckets/37407e232b3911d8/owners
+                      self: /api/v2/buckets/37407e232b3911d8
+                      write: /api/v2/write?org=INFLUX_ORG_ID&bucket=37407e232b3911d8
+                    name: air_sensor
+                    orgID: INFLUX_ORG_ID
+                    retentionRules:
+                    - everySeconds: 2592000
+                      type: expire
+                    schemaType: implicit
+                    type: user
+                    updatedAt: '2022-08-07T22:49:49.422962913Z'
+              schema:
+                $ref: '#/components/schemas/Bucket'
+          description: An updated bucket
+        '400':
+          content:
+            application/json:
+              examples:
+                invalidJSONStringValue:
+                  description: 'If the request body contains invalid JSON, InfluxDB returns `invalid`
+
+                    with detail about the problem.
+
+                    '
+                  summary: Invalid JSON
+                  value:
+                    code: invalid
+                    message: 'invalid json: invalid character ''\'''' looking for beginning of value'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Bad Request.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '403':
+          content:
+            application/json:
+              examples:
+                invalidRetention:
+                  summary: 'The retention policy provided exceeds the max retention for the
+
+                    organization.
+
+                    '
+                  value:
+                    code: forbidden
+                    message: provided retention exceeds orgs maximum retention duration
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Forbidden.
+
+            '
+        '404':
+          content:
+            application/json:
+              examples:
+                notFound:
+                  summary: 'The requested bucket wasn''t found.
+
+                    '
+                  value:
+                    code: not found
+                    message: bucket not found
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Not found.
+
+            Bucket not found.
+
+            '
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Update a bucket
+      tags:
+      - Buckets
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request PATCH \"http://localhost:8086/api/v2/buckets/BUCKET_ID \\\n  --header \"Authorization: Token INFLUX_TOKEN\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Content-Type: application/json\" \\\n  --data '{\n      \"name\": \"air_sensor\",\n      \"description\": \"bucket holding air sensor data\",\n      \"retentionRules\": [\n          {\n              \"type\": \"expire\",\n              \"everySeconds\": 2592000\n          }\n      ]\n    }'\n"
+  /api/v2/buckets/{bucketID}/labels:
+    get:
+      description: 'Lists all labels for a bucket.
+
+
+        Labels are objects that contain `labelID`, `name`, `description`, and `color`
+
+        key-value pairs. They may be used for grouping and filtering InfluxDB
+
+        resources.
+
+        Labels are also capable of grouping across different resources--for example,
+
+        you can apply a label named `air_sensor` to a bucket and a task to quickly
+
+        organize resources.
+
+
+        #### Related guides
+
+
+        - Use the [`/api/v2/labels` InfluxDB API endpoint](#tag/Labels) to retrieve and manage labels.
+
+        - [Manage labels in the InfluxDB UI](https://docs.influxdata.com/influxdb/cloud/visualize-data/labels/)
+
+        '
+      operationId: GetBucketsIDLabels
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the bucket to retrieve labels for.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    labels:
+                    - id: 09cbd068e7ebb000
+                      name: production_buckets
+                      orgID: INFLUX_ORG_ID
+                    links:
+                      self: /api/v2/labels
+              schema:
+                $ref: '#/components/schemas/LabelsResponse'
+          description: 'Success.
+
+            The response body contains a list of all labels for the bucket.
+
+            '
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all labels for a bucket
+      tags:
+      - Buckets
+    post:
+      description: "Adds a label to a bucket and returns the new label information.\n\nLabels are objects that contain `labelID`, `name`, `description`, and `color`\nkey-value pairs. They may be used for grouping and filtering across one or\nmore kinds of **resources**--for example, you can apply a label named\n`air_sensor` to a bucket and a task to quickly organize resources.\n\n#### Limitations\n\n- Before adding a label to a bucket, you must create the label if you\n  haven't already. To create a label with the InfluxDB API, send a `POST`\n  request to the [`/api/v2/labels` endpoint](#operation/PostLabels)).\n\n#### Related guides\n\n- Use the [`/api/v2/labels` InfluxDB API endpoint](#tag/Labels) to retrieve and manage labels.\n- [Manage labels in the InfluxDB UI](https://docs.influxdata.com/influxdb/cloud/visualize-data/labels/)\n"
+      operationId: PostBucketsIDLabels
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'Bucket ID.
+
+          The ID of the bucket to label.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabelMapping'
+        description: An object that contains a _`labelID`_ to add to the bucket.
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    label:
+                      id: 09cbd068e7ebb000
+                      name: production_buckets
+                      orgID: INFLUX_ORG_ID
+                    links:
+                      self: /api/v2/labels
+              schema:
+                $ref: '#/components/schemas/LabelResponse'
+          description: 'Success.
+
+            The response body contains the label information.
+
+            '
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+          examples:
+            invalidRequest:
+              summary: The `labelID` is missing from the request body.
+              value:
+                code: invalid
+                message: label id is required
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '422':
+          content:
+            application/json:
+              examples:
+                conflictingResource:
+                  summary: 'Label already exists on the resource.
+
+                    '
+                  value:
+                    code: conflict
+                    message: Cannot add label, label already exists on resource
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: 'Unprocessable entity.
+
+            Label already exists on the resource.
+
+            '
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add a label to a bucket
+      tags:
+      - Buckets
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request POST \"http://localhost:8086/api/v2/buckets/BUCKETS_ID/labels \\\n  --header \"Authorization: Token INFLUX_TOKEN\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Content-Type: application/json\" \\\n  --data '{\n      \"labelID\": \"09cbd068e7ebb000\"\n    }'\n"
+  /api/v2/buckets/{bucketID}/labels/{labelID}:
+    delete:
+      operationId: DeleteBucketsIDLabelsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The bucket ID.
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      - description: The ID of the label to delete.
+        in: path
+        name: labelID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Delete has been accepted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Bucket not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a label from a bucket
+      tags:
+      - Buckets
+  /api/v2/buckets/{bucketID}/members:
+    get:
+      description: 'Lists all users for a bucket.
+
+
+        InfluxDB [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) have
+
+        permission to access InfluxDB.
+
+
+        [Members](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#member) are users in
+
+        an organization with access to the specified resource.
+
+
+        Use this endpoint to retrieve all users with access to a bucket.
+
+
+        #### Related guides
+
+
+        - [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)
+
+        - [Manage members](https://docs.influxdata.com/influxdb/cloud/organizations/members/)
+
+        '
+      operationId: GetBucketsIDMembers
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the bucket to retrieve users for.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    links:
+                      self: /api/v2/buckets/37407e232b3911d8/members
+                    users:
+                    - id: 791df274afd48a83
+                      links:
+                        self: /api/v2/users/791df274afd48a83
+                      name: example_user_1
+                      role: member
+                      status: active
+                    - id: 09cfb87051cbe000
+                      links:
+                        self: /api/v2/users/09cfb87051cbe000
+                      name: example_user_2
+                      role: owner
+                      status: active
+              schema:
+                $ref: '#/components/schemas/ResourceMembers'
+          description: 'Success.
+
+            The response body contains a list of all users for the bucket.
+
+            '
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all users with member privileges for a bucket
+      tags:
+      - Buckets
+    post:
+      description: 'Add a user to a bucket and return the new user information.
+
+
+        InfluxDB [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) have
+
+        permission to access InfluxDB.
+
+
+        [Members](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#member) are users in
+
+        an organization.
+
+
+        Use this endpoint to give a user member privileges to a bucket.
+
+
+        #### Related guides
+
+
+        - [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)
+
+        - [Manage members](https://docs.influxdata.com/influxdb/cloud/organizations/members/)
+
+        '
+      operationId: PostBucketsIDMembers
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the bucket to retrieve users for.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddResourceMemberRequestBody'
+        description: A user to add as a member to the bucket.
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    id: 09cfb87051cbe000
+                    links:
+                      self: /api/v2/users/09cfb87051cbe000
+                    name: example_user_1
+                    role: member
+                    status: active
+              schema:
+                $ref: '#/components/schemas/ResourceMember'
+          description: 'Success.
+
+            The response body contains the user information.
+
+            '
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+          examples:
+            invalidRequest:
+              summary: The user `id` is missing from the request body.
+              value:
+                code: invalid
+                message: user id missing or invalid
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add a member to a bucket
+      tags:
+      - Buckets
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request POST \"http://localhost:8086/api/v2/buckets/BUCKET_ID/members \\\n  --header \"Authorization: Token INFLUX_API_TOKEN\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Content-Type: application/json\" \\\n  --data '{\n      \"id\": \"09cfb87051cbe000\"\n    }\n"
+  /api/v2/buckets/{bucketID}/members/{userID}:
+    delete:
+      description: 'Removes a member from a bucket.
+
+
+        Use this endpoint to remove a user''s member privileges from a bucket. This
+
+        removes the user''s `read` and `write` permissions for the bucket.
+
+
+        #### Related guides
+
+
+        - [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)
+
+        - [Manage members](https://docs.influxdata.com/influxdb/cloud/organizations/members/)
+
+        '
+      operationId: DeleteBucketsIDMembersID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the user to remove.
+
+          '
+        in: path
+        name: userID
+        required: true
+        schema:
+          type: string
+      - description: 'The ID of the bucket to remove a user from.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: 'Success.
+
+            The user is no longer a member of the bucket.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Remove a member from a bucket
+      tags:
+      - Buckets
+  /api/v2/buckets/{bucketID}/owners:
+    get:
+      description: "Lists all [owners](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#owner)\nof a bucket.\n\nBucket owners have permission to delete buckets and remove user and member\npermissions from the bucket.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owner permissions are separate from API token permissions.\n- Owner permissions are used in the context of the InfluxDB UI.\n\n#### Required permissions\n\n- `read-orgs INFLUX_ORG_ID`\n\n*`INFLUX_ORG_ID`* is the ID of the organization that you want to retrieve a\nlist of owners for.\n\n#### Related endpoints\n\n- [Authorizations](#tag/Authorizations-(API-tokens))\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)\n"
+      operationId: GetBucketsIDOwners
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the bucket to retrieve owners for.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                successResponse:
+                  value:
+                    links:
+                      self: /api/v2/buckets/BUCKET_ID/owners
+                    users:
+                    - id: d88d182d91b0950f
+                      links:
+                        self: /api/v2/users/d88d182d91b0950f
+                      name: example-owner
+                      role: owner
+                      status: active
+              schema:
+                $ref: '#/components/schemas/ResourceOwners'
+          description: 'Success.
+
+            The response body contains a list of all owners for the bucket.
+
+            '
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all owners of a bucket
+      tags:
+      - Buckets
+    post:
+      description: "Adds an owner to a bucket and returns the [owners](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#owner)\nwith role and user detail.\n\nUse this endpoint to create a _resource owner_ for the bucket.\nBucket owners have permission to delete buckets and remove user and member\npermissions from the bucket.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owner permissions are separate from API token permissions.\n- Owner permissions are used in the context of the InfluxDB UI.\n\n#### Required permissions\n\n- `write-orgs INFLUX_ORG_ID`\n*`INFLUX_ORG_ID`* is the ID of the organization that you want to add\n  an owner for.\n\n#### Related endpoints\n\n- [Authorizations](#tag/Authorizations-(API-tokens))\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)\n"
+      operationId: PostBucketsIDOwners
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the bucket to add an owner for.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            examples:
+              successResponse:
+                value:
+                  id: d88d182d91b0950f
+                  links:
+                    self: /api/v2/users/d88d182d91b0950f
+                  name: example-user
+                  role: owner
+                  status: active
+            schema:
+              $ref: '#/components/schemas/AddResourceMemberRequestBody'
+        description: A user to add as an owner for the bucket.
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceOwner'
+          description: 'Created.
+
+            The bucket `owner` role is assigned to the user.
+
+            The response body contains the resource owner with
+
+            role and user detail.
+
+            '
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+          examples:
+            invalidRequest:
+              summary: The user `id` is missing from the request body.
+              value:
+                code: invalid
+                message: user id missing or invalid
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add an owner to a bucket
+      tags:
+      - Buckets
+      x-codeSamples:
+      - label: cURL
+        lang: Shell
+        source: "curl --request POST \"http://localhost:8086/api/v2/buckets/BUCKET_ID/owners \\\n  --header \"Authorization: Token INFLUX_API_TOKEN\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Content-Type: application/json\" \\\n  --data '{\n      \"id\": \"09cfb87051cbe000\"\n    }\n"
+  /api/v2/buckets/{bucketID}/owners/{userID}:
+    delete:
+      description: "Removes an owner from a bucket.\n\nUse this endpoint to remove a user's `owner` role for a bucket.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owner permissions are separate from API token permissions.\n- Owner permissions are used in the context of the InfluxDB UI.\n\n#### Required permissions\n\n- `write-orgs INFLUX_ORG_ID`\n\n*`INFLUX_ORG_ID`* is the ID of the organization that you want to remove an owner\nfrom.\n\n#### Related endpoints\n\n- [Authorizations](#tag/Authorizations-(API-tokens))\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)\n"
+      operationId: DeleteBucketsIDOwnersID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: 'The ID of the owner to remove.
+
+          '
+        in: path
+        name: userID
+        required: true
+        schema:
+          type: string
+      - description: 'The ID of the bucket to remove an owner from.
+
+          '
+        in: path
+        name: bucketID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: 'Success.
+
+            The user is no longer an owner of the bucket.
+
+            '
+        '401':
+          $ref: '#/components/responses/AuthorizationError'
+        '404':
+          $ref: '#/components/responses/ResourceNotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Remove an owner from a bucket
+      tags:
+      - Buckets
+components:
+  parameters:
+    Offset:
+      description: 'The offset for pagination.
+
+        The number of records to skip.
+
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    After:
+      description: 'A resource ID to seek from.
+
+        Returns records created after the specified record;
+
+        results don''t include the specified record.
+
+
+        Use `after` instead of the `offset` parameter.
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: after
+      required: false
+      schema:
+        type: string
+    Limit:
+      description: 'Limits the number of records returned. Default is `20`.
+
+        '
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 20
+        maximum: 100
+        minimum: 1
+        type: integer
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
+  schemas:
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    PostBucketRequest:
+      properties:
+        description:
+          description: 'A description of the bucket.
+
+            '
+          type: string
+        name:
+          description: 'The bucket name.
+
+            '
+          type: string
+        orgID:
+          description: 'The organization ID.
+
+            Specifies the organization that owns the bucket.
+
+            '
+          type: string
+        retentionRules:
+          $ref: '#/components/schemas/RetentionRules'
+        rp:
+          default: '0'
+          description: 'The retention policy for the bucket.
+
+            For InfluxDB 1.x, specifies the duration of time that each data point
+
+            in the retention policy persists.
+
+
+            If you need compatibility with InfluxDB 1.x, specify a value for the `rp` property;
+
+            otherwise, see the `retentionRules` property.
+
+
+            [Retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp)
+
+            is an InfluxDB 1.x concept.
+
+            The InfluxDB 2.x and Cloud equivalent is
+
+            [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period).
+
+            The InfluxDB `/api/v2` API uses `RetentionRules` to configure the retention period.
+
+            '
+          type: string
+        schemaType:
+          $ref: '#/components/schemas/SchemaType'
+          default: implicit
+          description: 'The schema Type. Default is `implicit`.
+
+
+            #### InfluxDB Cloud
+
+
+            - Use `explicit` to enforce column names, tags, fields, and data types for
+
+            your data.
+
+
+            #### InfluxDB OSS
+
+
+            - Doesn''t support `explicit` bucket schemas.
+
+            '
+      required:
+      - orgID
+      - name
+    RetentionRule:
+      properties:
+        everySeconds:
+          default: 2592000
+          description: 'The duration in seconds for how long data will be kept in the database.
+
+            The default duration is 2592000 (30 days).
+
+            0 represents infinite retention.
+
+            '
+          example: 86400
+          format: int64
+          minimum: 0
+          type: integer
+        shardGroupDurationSeconds:
+          description: 'The shard group duration.
+
+            The duration or interval (in seconds) that each shard group covers.
+
+
+            #### InfluxDB Cloud
+
+
+            - Does not use `shardGroupDurationsSeconds`.
+
+
+            #### InfluxDB OSS
+
+
+            - Default value depends on the
+
+            [bucket retention period](https://docs.influxdata.com/influxdb/cloud/reference/internals/shards/#shard-group-duration).
+
+            '
+          format: int64
+          type: integer
+        type:
+          default: expire
+          enum:
+          - expire
+          type: string
+      required:
+      - everySeconds
+      type: object
+    ResourceOwner:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: owner
+            enum:
+            - owner
+            type: string
+        type: object
+    ResourceMembers:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceMember'
+          type: array
+      type: object
+    UserResponse:
+      properties:
+        id:
+          description: 'The user ID.
+
+            '
+          readOnly: true
+          type: string
+        links:
+          example:
+            self: /api/v2/users/1
+          properties:
+            self:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        name:
+          description: 'The user name.
+
+            '
+          type: string
+        status:
+          default: active
+          description: 'The status of a user.
+
+            An inactive user can''t read or write resources.
+
+            '
+          enum:
+          - active
+          - inactive
+          type: string
+      required:
+      - name
+    SchemaType:
+      enum:
+      - implicit
+      - explicit
+      type: string
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    PatchRetentionRules:
+      description: Updates to rules to expire or retain data. No rules means no updates.
+      items:
+        $ref: '#/components/schemas/PatchRetentionRule'
+      type: array
+    RetentionRules:
+      description: 'Retention rules to expire or retain data.
+
+        The InfluxDB `/api/v2` API uses `RetentionRules` to configure the [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period).
+
+
+        #### InfluxDB Cloud
+
+
+        - `retentionRules` is required.
+
+
+        #### InfluxDB OSS
+
+
+        - `retentionRules` isn''t required.
+
+        '
+      items:
+        $ref: '#/components/schemas/RetentionRule'
+      type: array
+    ResourceMember:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: member
+            enum:
+            - member
+            type: string
+        type: object
+    PatchRetentionRule:
+      properties:
+        everySeconds:
+          default: 2592000
+          description: 'The number of seconds to keep data.
+
+            Default duration is `2592000` (30 days).
+
+            `0` represents infinite retention.
+
+            '
+          example: 86400
+          format: int64
+          minimum: 0
+          type: integer
+        shardGroupDurationSeconds:
+          description: 'The [shard group duration](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#shard).
+
+            The number of seconds that each shard group covers.
+
+
+            #### InfluxDB Cloud
+
+
+            - Doesn''t use `shardGroupDurationsSeconds`.
+
+
+            #### InfluxDB OSS
+
+
+            - Default value depends on the [bucket retention period](https://docs.influxdata.com/influxdb/cloud/reference/internals/shards/#shard-group-duration).
+
+
+            #### Related guides
+
+
+            - InfluxDB [shards and shard groups](https://docs.influxdata.com/influxdb/cloud/reference/internals/shards/)
+
+            '
+          format: int64
+          type: integer
+        type:
+          default: expire
+          enum:
+          - expire
+          type: string
+      required:
+      - everySeconds
+      type: object
+    Buckets:
+      properties:
+        buckets:
+          items:
+            $ref: '#/components/schemas/Bucket'
+          type: array
+        links:
+          $ref: '#/components/schemas/Links'
+          readOnly: true
+      type: object
+    Bucket:
+      properties:
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: string
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          example:
+            labels: /api/v2/buckets/1/labels
+            members: /api/v2/buckets/1/members
+            org: /api/v2/orgs/2
+            owners: /api/v2/buckets/1/owners
+            self: /api/v2/buckets/1
+            write: /api/v2/write?org=2&bucket=1
+          properties:
+            labels:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve labels for this bucket.
+            members:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve members that can read this bucket.
+            org:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve parent organization for this bucket.
+            owners:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve owners that can read and write to this bucket.
+            self:
+              $ref: '#/components/schemas/Link'
+              description: The URL for this bucket.
+            write:
+              $ref: '#/components/schemas/Link'
+              description: The URL to write line protocol to this bucket.
+          readOnly: true
+          type: object
+        name:
+          type: string
+        orgID:
+          type: string
+        retentionRules:
+          $ref: '#/components/schemas/RetentionRules'
+        rp:
+          type: string
+        schemaType:
+          $ref: '#/components/schemas/SchemaType'
+          default: implicit
+        type:
+          default: user
+          enum:
+          - user
+          - system
+          readOnly: true
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - name
+      - retentionRules
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    PatchBucketRequest:
+      description: 'An object that contains updated bucket properties to apply.
+
+        '
+      properties:
+        description:
+          description: 'A description of the bucket.
+
+            '
+          type: string
+        name:
+          description: 'The name of the bucket.
+
+            '
+          type: string
+        retentionRules:
+          $ref: '#/components/schemas/PatchRetentionRules'
+      type: object
+    ResourceOwners:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+          type: array
+      type: object
+    AddResourceMemberRequestBody:
+      properties:
+        id:
+          description: 'The ID of the user to add to the resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the user to add to the resource.
+
+            '
+          type: string
+      required:
+      - id
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+  responses:
+    AuthorizationError:
+      content:
+        application/json:
+          examples:
+            tokenNotAuthorized:
+              summary: Token is not authorized to access a resource
+              value:
+                code: unauthorized
+                message: unauthorized access
+          schema:
+            properties:
+              code:
+                description: 'The HTTP status code description. Default is `unauthorized`.
+
+                  '
+                enum:
+                - unauthorized
+                readOnly: true
+                type: string
+              message:
+                description: A human-readable message that may contain detail about the error.
+                readOnly: true
+                type: string
+      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    BadRequestError:
+      content:
+        application/json:
+          examples:
+            orgProvidedNotFound:
+              summary: The org or orgID passed doesn't own the token passed in the header
+              value:
+                code: invalid
+                message: 'failed to decode request body: organization not found'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Bad request.
+
+        The response body contains detail about the error.
+
+
+        #### InfluxDB OSS
+
+
+        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
+
+        '
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
+    ResourceNotFoundError:
+      content:
+        application/json:
+          examples:
+            bucket-not-found:
+              summary: Bucket name not found
+              value:
+                code: not found
+                message: bucket "air_sensor" not found
+            org-not-found:
+              summary: Organization name not found
+              value:
+                code: not found
+                message: organization name "my-org" not found
+            orgID-not-found:
+              summary: Organization ID not found
+              value:
+                code: not found
+                message: organization not found
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
+  securitySchemes:
+    BasicAuthentication:
+      description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"
+      scheme: basic
+      type: http
+    TokenAuthentication:
+      description: "Use the [Token authentication](#section/Authentication/TokenAuthentication)\nscheme to authenticate to the InfluxDB API.\n\nIn your API requests, send an `Authorization` header.\nFor the header value, provide the word `Token` followed by a space and an InfluxDB API token.\nThe word `Token` is case-sensitive.\n\n### Syntax\n\n`Authorization: Token INFLUX_API_TOKEN`\n\n### Example\n\n#### Use Token authentication with cURL\n\nThe following example shows how to use cURL to send an API request that uses Token authentication:\n\n```sh\ncurl --request GET \"INFLUX_URL/api/v2/buckets\" \\\n     --header \"Authorization: Token INFLUX_API_TOKEN\"\n```\n\nReplace the following:\n\n  - *`INFLUX_URL`*: your InfluxDB Cloud URL\n  - *`INFLUX_API_TOKEN`*: your [InfluxDB API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n\n### Related endpoints\n\n- [`/authorizations` endpoints](#tag/Authorizations-(API-tokens))\n\n### Related guides\n\n- [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)\n- [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)\n"
+      in: header
+      name: Authorization
+      type: apiKey
+x-tagGroups:
+- name: Overview
+  tags:
+  - Quick start
+  - Authentication
+  - Supported operations
+  - Headers
+  - Pagination
+  - Response codes
+- name: Popular endpoints
+  tags:
+  - Data I/O endpoints
+  - Security and access endpoints
+  - System information endpoints
+- name: All endpoints
+  tags: []

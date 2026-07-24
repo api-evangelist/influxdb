@@ -1,0 +1,407 @@
+openapi: 3.0.0
+info:
+  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Legacy Query API
+  description: 'Create and manage authorizations (API tokens).
+
+
+    An _authorization_ contains a list of `read` and `write`
+
+    permissions for organization resources and provides an API token for authentication.
+
+    An authorization belongs to an organization and only contains permissions for that organization.
+
+
+    We recommend the following for managing your tokens:
+
+
+    - Create a generic user to create and manage tokens for writing data.
+
+    - Store your tokens in a secure password vault for future access.
+
+
+    ### User sessions with authorizations
+
+
+    Optionally, when creating an authorization, you can scope it to a specific user.
+
+    If the user signs in with username and password, creating a _user session_,
+
+    the session carries the permissions granted by all the user''s authorizations.
+
+    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
+
+    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
+
+
+    ### Related endpoints
+
+
+    - [Signin](#tag/Signin)
+
+    - [Signout](#tag/Signout)
+
+
+    ### Related guides
+
+
+    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
+
+    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
+
+    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
+
+    '
+servers:
+- url: ''
+security:
+- TokenAuthentication: []
+tags:
+- name: Legacy Query
+paths:
+  /query:
+    get:
+      description: Queries InfluxDB using InfluxQL.
+      operationId: GetLegacyQuery
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - in: header
+        name: Accept
+        schema:
+          default: application/json
+          description: 'Media type that the client can understand.
+
+
+            **Note**: With `application/csv`, query results include [**unix timestamps**]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#unix-timestamp) instead of [RFC3339 timestamps]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#rfc3339-timestamp).
+
+            '
+          enum:
+          - application/json
+          - application/csv
+          - text/csv
+          - application/x-msgpack
+          type: string
+      - description: The content encoding (usually a compression algorithm) that the client can understand.
+        in: header
+        name: Accept-Encoding
+        schema:
+          default: identity
+          description: The content coding. Use `gzip` for compressed data or `identity` for unmodified, uncompressed data.
+          enum:
+          - gzip
+          - identity
+          type: string
+      - in: header
+        name: Content-Type
+        schema:
+          enum:
+          - application/json
+          type: string
+      - description: The InfluxDB 1.x username to authenticate the request.
+        in: query
+        name: u
+        schema:
+          type: string
+      - description: The InfluxDB 1.x password to authenticate the request.
+        in: query
+        name: p
+        schema:
+          type: string
+      - description: 'The database to query data from.
+
+          This is mapped to an InfluxDB [bucket]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#bucket).
+
+          For more information, see [Database and retention policy mapping]({{% INFLUXDB_DOCS_URL %}}/api/influxdb-1x/dbrp/).
+
+          '
+        in: query
+        name: db
+        required: true
+        schema:
+          type: string
+      - description: 'The retention policy to query data from.
+
+          This is mapped to an InfluxDB [bucket]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#bucket).
+
+          For more information, see [Database and retention policy mapping]({{% INFLUXDB_DOCS_URL %}}/api/influxdb-1x/dbrp/).
+
+          '
+        in: query
+        name: rp
+        schema:
+          type: string
+      - description: The InfluxQL query to execute. To execute multiple queries, delimit queries with a semicolon (`;`).
+        in: query
+        name: q
+        required: true
+        schema:
+          type: string
+      - description: 'A unix timestamp precision.
+
+          Formats timestamps as [unix (epoch) timestamps]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#unix-timestamp) the specified precision
+
+          instead of [RFC3339 timestamps]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#rfc3339-timestamp) with nanosecond precision.
+
+          '
+        in: query
+        name: epoch
+        schema:
+          enum:
+          - ns
+          - u
+          - µ
+          - ms
+          - s
+          - m
+          - h
+          type: string
+      responses:
+        '200':
+          content:
+            application/csv:
+              schema:
+                $ref: '#/components/schemas/InfluxqlCsvResponse'
+            application/json:
+              examples:
+                influxql-chunk_size_2:
+                  value: '{"results":[{"statement_id":0,"series":[{"name":"mymeas","columns":["time","myfield","mytag"],"values":[["2016-05-19T18:37:55Z",90,"1"],["2016-05-19T18:37:56Z",90,"1"]],"partial":true}],"partial":true}]}
+
+                    {"results":[{"statement_id":0,"series":[{"name":"mymeas","columns":["time","myfield","mytag"],"values":[["2016-05-19T18:37:57Z",90,"1"],["2016-05-19T18:37:58Z",90,"1"]]}]}]}
+
+                    '
+              schema:
+                $ref: '#/components/schemas/InfluxqlJsonResponse'
+            application/x-msgpack:
+              schema:
+                format: binary
+                type: string
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/InfluxqlCsvResponse'
+          description: Query results
+          headers:
+            Content-Encoding:
+              description: Lists encodings (usually compression algorithms) that have been applied to the response payload.
+              schema:
+                default: identity
+                description: "The content coding:\n  - `gzip`: compressed data\n  - `identity`: unmodified, uncompressed data.\n"
+                enum:
+                - gzip
+                - identity
+                type: string
+            Trace-Id:
+              description: The trace ID, if generated, of the request.
+              schema:
+                description: Trace ID of a request.
+                type: string
+            Transfer-Encoding:
+              description: '`chunked` if the response is chunked.
+
+                '
+              schema:
+                default: chunked
+                description: The transfer encoding.
+                enum:
+                - chunked
+                type: string
+        '429':
+          description: "#### InfluxDB Cloud:\n  - returns this error if a **read** or **write** request exceeds your\n    plan's [adjustable service quotas]({{% INFLUXDB_DOCS_URL %}}/account-management/limits/#adjustable-service-quotas)\n    or if a **delete** request exceeds the maximum\n    [global limit]({{% INFLUXDB_DOCS_URL %}}/account-management/limits/#global-limits)\n  - returns `Retry-After` header that describes when to try the write again.\n\n#### InfluxDB OSS:\n  - doesn't return this error.\n"
+          headers:
+            Retry-After:
+              description: A non-negative decimal integer indicating the seconds to delay after the response is received.
+              schema:
+                format: int32
+                type: integer
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error processing query
+      summary: Query with the 1.x compatibility API
+      tags:
+      - Legacy Query
+components:
+  schemas:
+    InfluxqlCsvResponse:
+      description: CSV Response to InfluxQL Query
+      example: 'name,tags,time,test_field,test_tag test_measurement,,1603740794286107366,1,tag_value test_measurement,,1603740870053205649,2,tag_value test_measurement,,1603741221085428881,3,tag_value
+
+        '
+      type: string
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    InfluxqlJsonResponse:
+      description: 'The JSON response for an InfluxQL query.
+
+
+        A response contains the collection of results for a query.
+
+        `results` is an array of resultset objects.
+
+
+        If the response is chunked, the `transfer-encoding` response header is set to `chunked` and each resultset object is sent in a separate JSON object.
+
+        '
+      properties:
+        results:
+          items:
+            description: 'A resultset object that contains the `statement_id` and the `series` array.
+
+
+              Except for `statement_id`, all properties are optional and omitted if empty. If a property is not present, it is assumed to be `null`.
+
+              '
+            properties:
+              error:
+                type: string
+              partial:
+                description: 'True if the resultset is not complete--the response data is chunked; otherwise, false or omitted.
+
+                  '
+                type: boolean
+              series:
+                description: 'An array of series objects--the results of the query. A series of rows shares the same group key returned from the execution of a statement.
+
+
+                  If a property is not present, it is assumed to be `null`.
+
+                  '
+                items:
+                  properties:
+                    columns:
+                      description: An array of column names
+                      items:
+                        type: string
+                      type: array
+                    name:
+                      description: The name of the series
+                      type: string
+                    partial:
+                      description: 'True if the series is not complete--the response data is chunked; otherwise, false or omitted.
+
+                        '
+                      type: boolean
+                    tags:
+                      additionalProperties:
+                        type: string
+                      description: 'A map of tag key-value pairs. If a tag key is not present, it is assumed to be `null`.
+
+                        '
+                      type: object
+                    values:
+                      description: 'An array of rows, where each row is an array of values.
+
+                        '
+                      items:
+                        items: {}
+                        type: array
+                      type: array
+                  type: object
+                type: array
+              statement_id:
+                description: 'An integer that represents the statement''s position in the query. If statement results are buffered in memory, `statement_id` is used to combine statement results.
+
+                  '
+                type: integer
+            type: object
+          oneOf:
+          - required:
+            - statement_id
+            - error
+          - required:
+            - statement_id
+            - series
+          type: array
+      type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    BasicAuthentication:
+      description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"
+      scheme: basic
+      type: http
+    TokenAuthentication:
+      description: "Use the [Token authentication](#section/Authentication/TokenAuthentication)\nscheme to authenticate to the InfluxDB API.\n\nIn your API requests, send an `Authorization` header.\nFor the header value, provide the word `Token` followed by a space and an InfluxDB API token.\nThe word `Token` is case-sensitive.\n\n### Syntax\n\n`Authorization: Token INFLUX_API_TOKEN`\n\n### Example\n\n#### Use Token authentication with cURL\n\nThe following example shows how to use cURL to send an API request that uses Token authentication:\n\n```sh\ncurl --request GET \"INFLUX_URL/api/v2/buckets\" \\\n     --header \"Authorization: Token INFLUX_API_TOKEN\"\n```\n\nReplace the following:\n\n  - *`INFLUX_URL`*: your InfluxDB Cloud URL\n  - *`INFLUX_API_TOKEN`*: your [InfluxDB API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n\n### Related endpoints\n\n- [`/authorizations` endpoints](#tag/Authorizations-(API-tokens))\n\n### Related guides\n\n- [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)\n- [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)\n"
+      in: header
+      name: Authorization
+      type: apiKey
+x-tagGroups:
+- name: Overview
+  tags:
+  - Quick start
+  - Authentication
+  - Supported operations
+  - Headers
+  - Pagination
+  - Response codes
+- name: Popular endpoints
+  tags:
+  - Data I/O endpoints
+  - Security and access endpoints
+  - System information endpoints
+- name: All endpoints
+  tags: []

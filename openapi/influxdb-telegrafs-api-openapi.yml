@@ -1,0 +1,842 @@
+openapi: 3.0.0
+info:
+  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Telegrafs API
+  description: 'Create and manage authorizations (API tokens).
+
+
+    An _authorization_ contains a list of `read` and `write`
+
+    permissions for organization resources and provides an API token for authentication.
+
+    An authorization belongs to an organization and only contains permissions for that organization.
+
+
+    We recommend the following for managing your tokens:
+
+
+    - Create a generic user to create and manage tokens for writing data.
+
+    - Store your tokens in a secure password vault for future access.
+
+
+    ### User sessions with authorizations
+
+
+    Optionally, when creating an authorization, you can scope it to a specific user.
+
+    If the user signs in with username and password, creating a _user session_,
+
+    the session carries the permissions granted by all the user''s authorizations.
+
+    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
+
+    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
+
+
+    ### Related endpoints
+
+
+    - [Signin](#tag/Signin)
+
+    - [Signout](#tag/Signout)
+
+
+    ### Related guides
+
+
+    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
+
+    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
+
+    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
+
+    '
+servers:
+- url: ''
+security:
+- TokenAuthentication: []
+tags:
+- name: Telegrafs
+paths:
+  /api/v2/telegrafs:
+    get:
+      operationId: GetTelegrafs
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The organization ID the Telegraf config belongs to.
+        in: query
+        name: orgID
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Telegrafs'
+          description: A list of Telegraf configurations
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all Telegraf configurations
+      tags:
+      - Telegrafs
+    post:
+      operationId: PostTelegrafs
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegrafPluginRequest'
+        description: Telegraf configuration to create
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Telegraf'
+          description: Telegraf configuration created
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Create a Telegraf configuration
+      tags:
+      - Telegrafs
+  /api/v2/telegrafs/{telegrafID}:
+    delete:
+      operationId: DeleteTelegrafsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf configuration ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Delete has been accepted
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a Telegraf configuration
+      tags:
+      - Telegrafs
+    get:
+      operationId: GetTelegrafsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf configuration ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      - in: header
+        name: Accept
+        required: false
+        schema:
+          default: application/toml
+          enum:
+          - application/toml
+          - application/json
+          - application/octet-stream
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Telegraf'
+            application/octet-stream:
+              example: '[agent]
+
+                interval = "10s"'
+              schema:
+                type: string
+            application/toml:
+              example: '[agent]
+
+                interval = "10s"'
+              schema:
+                type: string
+          description: Telegraf configuration details
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Retrieve a Telegraf configuration
+      tags:
+      - Telegrafs
+    put:
+      operationId: PutTelegrafsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TelegrafPluginRequest'
+        description: Telegraf configuration update to apply
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Telegraf'
+          description: An updated Telegraf configurations
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Update a Telegraf configuration
+      tags:
+      - Telegrafs
+  /api/v2/telegrafs/{telegrafID}/labels:
+    get:
+      operationId: GetTelegrafsIDLabels
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabelsResponse'
+          description: A list of all labels for a Telegraf config
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all labels for a Telegraf config
+      tags:
+      - Telegrafs
+    post:
+      operationId: PostTelegrafsIDLabels
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabelMapping'
+        description: Label to add
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabelResponse'
+          description: The label added to the Telegraf config
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add a label to a Telegraf config
+      tags:
+      - Telegrafs
+  /api/v2/telegrafs/{telegrafID}/labels/{labelID}:
+    delete:
+      operationId: DeleteTelegrafsIDLabelsID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      - description: The label ID.
+        in: path
+        name: labelID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Delete has been accepted
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Telegraf config not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Delete a label from a Telegraf config
+      tags:
+      - Telegrafs
+  /api/v2/telegrafs/{telegrafID}/members:
+    get:
+      operationId: GetTelegrafsIDMembers
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceMembers'
+          description: A list of Telegraf config members
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all users with member privileges for a Telegraf config
+      tags:
+      - Telegrafs
+    post:
+      operationId: PostTelegrafsIDMembers
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddResourceMemberRequestBody'
+        description: User to add as member
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceMember'
+          description: Member added to Telegraf config
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add a member to a Telegraf config
+      tags:
+      - Telegrafs
+  /api/v2/telegrafs/{telegrafID}/members/{userID}:
+    delete:
+      operationId: DeleteTelegrafsIDMembersID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The ID of the member to remove.
+        in: path
+        name: userID
+        required: true
+        schema:
+          type: string
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Member removed
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Remove a member from a Telegraf config
+      tags:
+      - Telegrafs
+  /api/v2/telegrafs/{telegrafID}/owners:
+    get:
+      operationId: GetTelegrafsIDOwners
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf configuration ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceOwners'
+          description: Returns Telegraf configuration owners as a ResourceOwners list
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: List all owners of a Telegraf configuration
+      tags:
+      - Telegrafs
+    post:
+      operationId: PostTelegrafsIDOwners
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The Telegraf configuration ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddResourceMemberRequestBody'
+        description: User to add as owner
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceOwner'
+          description: Telegraf configuration owner was added. Returns a ResourceOwner that references the User.
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Add an owner to a Telegraf configuration
+      tags:
+      - Telegrafs
+  /api/v2/telegrafs/{telegrafID}/owners/{userID}:
+    delete:
+      operationId: DeleteTelegrafsIDOwnersID
+      parameters:
+      - $ref: '#/components/parameters/TraceSpan'
+      - description: The ID of the owner to remove.
+        in: path
+        name: userID
+        required: true
+        schema:
+          type: string
+      - description: The Telegraf config ID.
+        in: path
+        name: telegrafID
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Owner removed
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unexpected error
+      summary: Remove an owner from a Telegraf config
+      tags:
+      - Telegrafs
+components:
+  schemas:
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    Telegraf:
+      allOf:
+      - $ref: '#/components/schemas/TelegrafRequest'
+      - properties:
+          id:
+            readOnly: true
+            type: string
+          labels:
+            $ref: '#/components/schemas/Labels'
+            readOnly: true
+          links:
+            example:
+              lables: /api/v2/telegrafs/1/labels
+              members: /api/v2/telegrafs/1/members
+              owners: /api/v2/telegrafs/1/owners
+              self: /api/v2/telegrafs/1
+            properties:
+              labels:
+                $ref: '#/components/schemas/Link'
+              members:
+                $ref: '#/components/schemas/Link'
+              owners:
+                $ref: '#/components/schemas/Link'
+              self:
+                $ref: '#/components/schemas/Link'
+            readOnly: true
+            type: object
+        type: object
+      type: object
+    ResourceOwner:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: owner
+            enum:
+            - owner
+            type: string
+        type: object
+    ResourceMembers:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceMember'
+          type: array
+      type: object
+    UserResponse:
+      properties:
+        id:
+          description: 'The user ID.
+
+            '
+          readOnly: true
+          type: string
+        links:
+          example:
+            self: /api/v2/users/1
+          properties:
+            self:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        name:
+          description: 'The user name.
+
+            '
+          type: string
+        status:
+          default: active
+          description: 'The status of a user.
+
+            An inactive user can''t read or write resources.
+
+            '
+          enum:
+          - active
+          - inactive
+          type: string
+      required:
+      - name
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    TelegrafPluginRequest:
+      properties:
+        config:
+          type: string
+        description:
+          type: string
+        metadata:
+          properties:
+            buckets:
+              items:
+                type: string
+              type: array
+          type: object
+        name:
+          type: string
+        orgID:
+          type: string
+        plugins:
+          items:
+            properties:
+              alias:
+                type: string
+              config:
+                type: string
+              description:
+                type: string
+              name:
+                type: string
+              type:
+                type: string
+            type: object
+          type: array
+      type: object
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    ResourceMember:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: member
+            enum:
+            - member
+            type: string
+        type: object
+    Telegrafs:
+      properties:
+        configurations:
+          items:
+            $ref: '#/components/schemas/Telegraf'
+          type: array
+      type: object
+    TelegrafRequest:
+      properties:
+        config:
+          type: string
+        description:
+          type: string
+        metadata:
+          properties:
+            buckets:
+              items:
+                type: string
+              type: array
+          type: object
+        name:
+          type: string
+        orgID:
+          type: string
+      type: object
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    ResourceOwners:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+          type: array
+      type: object
+    AddResourceMemberRequestBody:
+      properties:
+        id:
+          description: 'The ID of the user to add to the resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the user to add to the resource.
+
+            '
+          type: string
+      required:
+      - id
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    BasicAuthentication:
+      description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"
+      scheme: basic
+      type: http
+    TokenAuthentication:
+      description: "Use the [Token authentication](#section/Authentication/TokenAuthentication)\nscheme to authenticate to the InfluxDB API.\n\nIn your API requests, send an `Authorization` header.\nFor the header value, provide the word `Token` followed by a space and an InfluxDB API token.\nThe word `Token` is case-sensitive.\n\n### Syntax\n\n`Authorization: Token INFLUX_API_TOKEN`\n\n### Example\n\n#### Use Token authentication with cURL\n\nThe following example shows how to use cURL to send an API request that uses Token authentication:\n\n```sh\ncurl --request GET \"INFLUX_URL/api/v2/buckets\" \\\n     --header \"Authorization: Token INFLUX_API_TOKEN\"\n```\n\nReplace the following:\n\n  - *`INFLUX_URL`*: your InfluxDB Cloud URL\n  - *`INFLUX_API_TOKEN`*: your [InfluxDB API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n\n### Related endpoints\n\n- [`/authorizations` endpoints](#tag/Authorizations-(API-tokens))\n\n### Related guides\n\n- [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)\n- [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)\n"
+      in: header
+      name: Authorization
+      type: apiKey
+x-tagGroups:
+- name: Overview
+  tags:
+  - Quick start
+  - Authentication
+  - Supported operations
+  - Headers
+  - Pagination
+  - Response codes
+- name: Popular endpoints
+  tags:
+  - Data I/O endpoints
+  - Security and access endpoints
+  - System information endpoints
+- name: All endpoints
+  tags: []
