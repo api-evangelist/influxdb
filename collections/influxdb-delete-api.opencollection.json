@@ -1,0 +1,72 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Delete API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Delete",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Delete data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/delete",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Deletes data from the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- Deletes data from the bucket in the specified organization.\n- If you pass both `orgID` and `org`, they must both be valid.\n"
+              },
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "query",
+                "description": "A bucket name or ID.\nSpecifies the bucket to delete data from.\nIf you pass both `bucket` and `bucketID`, `bucketID` takes precedence.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Deletes data from the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- Deletes data from the bucket in the specified organization.\n- If you pass both `orgID` and `org`, they must both be valid.\n"
+              },
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "query",
+                "description": "A bucket ID.\nSpecifies the bucket to delete data from.\nIf you pass both `bucket` and `bucketID`, `bucketID` takes precedence.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes data from a bucket.\n\nUse this endpoint to delete points from a bucket in a specified time range.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a delete request:\n\n  1. Validates the request and queues the delete.\n  2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.\n  3. Handles the delete asynchronously and reaches eventual consistency.\n\nTo ensure that InfluxDB Cloud handles writes and deletes in the order you request them,\nwait for a success res"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,78 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Setup API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Setup",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve setup status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/setup",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Check if setup is allowed. Returns `true` if no default user, organization, or bucket have been created."
+        },
+        {
+          "info": {
+            "name": "Create an initial user, organization, and bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/setup",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Post an onboarding request to create an initial user, organization, and bucket."
+        },
+        {
+          "info": {
+            "name": "Create a new user, organization, and bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/setup/user",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Post an onboarding request to create a new user, organization, and bucket."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

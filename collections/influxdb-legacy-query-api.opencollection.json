@@ -1,0 +1,92 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Legacy Query API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Legacy Query",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Query with the 1.x compatibility API",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/query",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "u",
+                "value": "",
+                "type": "query",
+                "description": "The InfluxDB 1.x username to authenticate the request."
+              },
+              {
+                "name": "p",
+                "value": "",
+                "type": "query",
+                "description": "The InfluxDB 1.x password to authenticate the request."
+              },
+              {
+                "name": "db",
+                "value": "",
+                "type": "query",
+                "description": "The database to query data from.\nThis is mapped to an InfluxDB [bucket]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#bucket).\nFor more information, see [Database and retention policy mapping]({{% INFLUXDB_DOCS_URL %}}/api/influxdb-1x/dbrp/).\n"
+              },
+              {
+                "name": "rp",
+                "value": "",
+                "type": "query",
+                "description": "The retention policy to query data from.\nThis is mapped to an InfluxDB [bucket]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#bucket).\nFor more information, see [Database and retention policy mapping]({{% INFLUXDB_DOCS_URL %}}/api/influxdb-1x/dbrp/).\n"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "The InfluxQL query to execute. To execute multiple queries, delimit queries with a semicolon (`;`)."
+              },
+              {
+                "name": "epoch",
+                "value": "",
+                "type": "query",
+                "description": "A unix timestamp precision.\nFormats timestamps as [unix (epoch) timestamps]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#unix-timestamp) the specified precision\ninstead of [RFC3339 timestamps]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#rfc3339-timestamp) with nanosecond precision.\n"
+              }
+            ]
+          },
+          "docs": "Queries InfluxDB using InfluxQL."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

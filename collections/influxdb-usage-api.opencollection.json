@@ -1,0 +1,62 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Usage API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve usage for an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID/usage",
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization."
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Earliest time to include in results.\nFor more information about timestamps, see [Manipulate timestamps with Flux](https://docs.influxdata.com/influxdb/cloud/query-data/flux/manipulate-timestamps/).\n"
+              },
+              {
+                "name": "stop",
+                "value": "",
+                "type": "query",
+                "description": "Latest time to include in results.\nFor more information about timestamps, see [Manipulate timestamps with Flux](https://docs.influxdata.com/influxdb/cloud/query-data/flux/manipulate-timestamps/).\n"
+              },
+              {
+                "name": "raw",
+                "value": "",
+                "type": "query",
+                "description": "return raw usage data"
+              }
+            ]
+          },
+          "docs": "Retrieve usage for an organization"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

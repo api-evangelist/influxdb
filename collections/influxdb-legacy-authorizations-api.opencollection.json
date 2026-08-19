@@ -1,0 +1,209 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Legacy Authorizations API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Legacy Authorizations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all legacy authorizations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/legacy/authorizations",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "query",
+                "description": "A user ID.\nOnly returns legacy authorizations scoped to the specified [user]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#user).\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "query",
+                "description": "A user name.\nOnly returns legacy authorizations scoped to the specified [user]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#user).\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nOnly returns legacy authorizations that belong to the specified [organization]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#organization).\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nOnly returns legacy authorizations that belong to the specified [organization]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#organization).\n"
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "An authorization name token.\nOnly returns legacy authorizations with the specified name.\n"
+              },
+              {
+                "name": "authID",
+                "value": "",
+                "type": "query",
+                "description": "An authorization ID.\nReturns the specified legacy authorization.\n"
+              }
+            ]
+          },
+          "docs": "List all legacy authorizations"
+        },
+        {
+          "info": {
+            "name": "Create a legacy authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/legacy/authorizations",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a legacy authorization and returns the legacy authorization.\n\n#### Required permissions\n\n- `write-users USER_ID` if you pass the `userID` property in the request body.\n\n*`USER_ID`* is the ID of the user that you want to scope the authorization to.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a legacy authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/legacy/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the legacy authorization to get."
+              }
+            ]
+          },
+          "docs": "Retrieve a legacy authorization"
+        },
+        {
+          "info": {
+            "name": "Update a legacy authorization to be active or inactive",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/legacy/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the legacy authorization to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a legacy authorization to be active or inactive"
+        },
+        {
+          "info": {
+            "name": "Delete a legacy authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/legacy/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the legacy authorization to delete."
+              }
+            ]
+          },
+          "docs": "Delete a legacy authorization"
+        },
+        {
+          "info": {
+            "name": "Set a legacy authorization password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/legacy/authorizations/:authID/password",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the legacy authorization to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set a legacy authorization password"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

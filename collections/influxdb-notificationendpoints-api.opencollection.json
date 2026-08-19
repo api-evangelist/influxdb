@@ -1,0 +1,270 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) NotificationEndpoints API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "NotificationEndpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all notification endpoints",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/notificationEndpoints",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of records returned. Default is `20`.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "Only show notification endpoints that belong to specific organization ID."
+              }
+            ]
+          },
+          "docs": "List all notification endpoints"
+        },
+        {
+          "info": {
+            "name": "Add a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/notificationEndpoints",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a notification endpoint"
+        },
+        {
+          "info": {
+            "name": "Retrieve a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/notificationEndpoints/:endpointID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "endpointID",
+                "value": "",
+                "type": "path",
+                "description": "The notification endpoint ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a notification endpoint"
+        },
+        {
+          "info": {
+            "name": "Update a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/notificationEndpoints/:endpointID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "endpointID",
+                "value": "",
+                "type": "path",
+                "description": "The notification endpoint ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a notification endpoint"
+        },
+        {
+          "info": {
+            "name": "Update a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/notificationEndpoints/:endpointID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "endpointID",
+                "value": "",
+                "type": "path",
+                "description": "The notification endpoint ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a notification endpoint"
+        },
+        {
+          "info": {
+            "name": "Delete a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/notificationEndpoints/:endpointID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "endpointID",
+                "value": "",
+                "type": "path",
+                "description": "The notification endpoint ID."
+              }
+            ]
+          },
+          "docs": "Delete a notification endpoint"
+        },
+        {
+          "info": {
+            "name": "List all labels for a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/notificationEndpoints/:endpointID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "endpointID",
+                "value": "",
+                "type": "path",
+                "description": "The notification endpoint ID."
+              }
+            ]
+          },
+          "docs": "List all labels for a notification endpoint"
+        },
+        {
+          "info": {
+            "name": "Add a label to a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/notificationEndpoints/:endpointID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "endpointID",
+                "value": "",
+                "type": "path",
+                "description": "The notification endpoint ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a label to a notification endpoint"
+        },
+        {
+          "info": {
+            "name": "Delete a label from a notification endpoint",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/notificationEndpoints/:endpointID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "endpointID",
+                "value": "",
+                "type": "path",
+                "description": "The notification endpoint ID."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ]
+          },
+          "docs": "Delete a label from a notification endpoint"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

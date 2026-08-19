@@ -1,0 +1,406 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Data I/O endpoints API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Data I/O endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Delete data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/delete",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Deletes data from the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- Deletes data from the bucket in the specified organization.\n- If you pass both `orgID` and `org`, they must both be valid.\n"
+              },
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "query",
+                "description": "A bucket name or ID.\nSpecifies the bucket to delete data from.\nIf you pass both `bucket` and `bucketID`, `bucketID` takes precedence.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Deletes data from the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- Deletes data from the bucket in the specified organization.\n- If you pass both `orgID` and `org`, they must both be valid.\n"
+              },
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "query",
+                "description": "A bucket ID.\nSpecifies the bucket to delete data from.\nIf you pass both `bucket` and `bucketID`, `bucketID` takes precedence.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes data from a bucket.\n\nUse this endpoint to delete points from a bucket in a specified time range.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a delete request:\n\n  1. Validates the request and queues the delete.\n  2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.\n  3. Handles the delete asynchronously and reaches eventual consistency.\n\nTo ensure that InfluxDB Cloud handles writes and deletes in the order you request them,\nwait for a success res"
+        },
+        {
+          "info": {
+            "name": "Query data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/query",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Queries the bucket in the organization associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or `orgID` parameter.\n- Queries the bucket in the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Queries the bucket in the organization associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or `orgID` parameter.\n- Queries the bucket in the specified organization.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves data from buckets.\n\nUse this endpoint to send a Flux query request and retrieve data from a bucket.\n\n#### Rate limits (with InfluxDB Cloud)\n\n`read` rate limits apply.\nFor more information, see [limits and adjustable quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/).\n\n#### Related guides\n\n- [Query with the InfluxDB API](https://docs.influxdata.com/influxdb/cloud/query-data/execute-queries/influx-api/)\n- [Get started with Flux](https://docs.influxdata.com/flu"
+        },
+        {
+          "info": {
+            "name": "List scripts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/scripts",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination]({{% INFLUXDB_DOCS_URL %}}/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of scripts to return. Default is `100`.\n"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "The script name. Lists scripts with the specified name."
+              }
+            ]
+          },
+          "docs": "Lists [scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/).\n\n#### Related guides\n\n- [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/scripts/:scriptID",
+            "params": [
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "path",
+                "description": "A script ID.\nRetrieves the specified script.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a [script](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/).\n\n#### Related Guides\n\n- [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n"
+        },
+        {
+          "info": {
+            "name": "Invoke a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/scripts/:scriptID/invoke",
+            "params": [
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "path",
+                "description": "A script ID.\nRuns the specified script.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Runs a script and returns the result.\nWhen the script runs, InfluxDB replaces `params` keys referenced in the script with\n`params` key-values passed in the request body--for example:\n\nThe following sample script contains a _`mybucket`_ parameter :\n\n```json\n\"script\": \"from(bucket: params.mybucket)\n            |> range(start: -7d)\n            |> limit(n:1)\"\n```\n\nThe following example `POST /api/v2/scripts/SCRIPT_ID/invoke` request body\npasses a value for the _`mybucket`_ parameter:\n\n```json\n{\n  \"p"
+        },
+        {
+          "info": {
+            "name": "List all tasks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) name.\nOnly returns tasks with the specified name.\nDifferent tasks may have the same name.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID.\nOnly returns tasks created after the specified task.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "query",
+                "description": "A [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) ID.\nOnly returns tasks owned by the specified user.\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) name.\nOnly returns tasks owned by the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) ID.\nOnly returns tasks owned by the specified organization.\n"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) status.\nOnly returns tasks that have the specified status (`active` or `inactive`).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) to return.\nDefault is `100`.\nThe minimum is `1` and the maximum is `500`.\n\nTo reduce the payload size, combine _`type=basic`_ and _`limit`_ (see _Request samples_).\nFor more information about the `basic` response, see the _`type`_ parameter.\n"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The sort field. Only `name` is supported.\nSpecifies the field used to sort records in the list.\n"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) type (`basic` or `system`).\nDefault is `system`.\nSpecifies the level of detail for tasks in the response.\nThe default (`system`) response contains all the metadata properties for tasks.\nTo reduce the response size, pass `basic` to omit some task properties (`flux`, `createdAt`, `updatedAt`).\n"
+              },
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "query",
+                "description": "A [script](#tag/Invokable-Scripts) ID.\nOnly returns tasks that use the specified invokable script.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n\nTo limit which tasks are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all tasks up to the default `limit`.\n"
+        },
+        {
+          "info": {
+            "name": "Create a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) and returns the task.\n\nUse this endpoint to create a scheduled task that runs a Flux script.\n\n#### InfluxDB Cloud\n\n- You can use either `flux` or `scriptID` to provide the task script.\n\n  - `flux`: a string of \"raw\" Flux that contains task options and the script--for example:\n\n    ```json\n    {\n      \"flux\": \"option task = {name: \\\"CPU Total 1 Hour New\\\", every: 1h}\\\n      from(bucket: \\\"telegraf\\\")\n        |> "
+        },
+        {
+          "info": {
+            "name": "Retrieve a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID.\nSpecifies the task to retrieve.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n"
+        },
+        {
+          "info": {
+            "name": "Start a task run, overriding the schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks/:taskID/runs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Schedules a task run to start immediately, ignoring scheduled runs.\n\nUse this endpoint to manually start a task run.\nScheduled runs will continue to run as scheduled.\nThis may result in concurrently running tasks.\n\nTo _retry_ a previous run (and avoid creating a new run),\nuse the [`POST /api/v2/tasks/{taskID}/runs/{runID}/retry` endpoint](#operation/PostTasksIDRunsIDRetry).\n"
+        },
+        {
+          "info": {
+            "name": "Write data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/write",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              },
+              {
+                "name": "Content-Length",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Writes data to the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- If you pass both `orgID` and `org`, they must both be valid.\n- Writes data to the bucket in the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Writes data to the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- If you pass both `orgID` and `org`, they must both be valid.\n- Writes data to the bucket in the specified organization.\n"
+              },
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "query",
+                "description": "A bucket name or ID.\nInfluxDB writes all points in the batch to the specified bucket.\n"
+              },
+              {
+                "name": "precision",
+                "value": "",
+                "type": "query",
+                "description": "The precision for unix timestamps in the line protocol batch."
+              }
+            ]
+          },
+          "docs": "Writes data to a bucket.\n\nUse this endpoint to send data in [line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/) format to InfluxDB.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a write request:\n\n  1. Validates the request and queues the write.\n  2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.\n  3. Handles the delete asynchronously and reaches eventual consistency.\n\n  To ensure that InfluxDB Cloud handles write"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

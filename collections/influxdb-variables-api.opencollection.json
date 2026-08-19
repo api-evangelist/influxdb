@@ -1,0 +1,270 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Variables API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Variables",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all variables",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/variables",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "The name of the organization."
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "The organization ID."
+              }
+            ]
+          },
+          "docs": "List all variables"
+        },
+        {
+          "info": {
+            "name": "Create a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/variables",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a variable"
+        },
+        {
+          "info": {
+            "name": "Retrieve a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/variables/:variableID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "variableID",
+                "value": "",
+                "type": "path",
+                "description": "The variable ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a variable"
+        },
+        {
+          "info": {
+            "name": "Replace a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/variables/:variableID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "variableID",
+                "value": "",
+                "type": "path",
+                "description": "The variable ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replace a variable"
+        },
+        {
+          "info": {
+            "name": "Update a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/variables/:variableID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "variableID",
+                "value": "",
+                "type": "path",
+                "description": "The variable ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a variable"
+        },
+        {
+          "info": {
+            "name": "Delete a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/variables/:variableID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "variableID",
+                "value": "",
+                "type": "path",
+                "description": "The variable ID."
+              }
+            ]
+          },
+          "docs": "Delete a variable"
+        },
+        {
+          "info": {
+            "name": "List all labels for a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/variables/:variableID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "variableID",
+                "value": "",
+                "type": "path",
+                "description": "The variable ID."
+              }
+            ]
+          },
+          "docs": "List all labels for a variable"
+        },
+        {
+          "info": {
+            "name": "Add a label to a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/variables/:variableID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "variableID",
+                "value": "",
+                "type": "path",
+                "description": "The variable ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a label to a variable"
+        },
+        {
+          "info": {
+            "name": "Delete a label from a variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/variables/:variableID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "variableID",
+                "value": "",
+                "type": "path",
+                "description": "The variable ID."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The label ID to delete."
+              }
+            ]
+          },
+          "docs": "Delete a label from a variable"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

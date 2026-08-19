@@ -1,0 +1,144 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Labels API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Labels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all labels",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "The organization ID."
+              }
+            ]
+          },
+          "docs": "List all labels"
+        },
+        {
+          "info": {
+            "name": "Create a label",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/labels",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a label"
+        },
+        {
+          "info": {
+            "name": "Retrieve a label",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to update."
+              }
+            ]
+          },
+          "docs": "Retrieve a label"
+        },
+        {
+          "info": {
+            "name": "Update a label",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a label"
+        },
+        {
+          "info": {
+            "name": "Delete a label",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ]
+          },
+          "docs": "Delete a label"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

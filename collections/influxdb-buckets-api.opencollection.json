@@ -1,0 +1,441 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Buckets API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Buckets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List buckets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/buckets",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of records returned. Default is `20`.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A resource ID to seek from.\nReturns records created after the specified record;\nresults don't include the specified record.\n\nUse `after` instead of the `offset` parameter.\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Lists buckets for the organization associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Lists buckets for the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Lists buckets for the organization associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or `orgID` parameter.\n- Lists buckets for the specified organization.\n"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A bucket name.\nOnly returns buckets with the specified name.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A bucket ID.\nOnly returns the bucket with the specified ID.\n"
+              }
+            ]
+          },
+          "docs": "Lists [buckets](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket).\n\nInfluxDB retrieves buckets owned by the\n[organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization)\nassociated with the authorization\n([API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)).\nTo limit which buckets are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all buckets up to the\ndefault `l"
+        },
+        {
+          "info": {
+            "name": "Create a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/buckets",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a [bucket](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket)\nand returns the bucket resource.\nThe default data\n[retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period)\nis 30 days.\n\n#### InfluxDB OSS\n\n- A single InfluxDB OSS instance supports active writes or queries for\napproximately 20 buckets across all organizations at a given time.\nReading or writing to more than 20 buckets at a time can adversely affect\nperformance.\n\n##"
+        },
+        {
+          "info": {
+            "name": "Retrieve a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/buckets/:bucketID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to retrieve.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a bucket.\n\nUse this endpoint to retrieve information for a specific bucket.\n"
+        },
+        {
+          "info": {
+            "name": "Update a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/buckets/:bucketID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The bucket ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a bucket.\n\nUse this endpoint to update properties\n(`name`, `description`, and `retentionRules`) of a bucket.\n\n#### InfluxDB Cloud\n\n- Requires the `retentionRules` property in the request body. If you don't\nprovide `retentionRules`, InfluxDB responds with an HTTP `403` status code.\n\n#### InfluxDB OSS\n\n- Doesn't require `retentionRules`.\n\n#### Related Guides\n\n- [Update a bucket](https://docs.influxdata.com/influxdb/cloud/organizations/buckets/update-bucket/)\n"
+        },
+        {
+          "info": {
+            "name": "Delete a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/buckets/:bucketID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "Bucket ID.\nThe ID of the bucket to delete.\n"
+              }
+            ]
+          },
+          "docs": "Deletes a bucket and all associated records.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a delete request:\n\n  1. Validates the request and queues the delete.\n  2. Returns an HTTP `204` status code if queued; _error_ otherwise.\n  3. Handles the delete asynchronously.\n\n#### InfluxDB OSS\n\n- Validates the request, handles the delete synchronously,\nand then responds with success or failure.\n\n#### Limitations\n\n- Only one bucket can be deleted per request.\n\n#### Related Guides\n\n- [Delete a"
+        },
+        {
+          "info": {
+            "name": "List all labels for a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/buckets/:bucketID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to retrieve labels for.\n"
+              }
+            ]
+          },
+          "docs": "Lists all labels for a bucket.\n\nLabels are objects that contain `labelID`, `name`, `description`, and `color`\nkey-value pairs. They may be used for grouping and filtering InfluxDB\nresources.\nLabels are also capable of grouping across different resources--for example,\nyou can apply a label named `air_sensor` to a bucket and a task to quickly\norganize resources.\n\n#### Related guides\n\n- Use the [`/api/v2/labels` InfluxDB API endpoint](#tag/Labels) to retrieve and manage labels.\n- [Manage labels in "
+        },
+        {
+          "info": {
+            "name": "Add a label to a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/buckets/:bucketID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "Bucket ID.\nThe ID of the bucket to label.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a label to a bucket and returns the new label information.\n\nLabels are objects that contain `labelID`, `name`, `description`, and `color`\nkey-value pairs. They may be used for grouping and filtering across one or\nmore kinds of **resources**--for example, you can apply a label named\n`air_sensor` to a bucket and a task to quickly organize resources.\n\n#### Limitations\n\n- Before adding a label to a bucket, you must create the label if you\n  haven't already. To create a label with the InfluxDB A"
+        },
+        {
+          "info": {
+            "name": "Delete a label from a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/buckets/:bucketID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The bucket ID."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ]
+          },
+          "docs": "Delete a label from a bucket"
+        },
+        {
+          "info": {
+            "name": "List all users with member privileges for a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/buckets/:bucketID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to retrieve users for.\n"
+              }
+            ]
+          },
+          "docs": "Lists all users for a bucket.\n\nInfluxDB [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) have\npermission to access InfluxDB.\n\n[Members](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#member) are users in\nan organization with access to the specified resource.\n\nUse this endpoint to retrieve all users with access to a bucket.\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)\n- [Manage members](https://docs.influxdat"
+        },
+        {
+          "info": {
+            "name": "Add a member to a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/buckets/:bucketID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to retrieve users for.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a user to a bucket and return the new user information.\n\nInfluxDB [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) have\npermission to access InfluxDB.\n\n[Members](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#member) are users in\nan organization.\n\nUse this endpoint to give a user member privileges to a bucket.\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)\n- [Manage members](https://docs.influxdata.com/inf"
+        },
+        {
+          "info": {
+            "name": "Remove a member from a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/buckets/:bucketID/members/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to remove.\n"
+              },
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to remove a user from.\n"
+              }
+            ]
+          },
+          "docs": "Removes a member from a bucket.\n\nUse this endpoint to remove a user's member privileges from a bucket. This\nremoves the user's `read` and `write` permissions for the bucket.\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/users/)\n- [Manage members](https://docs.influxdata.com/influxdb/cloud/organizations/members/)\n"
+        },
+        {
+          "info": {
+            "name": "List all owners of a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/buckets/:bucketID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to retrieve owners for.\n"
+              }
+            ]
+          },
+          "docs": "Lists all [owners](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#owner)\nof a bucket.\n\nBucket owners have permission to delete buckets and remove user and member\npermissions from the bucket.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owner permissions are separate from API token permissions.\n- Owner permissions are used in the context of the Inf"
+        },
+        {
+          "info": {
+            "name": "Add an owner to a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/buckets/:bucketID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to add an owner for.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds an owner to a bucket and returns the [owners](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#owner)\nwith role and user detail.\n\nUse this endpoint to create a _resource owner_ for the bucket.\nBucket owners have permission to delete buckets and remove user and member\npermissions from the bucket.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owne"
+        },
+        {
+          "info": {
+            "name": "Remove an owner from a bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/buckets/:bucketID/owners/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the owner to remove.\n"
+              },
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the bucket to remove an owner from.\n"
+              }
+            ]
+          },
+          "docs": "Removes an owner from a bucket.\n\nUse this endpoint to remove a user's `owner` role for a bucket.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owner permissions are separate from API token permissions.\n- Owner permissions are used in the context of the InfluxDB UI.\n\n#### Required permissions\n\n- `write-orgs INFLUX_ORG_ID`\n\n*`INFLUX_ORG_ID`* is the ID of the organiz"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

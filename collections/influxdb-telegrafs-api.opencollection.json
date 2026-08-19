@@ -1,0 +1,409 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Telegrafs API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Telegrafs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Telegraf configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/telegrafs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "The organization ID the Telegraf config belongs to."
+              }
+            ]
+          },
+          "docs": "List all Telegraf configurations"
+        },
+        {
+          "info": {
+            "name": "Create a Telegraf configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/telegrafs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a Telegraf configuration"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Telegraf configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/telegrafs/:telegrafID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf configuration ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a Telegraf configuration"
+        },
+        {
+          "info": {
+            "name": "Update a Telegraf configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/telegrafs/:telegrafID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a Telegraf configuration"
+        },
+        {
+          "info": {
+            "name": "Delete a Telegraf configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/telegrafs/:telegrafID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf configuration ID."
+              }
+            ]
+          },
+          "docs": "Delete a Telegraf configuration"
+        },
+        {
+          "info": {
+            "name": "List all labels for a Telegraf config",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/telegrafs/:telegrafID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              }
+            ]
+          },
+          "docs": "List all labels for a Telegraf config"
+        },
+        {
+          "info": {
+            "name": "Add a label to a Telegraf config",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/telegrafs/:telegrafID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a label to a Telegraf config"
+        },
+        {
+          "info": {
+            "name": "Delete a label from a Telegraf config",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/telegrafs/:telegrafID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The label ID."
+              }
+            ]
+          },
+          "docs": "Delete a label from a Telegraf config"
+        },
+        {
+          "info": {
+            "name": "List all users with member privileges for a Telegraf config",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/telegrafs/:telegrafID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              }
+            ]
+          },
+          "docs": "List all users with member privileges for a Telegraf config"
+        },
+        {
+          "info": {
+            "name": "Add a member to a Telegraf config",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/telegrafs/:telegrafID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a member to a Telegraf config"
+        },
+        {
+          "info": {
+            "name": "Remove a member from a Telegraf config",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/telegrafs/:telegrafID/members/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the member to remove."
+              },
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              }
+            ]
+          },
+          "docs": "Remove a member from a Telegraf config"
+        },
+        {
+          "info": {
+            "name": "List all owners of a Telegraf configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/telegrafs/:telegrafID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf configuration ID."
+              }
+            ]
+          },
+          "docs": "List all owners of a Telegraf configuration"
+        },
+        {
+          "info": {
+            "name": "Add an owner to a Telegraf configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/telegrafs/:telegrafID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf configuration ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add an owner to a Telegraf configuration"
+        },
+        {
+          "info": {
+            "name": "Remove an owner from a Telegraf config",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/telegrafs/:telegrafID/owners/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the owner to remove."
+              },
+              {
+                "name": "telegrafID",
+                "value": "",
+                "type": "path",
+                "description": "The Telegraf config ID."
+              }
+            ]
+          },
+          "docs": "Remove an owner from a Telegraf config"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

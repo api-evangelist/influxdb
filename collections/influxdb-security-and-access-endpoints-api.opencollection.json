@@ -1,0 +1,583 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Security and access endpoints API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Security and access endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List authorizations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/authorizations",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "query",
+                "description": "A user ID.\nOnly returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "query",
+                "description": "A user name.\nOnly returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID. Only returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization)."
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nOnly returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization).\n"
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "An API [token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token) value.\nSpecifies an authorization by its `token` property value\nand returns the authorization.\n\n#### InfluxDB OSS\n\n- Doesn't support this parameter. InfluxDB OSS ignores the `token=` parameter,\n  applies other parameters, and then returns the result.\n\n#### Limitations\n\n- The parameter is non-repeatable. If you specify more than one,\n  only the first one is used. If a resource with the specified\n  property value doesn't exist, then the response body contains an empty list.\n"
+              }
+            ]
+          },
+          "docs": "Lists authorizations.\n\nTo limit which authorizations are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all authorizations.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud doesn't expose [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n  values in `GET /api/v2/authorizations` responses;\n  returns `token: redacted` for all authorizations.\n\n#### Required permissions\n\nTo retrieve an authorization, the request must use an "
+        },
+        {
+          "info": {
+            "name": "Create an authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/authorizations",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an authorization and returns the authorization with the\ngenerated API [token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token).\n\nUse this endpoint to create an authorization, which generates an API token\nwith permissions to `read` or `write` to a specific resource or `type` of resource.\nThe API token is the authorization's `token` property value.\n\nTo follow best practices for secure API token generation and retrieval,\nInfluxDB enforces access restrictions on API toke"
+        },
+        {
+          "info": {
+            "name": "Retrieve an authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "An authorization ID. Specifies the authorization to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieves an authorization.\n\nUse this endpoint to retrieve information about an API token, including\nthe token's permissions and the user that the token is scoped to.\n\n#### InfluxDB OSS\n\n- InfluxDB OSS returns\n  [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token) values in authorizations.\n- If the request uses an _[operator token](https://docs.influxdata.com/influxdb/latest/security/tokens/#operator-token)_,\n  InfluxDB OSS returns authorizations for all organization"
+        },
+        {
+          "info": {
+            "name": "Update an API token to be active or inactive",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "An authorization ID. Specifies the authorization to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an authorization.\n\nUse this endpoint to set an API token's status to be _active_ or _inactive_.\nInfluxDB rejects requests that use inactive API tokens.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "An authorization ID. Specifies the authorization to delete."
+              }
+            ]
+          },
+          "docs": "Deletes an authorization.\n\nUse the endpoint to delete an API token.\n\nIf you want to disable an API token instead of delete it,\n[update the authorization's status to `inactive`](#operation/PatchAuthorizationsID).\n"
+        },
+        {
+          "info": {
+            "name": "List organizations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of records returned. Default is `20`.\n"
+              },
+              {
+                "name": "descending",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nOnly returns the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nOnly returns the specified organization.\n"
+              },
+              {
+                "name": "userID",
+                "value": "",
+                "type": "query",
+                "description": "A user ID.\nOnly returns organizations where the specified user is a member or owner.\n"
+              }
+            ]
+          },
+          "docs": "Lists [organizations](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization/).\n\nTo limit which organizations are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all organizations up to the default `limit`.\n\n#### InfluxDB Cloud\n\n- Only returns the organization that owns the token passed in the request.\n\n#### Related guides\n\n- [View organizations](https://docs.influxdata.com/influxdb/cloud/organizations/view-orgs/)\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to retrieve.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves an organization.\n\nUse this endpoint to retrieve information for a specific organization.\n\n#### Related guides\n\n- [View organizations](https://docs.influxdata.com/influxdb/cloud/organizations/view-orgs/)\n"
+        },
+        {
+          "info": {
+            "name": "List all members of an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to retrieve users for.\n"
+              }
+            ]
+          },
+          "docs": "Lists all users that belong to an organization.\n\nInfluxDB [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) have\npermission to access InfluxDB.\n\n[Members](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#member) are users\nwithin the organization.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Member permissions are separate "
+        },
+        {
+          "info": {
+            "name": "Remove a member from an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/orgs/:orgID/members/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to remove."
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to remove a user from."
+              }
+            ]
+          },
+          "docs": "Removes a member from an organization.\n\nUse this endpoint to remove a user's member privileges for an organization.\nRemoving member privileges removes the user's `read` and `write` permissions\nfrom the organization.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Member permissions are separate from API token permissions.\n- Member permissions are used in the context"
+        },
+        {
+          "info": {
+            "name": "List all owners of an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to list owners for.\n"
+              }
+            ]
+          },
+          "docs": "Lists all owners of an organization.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Required permissions\n\n- `read-orgs INFLUX_ORG_ID`\n\n*`INFLUX_ORG_ID`* is the ID of the organization that you want to retrieve a\nlist of owners from.\n"
+        },
+        {
+          "info": {
+            "name": "Remove an owner from an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/orgs/:orgID/owners/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to remove."
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to remove an owner from.\n"
+              }
+            ]
+          },
+          "docs": "Removes an [owner](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#owner) from\nthe organization.\n\nOrganization owners have permission to delete organizations and remove user and member\npermissions from the organization.\n\n#### InfluxDB Cloud\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owner permissions are separate from API token permissions.\n- Owner permissions are use"
+        },
+        {
+          "info": {
+            "name": "List all secret keys for an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID/secrets",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The organization ID."
+              }
+            ]
+          },
+          "docs": "List all secret keys for an organization"
+        },
+        {
+          "info": {
+            "name": "Delete a secret from an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/orgs/:orgID/secrets/:secretID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The organization ID."
+              },
+              {
+                "name": "secretID",
+                "value": "",
+                "type": "path",
+                "description": "The secret ID."
+              }
+            ]
+          },
+          "docs": "Delete a secret from an organization"
+        },
+        {
+          "info": {
+            "name": "Delete secrets from an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/orgs/:orgID/secrets/delete",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The organization ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Delete secrets from an organization"
+        },
+        {
+          "info": {
+            "name": "Create a user session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/signin",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Authenticates [Basic authentication credentials](#section/Authentication/BasicAuthentication)\nfor a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user),\nand then, if successful, generates a user session.\n\nTo authenticate a user, pass the HTTP `Authorization` header with the\n`Basic` scheme and the base64-encoded username and password.\nFor syntax and more information, see [Basic Authentication](#section/Authentication/BasicAuthentication) for\nsyntax and more information.\n\nI"
+        },
+        {
+          "info": {
+            "name": "Expire a user session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/signout",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Expires a user session specified by a session cookie.\n\nUse this endpoint to expire a user session that was generated when the user\nauthenticated with the InfluxDB Developer Console (UI) or the `POST /api/v2/signin` endpoint.\n\nFor example, the `POST /api/v2/signout` endpoint represents the third step\nin the following three-step process\nto authenticate a user, retrieve the `user` resource, and then expire the session:\n\n1. Send a request with the user's [Basic authentication credentials](#section/A"
+        },
+        {
+          "info": {
+            "name": "List users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/users",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A user name.\nOnly lists the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A user id.\nOnly lists the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              }
+            ]
+          },
+          "docs": "Lists [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\nTo limit which users are returned, pass query parameters in your request.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud doesn't allow listing all users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions for InfluxDB Cloud\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| List all users | Operator token | "
+        },
+        {
+          "info": {
+            "name": "Update a password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/users/:userID/password",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to set the password for."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a user password.\n\n#### InfluxDB Cloud\n\n- Doesn't allow you to manage user passwords through the API.\n  Use the InfluxDB Cloud user interface (UI) to update a password.\n\n#### Related guides\n\n- [InfluxDB Cloud - Change your password](https://docs.influxdata.com/influxdb/cloud/account-management/change-password/)\n- [InfluxDB OSS - Change your password](https://docs.influxdata.com/influxdb/latest/users/change-password/)\n"
+        },
+        {
+          "info": {
+            "name": "Update a password",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/users/:userID/password",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to set the password for."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Updates a user password.\n\nUse this endpoint to let a user authenticate with\n[Basic authentication credentials](#section/Authentication/BasicAuthentication)\nand set a new password.\n\n#### InfluxDB Cloud\n\n- Doesn't allow you to manage user passwords through the API.\n  Use the InfluxDB Cloud user interface (UI) to update a password.\n\n#### Related guides\n\n- [InfluxDB Cloud - Change your password](https://docs.influxdata.com/influxdb/cloud/account-management/change-password/)\n- [InfluxDB OSS - Change "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

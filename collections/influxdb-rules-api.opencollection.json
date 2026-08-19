@@ -1,0 +1,50 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Rules API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Rules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve a notification rule query",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/notificationRules/:ruleID/query",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a notification rule query"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

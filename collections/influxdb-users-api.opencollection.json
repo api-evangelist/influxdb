@@ -1,0 +1,262 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Users API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the currently authenticated user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/me",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Retrieve the currently authenticated user"
+        },
+        {
+          "info": {
+            "name": "Update a password",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/me/password",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Updates the password for the signed-in [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\nThis endpoint represents the third step in the following three-step process to let a\nuser with a user session update their password:\n  1. Pass the user's [Basic authentication credentials](#section/Authentication/BasicAuthentication) to the `POST /api/v2/signin`\n     endpoint to create a user session and generate a session cookie.\n  2. From the response in the first step, extract "
+        },
+        {
+          "info": {
+            "name": "List users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/users",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A user name.\nOnly lists the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A user id.\nOnly lists the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              }
+            ]
+          },
+          "docs": "Lists [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\nTo limit which users are returned, pass query parameters in your request.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud doesn't allow listing all users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions for InfluxDB Cloud\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| List all users | Operator token | "
+        },
+        {
+          "info": {
+            "name": "Create a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/users",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "(InfluxData internal use only)\n\nCreates and returns a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user)\nthat can access InfluxDB.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud Doesn't let you manage users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions for InfluxDB Cloud\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| Create user | Operator token | InfluxDat"
+        },
+        {
+          "info": {
+            "name": "Retrieve a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/users/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "A user ID.\nRetrieves the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/organizations/users/)\n"
+        },
+        {
+          "info": {
+            "name": "Update a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/users/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "A user ID.\nUpdates the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "(InfluxData internal use only)\n\nUpdates a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) and returns the user.\n\n#### InfluxDB Cloud\n\n- Doesn't let you manage users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions for InfluxDB Cloud\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| Update user | Operator token | InfluxData internal use only |\n\n#### Rel"
+        },
+        {
+          "info": {
+            "name": "Delete a user",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/users/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "A user ID.\nDeletes the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              }
+            ]
+          },
+          "docs": "(InfluxData internal use only)\n\nDeletes a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\nFor security purposes, once an InfluxDB user account is deleted from an\norganization, the user (and their token) cannot be reactivated.\n\n#### InfluxDB Cloud\n\n- Doesn't let you manage users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions\n\n| Action | Permission required | Restriction |\n|:-------|:------------"
+        },
+        {
+          "info": {
+            "name": "Update a password",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/users/:userID/password",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to set the password for."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a user password.\n\n#### InfluxDB Cloud\n\n- Doesn't allow you to manage user passwords through the API.\n  Use the InfluxDB Cloud user interface (UI) to update a password.\n\n#### Related guides\n\n- [InfluxDB Cloud - Change your password](https://docs.influxdata.com/influxdb/cloud/account-management/change-password/)\n- [InfluxDB OSS - Change your password](https://docs.influxdata.com/influxdb/latest/users/change-password/)\n"
+        },
+        {
+          "info": {
+            "name": "Update a password",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/users/:userID/password",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to set the password for."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Updates a user password.\n\nUse this endpoint to let a user authenticate with\n[Basic authentication credentials](#section/Authentication/BasicAuthentication)\nand set a new password.\n\n#### InfluxDB Cloud\n\n- Doesn't allow you to manage user passwords through the API.\n  Use the InfluxDB Cloud user interface (UI) to update a password.\n\n#### Related guides\n\n- [InfluxDB Cloud - Change your password](https://docs.influxdata.com/influxdb/cloud/account-management/change-password/)\n- [InfluxDB OSS - Change "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

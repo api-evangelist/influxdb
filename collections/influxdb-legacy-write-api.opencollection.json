@@ -1,0 +1,78 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Legacy Write API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Legacy Write",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Write time series data into InfluxDB in a V1-compatible format",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/write",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "u",
+                "value": "",
+                "type": "query",
+                "description": "The InfluxDB 1.x username to authenticate the request."
+              },
+              {
+                "name": "p",
+                "value": "",
+                "type": "query",
+                "description": "The InfluxDB 1.x password to authenticate the request."
+              },
+              {
+                "name": "db",
+                "value": "",
+                "type": "query",
+                "description": "Bucket to write to. If none exists, InfluxDB creates a bucket with a default 3-day retention policy."
+              },
+              {
+                "name": "rp",
+                "value": "",
+                "type": "query",
+                "description": "Retention policy name."
+              },
+              {
+                "name": "precision",
+                "value": "",
+                "type": "query",
+                "description": "Write precision."
+              }
+            ]
+          },
+          "docs": "Write time series data into InfluxDB in a V1-compatible format"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

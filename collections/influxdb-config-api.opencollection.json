@@ -1,0 +1,42 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Config API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Config",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve feature flags",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/flags",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Retrieves the feature flag key-value pairs configured for the InfluxDB\ninstance.\n_Feature flags_ are configuration options used to develop and test\nexperimental InfluxDB features and are intended for internal use only.\n\nThis endpoint represents the first step in the following three-step process\nto configure feature flags:\n\n1. Use [token authentication](#section/Authentication/TokenAuthentication) or a [user session](#tag/Signin) with this endpoint to retrieve\n   feature flags and their values.\n2"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

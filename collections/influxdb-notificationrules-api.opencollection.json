@@ -1,0 +1,282 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) NotificationRules API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "NotificationRules",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all notification rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/notificationRules",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of records returned. Default is `20`.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "Only show notification rules that belong to a specific organization ID."
+              },
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "query",
+                "description": "Only show notifications that belong to the specific check ID."
+              },
+              {
+                "name": "tag",
+                "value": "",
+                "type": "query",
+                "description": "Only return notification rules that \"would match\" statuses which contain the tag key value pairs provided."
+              }
+            ]
+          },
+          "docs": "List all notification rules"
+        },
+        {
+          "info": {
+            "name": "Add a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/notificationRules",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a notification rule"
+        },
+        {
+          "info": {
+            "name": "Retrieve a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/notificationRules/:ruleID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a notification rule"
+        },
+        {
+          "info": {
+            "name": "Update a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/notificationRules/:ruleID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a notification rule"
+        },
+        {
+          "info": {
+            "name": "Update a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/notificationRules/:ruleID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a notification rule"
+        },
+        {
+          "info": {
+            "name": "Delete a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/notificationRules/:ruleID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              }
+            ]
+          },
+          "docs": "Delete a notification rule"
+        },
+        {
+          "info": {
+            "name": "List all labels for a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/notificationRules/:ruleID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              }
+            ]
+          },
+          "docs": "List all labels for a notification rule"
+        },
+        {
+          "info": {
+            "name": "Add a label to a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/notificationRules/:ruleID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a label to a notification rule"
+        },
+        {
+          "info": {
+            "name": "Delete label from a notification rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/notificationRules/:ruleID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "ruleID",
+                "value": "",
+                "type": "path",
+                "description": "The notification rule ID."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ]
+          },
+          "docs": "Delete label from a notification rule"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,174 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Authorizations (API tokens) API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authorizations (API tokens)",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List authorizations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/authorizations",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "query",
+                "description": "A user ID.\nOnly returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "query",
+                "description": "A user name.\nOnly returns authorizations scoped to the specified [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID. Only returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization)."
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nOnly returns authorizations that belong to the specified [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization).\n"
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "An API [token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token) value.\nSpecifies an authorization by its `token` property value\nand returns the authorization.\n\n#### InfluxDB OSS\n\n- Doesn't support this parameter. InfluxDB OSS ignores the `token=` parameter,\n  applies other parameters, and then returns the result.\n\n#### Limitations\n\n- The parameter is non-repeatable. If you specify more than one,\n  only the first one is used. If a resource with the specified\n  property value doesn't exist, then the response body contains an empty list.\n"
+              }
+            ]
+          },
+          "docs": "Lists authorizations.\n\nTo limit which authorizations are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all authorizations.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud doesn't expose [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n  values in `GET /api/v2/authorizations` responses;\n  returns `token: redacted` for all authorizations.\n\n#### Required permissions\n\nTo retrieve an authorization, the request must use an "
+        },
+        {
+          "info": {
+            "name": "Create an authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/authorizations",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an authorization and returns the authorization with the\ngenerated API [token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token).\n\nUse this endpoint to create an authorization, which generates an API token\nwith permissions to `read` or `write` to a specific resource or `type` of resource.\nThe API token is the authorization's `token` property value.\n\nTo follow best practices for secure API token generation and retrieval,\nInfluxDB enforces access restrictions on API toke"
+        },
+        {
+          "info": {
+            "name": "Retrieve an authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "An authorization ID. Specifies the authorization to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieves an authorization.\n\nUse this endpoint to retrieve information about an API token, including\nthe token's permissions and the user that the token is scoped to.\n\n#### InfluxDB OSS\n\n- InfluxDB OSS returns\n  [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token) values in authorizations.\n- If the request uses an _[operator token](https://docs.influxdata.com/influxdb/latest/security/tokens/#operator-token)_,\n  InfluxDB OSS returns authorizations for all organization"
+        },
+        {
+          "info": {
+            "name": "Update an API token to be active or inactive",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "An authorization ID. Specifies the authorization to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an authorization.\n\nUse this endpoint to set an API token's status to be _active_ or _inactive_.\nInfluxDB rejects requests that use inactive API tokens.\n"
+        },
+        {
+          "info": {
+            "name": "Delete an authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/authorizations/:authID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "authID",
+                "value": "",
+                "type": "path",
+                "description": "An authorization ID. Specifies the authorization to delete."
+              }
+            ]
+          },
+          "docs": "Deletes an authorization.\n\nUse the endpoint to delete an API token.\n\nIf you want to disable an API token instead of delete it,\n[update the authorization's status to `inactive`](#operation/PatchAuthorizationsID).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

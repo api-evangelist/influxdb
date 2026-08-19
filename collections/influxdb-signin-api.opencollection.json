@@ -1,0 +1,47 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Signin API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Signin",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a user session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/signin",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "auth": {
+              "type": "basic",
+              "username": "{{username}}",
+              "password": "{{password}}"
+            }
+          },
+          "docs": "Authenticates [Basic authentication credentials](#section/Authentication/BasicAuthentication)\nfor a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user),\nand then, if successful, generates a user session.\n\nTo authenticate a user, pass the HTTP `Authorization` header with the\n`Basic` scheme and the base64-encoded username and password.\nFor syntax and more information, see [Basic Authentication](#section/Authentication/BasicAuthentication) for\nsyntax and more information.\n\nI"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

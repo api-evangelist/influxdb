@@ -1,0 +1,215 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Cells API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cells",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a dashboard cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/dashboards/:dashboardID/cells",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a dashboard cell"
+        },
+        {
+          "info": {
+            "name": "Replace cells in a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/dashboards/:dashboardID/cells",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces all cells in a dashboard. This is used primarily to update the positional information of all cells."
+        },
+        {
+          "info": {
+            "name": "Update the non-positional information related to a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cell to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the non positional information related to a cell. Updates to a single cell's positional data could cause grid conflicts."
+        },
+        {
+          "info": {
+            "name": "Delete a dashboard cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to delete."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cell to delete."
+              }
+            ]
+          },
+          "docs": "Delete a dashboard cell"
+        },
+        {
+          "info": {
+            "name": "Retrieve the view for a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID/view",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The cell ID."
+              }
+            ]
+          },
+          "docs": "Retrieve the view for a cell"
+        },
+        {
+          "info": {
+            "name": "Update the view for a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID/view",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cell to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the view for a cell"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

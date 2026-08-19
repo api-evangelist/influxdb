@@ -1,0 +1,36 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Maps API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Maps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a mapbox token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/maps/mapToken"
+          },
+          "docs": "Get a mapbox token"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

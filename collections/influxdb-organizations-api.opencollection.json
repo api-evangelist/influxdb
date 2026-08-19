@@ -1,0 +1,349 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Organizations API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Organizations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List organizations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of records returned. Default is `20`.\n"
+              },
+              {
+                "name": "descending",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nOnly returns the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nOnly returns the specified organization.\n"
+              },
+              {
+                "name": "userID",
+                "value": "",
+                "type": "query",
+                "description": "A user ID.\nOnly returns organizations where the specified user is a member or owner.\n"
+              }
+            ]
+          },
+          "docs": "Lists [organizations](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization/).\n\nTo limit which organizations are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all organizations up to the default `limit`.\n\n#### InfluxDB Cloud\n\n- Only returns the organization that owns the token passed in the request.\n\n#### Related guides\n\n- [View organizations](https://docs.influxdata.com/influxdb/cloud/organizations/view-orgs/)\n"
+        },
+        {
+          "info": {
+            "name": "Create an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/orgs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization)\nand returns the newly created organization.\n\n#### InfluxDB Cloud\n\n- Doesn't allow you to use this endpoint to create organizations.\n\n#### Related guides\n\n- [Manage organizations](https://docs.influxdata.com/influxdb/cloud/organizations)\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to retrieve.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves an organization.\n\nUse this endpoint to retrieve information for a specific organization.\n\n#### Related guides\n\n- [View organizations](https://docs.influxdata.com/influxdb/cloud/organizations/view-orgs/)\n"
+        },
+        {
+          "info": {
+            "name": "Update an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/orgs/:orgID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to update.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an organization.\n\nUse this endpoint to update properties\n(`name`, `description`) of an organization.\n\nUpdating an organization’s name affects all resources that reference the\norganization by name, including the following:\n\n- Queries\n- Dashboards\n- Tasks\n- Telegraf configurations\n- Templates\n\nIf you change an organization name, be sure to update the organization name\nin these resources as well.\n\n#### Related Guides\n\n- [Update an organization](https://docs.influxdata.com/influxdb/cloud/org"
+        },
+        {
+          "info": {
+            "name": "Delete an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/orgs/:orgID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to delete.\n"
+              }
+            ]
+          },
+          "docs": "Deletes an organization.\n\nDeleting an organization from InfluxDB Cloud can't be undone.\nOnce deleted, all data associated with the organization is removed.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a delete request:\n\n  1. Validates the request and queues the delete.\n  2. Returns an HTTP `204` status code if queued; _error_ otherwise.\n  3. Handles the delete asynchronously.\n\n#### InfluxDB OSS\n\n- Validates the request, handles the delete synchronously,\nand then responds with success"
+        },
+        {
+          "info": {
+            "name": "List all members of an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to retrieve users for.\n"
+              }
+            ]
+          },
+          "docs": "Lists all users that belong to an organization.\n\nInfluxDB [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) have\npermission to access InfluxDB.\n\n[Members](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#member) are users\nwithin the organization.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Member permissions are separate "
+        },
+        {
+          "info": {
+            "name": "Add a member to an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/orgs/:orgID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a user to an organization.\n\nInfluxDB [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) have\npermission to access InfluxDB.\n\n[Members](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#member) are users\nwithin the organization.\n\n#### InfluxDB Cloud\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Member permissions are separate from API token per"
+        },
+        {
+          "info": {
+            "name": "Remove a member from an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/orgs/:orgID/members/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to remove."
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to remove a user from."
+              }
+            ]
+          },
+          "docs": "Removes a member from an organization.\n\nUse this endpoint to remove a user's member privileges for an organization.\nRemoving member privileges removes the user's `read` and `write` permissions\nfrom the organization.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Member permissions are separate from API token permissions.\n- Member permissions are used in the context"
+        },
+        {
+          "info": {
+            "name": "List all owners of an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/orgs/:orgID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to list owners for.\n"
+              }
+            ]
+          },
+          "docs": "Lists all owners of an organization.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Required permissions\n\n- `read-orgs INFLUX_ORG_ID`\n\n*`INFLUX_ORG_ID`* is the ID of the organization that you want to retrieve a\nlist of owners from.\n"
+        },
+        {
+          "info": {
+            "name": "Add an owner to an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/orgs/:orgID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization that you want to add an owner for."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds an owner to an organization.\n\nUse this endpoint to assign the organization `owner` role to a user.\n\n#### InfluxDB Cloud\n\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Required permissions\n\n- `write-orgs INFLUX_ORG_ID`\n\n*`INFLUX_ORG_ID`* is the ID of the organization that you want to add an owner for.\n\n#### Related endpoints\n\n- [Authorizations](#tag/Authorizations-(API-tokens))\n"
+        },
+        {
+          "info": {
+            "name": "Remove an owner from an organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/orgs/:orgID/owners/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to remove."
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization to remove an owner from.\n"
+              }
+            ]
+          },
+          "docs": "Removes an [owner](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#owner) from\nthe organization.\n\nOrganization owners have permission to delete organizations and remove user and member\npermissions from the organization.\n\n#### InfluxDB Cloud\n- Doesn't use `owner` and `member` roles.\n  Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\n#### Limitations\n\n- Owner permissions are separate from API token permissions.\n- Owner permissions are use"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

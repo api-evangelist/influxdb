@@ -1,0 +1,50 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Telegraf Plugins API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Telegraf Plugins",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all Telegraf plugins",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/telegraf/plugins",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "The type of plugin desired."
+              }
+            ]
+          },
+          "docs": "List all Telegraf plugins"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

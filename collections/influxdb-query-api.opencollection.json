@@ -1,0 +1,160 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Query API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Query",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Query data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/query",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Accept-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Queries the bucket in the organization associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or `orgID` parameter.\n- Queries the bucket in the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Queries the bucket in the organization associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or `orgID` parameter.\n- Queries the bucket in the specified organization.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Retrieves data from buckets.\n\nUse this endpoint to send a Flux query request and retrieve data from a bucket.\n\n#### Rate limits (with InfluxDB Cloud)\n\n`read` rate limits apply.\nFor more information, see [limits and adjustable quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/).\n\n#### Related guides\n\n- [Query with the InfluxDB API](https://docs.influxdata.com/influxdb/cloud/query-data/execute-queries/influx-api/)\n- [Get started with Flux](https://docs.influxdata.com/flu"
+        },
+        {
+          "info": {
+            "name": "Analyze a Flux query",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/query/analyze",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Analyzes a [Flux query](https://docs.influxdata.com/flux/v0.x/) for syntax\nerrors and returns the list of errors.\n\nIn the following sample query, `from()` is missing the property key.\n\n    ```json\n    { \"query\": \"from(: \\\"iot_center\\\")\\\n                |> range(start: -90d)\\\n                |> filter(fn: (r) => r._measurement == \\\"environment\\\")\",\n      \"type\": \"flux\"\n    }\n    ```\n\nIf you pass this in a request to the `/api/v2/analyze` endpoint,\nInfluxDB returns an `errors` list that contains a"
+        },
+        {
+          "info": {
+            "name": "Generate a query Abstract Syntax Tree (AST)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/query/ast",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Analyzes a Flux query and returns a complete package source [Abstract Syntax\nTree (AST)](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#abstract-syntax-tree-ast)\nfor the query.\n\nUse this endpoint for deep query analysis such as debugging unexpected query\nresults.\n\nA Flux query AST provides a semantic, tree-like representation with contextual\ninformation about the query. The AST illustrates how the query is distributed\ninto different components for execution.\n\n#### Limitations\n\n- "
+        },
+        {
+          "info": {
+            "name": "List Flux query suggestions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/query/suggestions",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Lists Flux query suggestions. Each suggestion contains a\n[Flux function](https://docs.influxdata.com/flux/v0.x/stdlib/all-functions/)\nname and parameters.\n\nUse this endpoint to retrieve a list of Flux query suggestions used in the\nInfluxDB Flux Query Builder.\n\n#### Limitations\n\n- When writing a query, avoid using `_functionName()` helper functions\nexposed by this endpoint.  Helper function names have an underscore (`_`)\nprefix and aren't meant to be used directly in queries--for example:\n\n  - To"
+        },
+        {
+          "info": {
+            "name": "Retrieve a query suggestion for a branching suggestion",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/query/suggestions/:name",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "A [Flux function](https://docs.influxdata.com/flux/v0.x/stdlib/all-functions/) name.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a query suggestion that contains the name and parameters of the\nrequested function.\n\nUse this endpoint to pass a branching suggestion (a Flux function name) and\nretrieve the parameters of the requested function.\n\n#### Limitations\n\n- Use `/api/v2/query/suggestions/{name}` (without a trailing slash).\n`/api/v2/query/suggestions/{name}/` (note the trailing slash) results in a\nHTTP `301 Moved Permanently` status.\n\n- The function `name` must exist and must be spelled correctly.\n\n#### Related"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

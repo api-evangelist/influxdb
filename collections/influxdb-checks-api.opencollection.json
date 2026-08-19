@@ -1,0 +1,295 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Checks API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Checks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all checks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/checks",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of records returned. Default is `20`.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "Only show checks that belong to a specific organization ID."
+              }
+            ]
+          },
+          "docs": "List all checks"
+        },
+        {
+          "info": {
+            "name": "Add new check",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/checks",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add new check"
+        },
+        {
+          "info": {
+            "name": "Retrieve a check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/checks/:checkID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a check"
+        },
+        {
+          "info": {
+            "name": "Update a check",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/checks/:checkID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a check"
+        },
+        {
+          "info": {
+            "name": "Update a check",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/checks/:checkID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a check"
+        },
+        {
+          "info": {
+            "name": "Delete a check",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/checks/:checkID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              }
+            ]
+          },
+          "docs": "Delete a check"
+        },
+        {
+          "info": {
+            "name": "List all labels for a check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/checks/:checkID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              }
+            ]
+          },
+          "docs": "List all labels for a check"
+        },
+        {
+          "info": {
+            "name": "Add a label to a check",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/checks/:checkID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a label to a check"
+        },
+        {
+          "info": {
+            "name": "Delete label from a check",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/checks/:checkID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ]
+          },
+          "docs": "Delete label from a check"
+        },
+        {
+          "info": {
+            "name": "Retrieve a check query",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/checks/:checkID/query",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "checkID",
+                "value": "",
+                "type": "path",
+                "description": "The check ID."
+              }
+            ]
+          },
+          "docs": "Retrieve a check query"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

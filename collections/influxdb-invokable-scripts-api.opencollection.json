@@ -1,0 +1,174 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Invokable Scripts API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Invokable Scripts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List scripts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/scripts",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination]({{% INFLUXDB_DOCS_URL %}}/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of scripts to return. Default is `100`.\n"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "The script name. Lists scripts with the specified name."
+              }
+            ]
+          },
+          "docs": "Lists [scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/).\n\n#### Related guides\n\n- [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n"
+        },
+        {
+          "info": {
+            "name": "Create a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/scripts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an [invokable script](https://docs.influxdata.com/resources/videos/api-invokable-scripts/)\nand returns the script.\n\n#### Related guides\n\n- [Invokable scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n- [Creating custom InfluxDB endpoints](https://docs.influxdata.com/resources/videos/api-invokable-scripts/)\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/scripts/:scriptID",
+            "params": [
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "path",
+                "description": "A script ID.\nRetrieves the specified script.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a [script](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/).\n\n#### Related Guides\n\n- [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n"
+        },
+        {
+          "info": {
+            "name": "Update a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/scripts/:scriptID",
+            "params": [
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "path",
+                "description": "A script ID.\nUpdates the specified script.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an invokable script.\n\nUse this endpoint to modify values for script properties (`description` and `script`).\n\nTo update a script, pass an object that contains the updated key-value pairs.\n\n#### Limitations\n\n- If you send an empty request body, the script will neither update nor\nstore an empty script, but InfluxDB will respond with an HTTP `200` status\ncode.\n\n#### Related Guides\n\n- [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n"
+        },
+        {
+          "info": {
+            "name": "Delete a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/scripts/:scriptID",
+            "params": [
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "path",
+                "description": "A script ID.\nDeletes the specified script.\n"
+              }
+            ]
+          },
+          "docs": "Deletes a [script](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/) and all associated records.\n\n#### Limitations\n\n- You can delete only one script per request.\n- If the script ID you provide doesn't exist for the organization, InfluxDB\nresponds with an HTTP `204` status code.\n\n#### Related Guides\n\n- [Invoke custom scripts](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/)\n"
+        },
+        {
+          "info": {
+            "name": "Invoke a script",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/scripts/:scriptID/invoke",
+            "params": [
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "path",
+                "description": "A script ID.\nRuns the specified script.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Runs a script and returns the result.\nWhen the script runs, InfluxDB replaces `params` keys referenced in the script with\n`params` key-values passed in the request body--for example:\n\nThe following sample script contains a _`mybucket`_ parameter :\n\n```json\n\"script\": \"from(bucket: params.mybucket)\n            |> range(start: -7d)\n            |> limit(n:1)\"\n```\n\nThe following example `POST /api/v2/scripts/SCRIPT_ID/invoke` request body\npasses a value for the _`mybucket`_ parameter:\n\n```json\n{\n  \"p"
+        },
+        {
+          "info": {
+            "name": "Find script parameters.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/scripts/:scriptID/params",
+            "params": [
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "path",
+                "description": "A script ID.\nThe script to analyze for params.\n"
+              }
+            ]
+          },
+          "docs": "Analyzes a script and determines required parameters.\nFind all `params` keys referenced in a script and return a list\nof keys. If it is possible to determine the type of the value\nfrom the context then the type is also returned -- for example:\n\nThe following sample script contains a _`mybucket`_ parameter :\n\n```json\n\"script\": \"from(bucket: params.mybucket)\n            |> range(start: -7d)\n            |> limit(n:1)\"\n```\n\nRequesting the parameters using `GET /api/v2/scripts/SCRIPT_ID/params`\nretur"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

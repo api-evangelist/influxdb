@@ -1,0 +1,42 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Routes API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Routes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all top level routes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Retrieves all the top level routes for the InfluxDB API.\n\n#### Limitations\n\n- Only returns top level routes--for example, the response contains\n`\"tasks\":\"/api/v2/tasks\"`, and doesn't contain resource-specific routes\nfor tasks (`/api/v2/tasks/TASK_ID/...`).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

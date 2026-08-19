@@ -1,0 +1,84 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Write API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Write",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Write data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/write",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              },
+              {
+                "name": "Content-Length",
+                "value": ""
+              },
+              {
+                "name": "Accept",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name or ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Writes data to the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- If you pass both `orgID` and `org`, they must both be valid.\n- Writes data to the bucket in the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\n\n#### InfluxDB Cloud\n\n- Doesn't use the `org` parameter or `orgID` parameter.\n- Writes data to the bucket in the organization\n  associated with the authorization (API token).\n\n#### InfluxDB OSS\n\n- Requires either the `org` parameter or the `orgID` parameter.\n- If you pass both `orgID` and `org`, they must both be valid.\n- Writes data to the bucket in the specified organization.\n"
+              },
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "query",
+                "description": "A bucket name or ID.\nInfluxDB writes all points in the batch to the specified bucket.\n"
+              },
+              {
+                "name": "precision",
+                "value": "",
+                "type": "query",
+                "description": "The precision for unix timestamps in the line protocol batch."
+              }
+            ]
+          },
+          "docs": "Writes data to a bucket.\n\nUse this endpoint to send data in [line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/) format to InfluxDB.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a write request:\n\n  1. Validates the request and queues the write.\n  2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.\n  3. Handles the delete asynchronously and reaches eventual consistency.\n\n  To ensure that InfluxDB Cloud handles write"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

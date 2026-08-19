@@ -1,0 +1,70 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) System information endpoints API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "System information endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all top level routes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Retrieves all the top level routes for the InfluxDB API.\n\n#### Limitations\n\n- Only returns top level routes--for example, the response contains\n`\"tasks\":\"/api/v2/tasks\"`, and doesn't contain resource-specific routes\nfor tasks (`/api/v2/tasks/TASK_ID/...`).\n"
+        },
+        {
+          "info": {
+            "name": "Get the status of the instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/ping"
+          },
+          "docs": "Retrieves the status and InfluxDB version of the instance.\n\nUse this endpoint to monitor uptime for the InfluxDB instance. The response\nreturns a HTTP `204` status code to inform you the instance is available.\n\n#### InfluxDB Cloud\n\n- Isn't versioned and doesn't return `X-Influxdb-Version` in the headers.\n\n#### Related guides\n\n- [Influx ping](https://docs.influxdata.com/influxdb/cloud/reference/cli/influx/ping/)\n"
+        },
+        {
+          "info": {
+            "name": "List all known resources",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/resources",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "List all known resources"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

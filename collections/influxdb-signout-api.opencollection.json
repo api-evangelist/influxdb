@@ -1,0 +1,42 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Signout API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Signout",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Expire a user session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/signout",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ]
+          },
+          "docs": "Expires a user session specified by a session cookie.\n\nUse this endpoint to expire a user session that was generated when the user\nauthenticated with the InfluxDB Developer Console (UI) or the `POST /api/v2/signin` endpoint.\n\nFor example, the `POST /api/v2/signout` endpoint represents the third step\nin the following three-step process\nto authenticate a user, retrieve the `user` resource, and then expire the session:\n\n1. Send a request with the user's [Basic authentication credentials](#section/A"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

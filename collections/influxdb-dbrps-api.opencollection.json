@@ -1,0 +1,222 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) DBRPs API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "DBRPs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List database retention policy mappings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dbrps",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nOnly returns DBRP mappings for the specified organization.\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nOnly returns DBRP mappings for the specified organization.\n"
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A DBPR mapping ID.\nOnly returns the specified DBRP mapping.\n"
+              },
+              {
+                "name": "bucketID",
+                "value": "",
+                "type": "query",
+                "description": "A bucket ID.\nOnly returns DBRP mappings that belong to the specified bucket.\n"
+              },
+              {
+                "name": "default",
+                "value": "",
+                "type": "query",
+                "description": "Specifies filtering on default"
+              },
+              {
+                "name": "db",
+                "value": "",
+                "type": "query",
+                "description": "A database.\nOnly returns DBRP mappings that belong to the 1.x database.\n"
+              },
+              {
+                "name": "rp",
+                "value": "",
+                "type": "query",
+                "description": "A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp).\nSpecifies the 1.x retention policy to filter on.\n"
+              }
+            ]
+          },
+          "docs": "Lists database retention policy (DBRP) mappings.\n\n#### Related guide\n\n- [Database and retention policy mapping](https://docs.influxdata.com/influxdb/cloud/reference/api/influxdb-1x/dbrp/)\n"
+        },
+        {
+          "info": {
+            "name": "Add a database retention policy mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/dbrps",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a database retention policy (DBRP) mapping and returns the mapping.\n\nUse this endpoint to add InfluxDB 1.x API compatibility to your\nInfluxDB Cloud or InfluxDB OSS 2.x buckets. Your buckets must contain a\nDBRP mapping in order to query and write using the InfluxDB 1.x API.\nobject.\n\n#### Related guide\n\n- [Database and retention policy mapping](https://docs.influxdata.com/influxdb/cloud/reference/api/influxdb-1x/dbrp/)\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a database retention policy mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dbrps/:dbrpID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nSpecifies the organization that owns the DBRP mapping.\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nSpecifies the organization that owns the DBRP mapping.\n"
+              },
+              {
+                "name": "dbrpID",
+                "value": "",
+                "type": "path",
+                "description": "A DBRP mapping ID.\nSpecifies the DBRP mapping.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves the specified retention policy (DBRP) mapping.\n\n#### Related guide\n\n- [Database and retention policy mapping](https://docs.influxdata.com/influxdb/cloud/reference/api/influxdb-1x/dbrp/)\n"
+        },
+        {
+          "info": {
+            "name": "Update a database retention policy mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/dbrps/:dbrpID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nSpecifies the organization that owns the DBRP mapping.\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nSpecifies the organization that owns the DBRP mapping.\n"
+              },
+              {
+                "name": "dbrpID",
+                "value": "",
+                "type": "path",
+                "description": "A DBRP mapping ID.\nSpecifies the DBRP mapping.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a database retention policy mapping"
+        },
+        {
+          "info": {
+            "name": "Delete a database retention policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/dbrps/:dbrpID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nSpecifies the organization that owns the DBRP mapping.\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nSpecifies the organization that owns the DBRP mapping.\n"
+              },
+              {
+                "name": "dbrpID",
+                "value": "",
+                "type": "path",
+                "description": "A DBRP mapping ID.\nOnly returns the specified DBRP mapping.\n"
+              }
+            ]
+          },
+          "docs": "Deletes the specified database retention policy (DBRP) mapping.\n\n#### Related guide\n\n- [Database and retention policy mapping](https://docs.influxdata.com/influxdb/cloud/reference/api/influxdb-1x/dbrp/)\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

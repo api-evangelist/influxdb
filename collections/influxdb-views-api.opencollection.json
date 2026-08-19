@@ -1,0 +1,91 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Views API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Views",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the view for a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID/view",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The cell ID."
+              }
+            ]
+          },
+          "docs": "Retrieve the view for a cell"
+        },
+        {
+          "info": {
+            "name": "Update the view for a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID/view",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cell to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the view for a cell"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

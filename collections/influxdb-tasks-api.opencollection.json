@@ -1,0 +1,695 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Tasks API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tasks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all tasks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) name.\nOnly returns tasks with the specified name.\nDifferent tasks may have the same name.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID.\nOnly returns tasks created after the specified task.\n"
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "query",
+                "description": "A [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) ID.\nOnly returns tasks owned by the specified user.\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) name.\nOnly returns tasks owned by the specified organization.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) ID.\nOnly returns tasks owned by the specified organization.\n"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) status.\nOnly returns tasks that have the specified status (`active` or `inactive`).\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) to return.\nDefault is `100`.\nThe minimum is `1` and the maximum is `500`.\n\nTo reduce the payload size, combine _`type=basic`_ and _`limit`_ (see _Request samples_).\nFor more information about the `basic` response, see the _`type`_ parameter.\n"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The sort field. Only `name` is supported.\nSpecifies the field used to sort records in the list.\n"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) type (`basic` or `system`).\nDefault is `system`.\nSpecifies the level of detail for tasks in the response.\nThe default (`system`) response contains all the metadata properties for tasks.\nTo reduce the response size, pass `basic` to omit some task properties (`flux`, `createdAt`, `updatedAt`).\n"
+              },
+              {
+                "name": "scriptID",
+                "value": "",
+                "type": "query",
+                "description": "A [script](#tag/Invokable-Scripts) ID.\nOnly returns tasks that use the specified invokable script.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n\nTo limit which tasks are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all tasks up to the default `limit`.\n"
+        },
+        {
+          "info": {
+            "name": "Create a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) and returns the task.\n\nUse this endpoint to create a scheduled task that runs a Flux script.\n\n#### InfluxDB Cloud\n\n- You can use either `flux` or `scriptID` to provide the task script.\n\n  - `flux`: a string of \"raw\" Flux that contains task options and the script--for example:\n\n    ```json\n    {\n      \"flux\": \"option task = {name: \\\"CPU Total 1 Hour New\\\", every: 1h}\\\n      from(bucket: \\\"telegraf\\\")\n        |> "
+        },
+        {
+          "info": {
+            "name": "Retrieve a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID.\nSpecifies the task to retrieve.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n"
+        },
+        {
+          "info": {
+            "name": "Update a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/tasks/:taskID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID.\nSpecifies the task to update.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task),\nand then cancels all scheduled runs of the task.\n\nUse this endpoint to set, modify, or clear task properties--for example: `cron`, `name`, `flux`, `status`.\nOnce InfluxDB applies the update, it cancels all previously scheduled runs of the task.\n\nTo update a task, pass an object that contains the updated key-value pairs.\nTo activate or inactivate a task, set the `status` property.\n_`\"status\": \"inactive\"`_ cance"
+        },
+        {
+          "info": {
+            "name": "Delete a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/tasks/:taskID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) ID. Specifies the task to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) and associated records.\n\nUse this endpoint to delete a task and all associated records (task runs, logs, and labels).\nOnce the task is deleted, InfluxDB cancels all scheduled runs of the task.\n\nIf you want to disable a task instead of delete it, [update the task status to `inactive`](#operation/PatchTasksID).\n"
+        },
+        {
+          "info": {
+            "name": "List labels for a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to retrieve labels for."
+              }
+            ]
+          },
+          "docs": "Retrieves a list of all labels for a task.\n\nLabels may be used for grouping and filtering tasks.\n"
+        },
+        {
+          "info": {
+            "name": "Add a label to a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks/:taskID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to label."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a label to a task.\n\nUse this endpoint to add a label that you can use to filter tasks in the InfluxDB UI.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a label from a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/tasks/:taskID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to delete the label from."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a label from a task.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve all logs for a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID/logs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ]
+          },
+          "docs": "Retrieves a list of all logs for a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n\nWhen an InfluxDB task runs, a “run” record is created in the task’s history.\nLogs associated with each run provide relevant log messages, timestamps, and the exit status of the run attempt.\n\nUse this endpoint to retrieve only the log events for a task,\nwithout additional task metadata.\n"
+        },
+        {
+          "info": {
+            "name": "List all task members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ]
+          },
+          "docs": "**Deprecated**: Tasks don't use `owner` and `member` roles.\nUse [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\nLists all users that have the `member` role for the specified [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n"
+        },
+        {
+          "info": {
+            "name": "Add a member to a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks/:taskID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**Deprecated**: Tasks don't use `owner` and `member` roles.\nUse [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\nAdds a user to members of a task and returns the member.\n"
+        },
+        {
+          "info": {
+            "name": "Remove a member from a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/tasks/:taskID/members/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the member to remove."
+              },
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ]
+          },
+          "docs": "**Deprecated**: Tasks don't use `owner` and `member` roles.\nUse [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\nRemoves a member from a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n"
+        },
+        {
+          "info": {
+            "name": "List all owners of a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to retrieve owners for."
+              }
+            ]
+          },
+          "docs": "**Deprecated**: Tasks don't use `owner` and `member` roles.\nUse [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\nRetrieves all users that have owner permission for a task.\n"
+        },
+        {
+          "info": {
+            "name": "Add an owner for a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks/:taskID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**Deprecated**: Tasks don't use `owner` and `member` roles.\nUse [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n\nAssigns a task `owner` role to a user.\n\nUse this endpoint to create a _resource owner_ for the task.\nA _resource owner_ is a user with `role: owner` for a specific resource.\n"
+        },
+        {
+          "info": {
+            "name": "Remove an owner from a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/tasks/:taskID/owners/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the owner to remove."
+              },
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The task ID."
+              }
+            ]
+          },
+          "docs": "**Deprecated**: Tasks don't use `owner` and `member` roles.\nUse [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.\n"
+        },
+        {
+          "info": {
+            "name": "List runs for a task",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID/runs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to get runs for.\nOnly returns runs for this task.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A task run ID. Only returns runs created after this run."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Limits the number of task runs returned. Default is `100`.\n"
+              },
+              {
+                "name": "afterTime",
+                "value": "",
+                "type": "query",
+                "description": "A timestamp ([RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)).\nOnly returns runs scheduled after this time.\n"
+              },
+              {
+                "name": "beforeTime",
+                "value": "",
+                "type": "query",
+                "description": "A timestamp ([RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)).\nOnly returns runs scheduled before this time.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a list of runs for a [task](https://docs.influxdata.com/influxdb/cloud/process-data/).\n\nTo limit which task runs are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all task runs up to the default `limit`.\n"
+        },
+        {
+          "info": {
+            "name": "Start a task run, overriding the schedule",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks/:taskID/runs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Schedules a task run to start immediately, ignoring scheduled runs.\n\nUse this endpoint to manually start a task run.\nScheduled runs will continue to run as scheduled.\nThis may result in concurrently running tasks.\n\nTo _retry_ a previous run (and avoid creating a new run),\nuse the [`POST /api/v2/tasks/{taskID}/runs/{runID}/retry` endpoint](#operation/PostTasksIDRunsIDRetry).\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a run for a task.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID/runs/:runID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to retrieve runs for."
+              },
+              {
+                "name": "runID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieves a specific run for a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n\nUse this endpoint to retrieve detail and logs for a specific task run.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel a running task",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/tasks/:taskID/runs/:runID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to cancel."
+              },
+              {
+                "name": "runID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task run to cancel."
+              }
+            ]
+          },
+          "docs": "Cancels a running [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).\n\nUse this endpoint with InfluxDB OSS to cancel a running task.\n\n#### InfluxDB Cloud\n\n- Doesn't support this operation.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve all logs for a run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/tasks/:taskID/runs/:runID/logs",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the task to get logs for."
+              },
+              {
+                "name": "runID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run to get logs for."
+              }
+            ]
+          },
+          "docs": "Retrieves all logs for a task run.\nA log is a list of run events with `runID`, `time`, and `message` properties.\n\nUse this endpoint to help analyze task performance and troubleshoot failed task runs.\n"
+        },
+        {
+          "info": {
+            "name": "Retry a task run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/tasks/:taskID/runs/:runID/retry",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "taskID",
+                "value": "",
+                "type": "path",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task)  ID.\nSpecifies the task to retry.\n"
+              },
+              {
+                "name": "runID",
+                "value": "",
+                "type": "path",
+                "description": "A [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) run ID.\nSpecifies the task run to retry.\n\nTo find a task run ID, use the\n[`GET /api/v2/tasks/{taskID}/runs` endpoint](#operation/GetTasksIDRuns)\nto list task runs.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Queues a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task)  run to\nretry and returns the scheduled run.\n\nTo manually start a _new_ task run, use the\n[`POST /api/v2/tasks/{taskID}/runs` endpoint](#operation/PostTasksIDRuns).\n\n#### Limitations\n\n- The task must be _active_ (`status: \"active\"`).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

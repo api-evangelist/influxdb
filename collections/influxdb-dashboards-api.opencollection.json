@@ -1,0 +1,642 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Dashboards API"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Dashboards",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List dashboards",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset for pagination.\nThe number of records to skip.\n\nFor more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).\n"
+              },
+              {
+                "name": "descending",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard) to return.\nDefault is `20`.\nThe minimum is `-1` and the maximum is `100`.\n"
+              },
+              {
+                "name": "owner",
+                "value": "",
+                "type": "query",
+                "description": "A user ID. Only returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard) where the specified user has the `owner` role."
+              },
+              {
+                "name": "sortBy",
+                "value": "",
+                "type": "query",
+                "description": "The column to sort by."
+              },
+              {
+                "name": "id",
+                "value": "",
+                "type": "query",
+                "description": "A list of dashboard IDs.\nReturns only the specified [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard).\nIf you specify `id` and `owner`, only `id` is used.\n"
+              },
+              {
+                "name": "orgID",
+                "value": "",
+                "type": "query",
+                "description": "An organization ID.\nOnly returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard) that belong to the specified\n[organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization).\n"
+              },
+              {
+                "name": "org",
+                "value": "",
+                "type": "query",
+                "description": "An organization name.\nOnly returns [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard) that belong to the specified\n[organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization).\n"
+              }
+            ]
+          },
+          "docs": "Lists [dashboards](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#dashboard).\n\n#### Related guides\n\n- [Manage dashboards](https://docs.influxdata.com/influxdb/cloud/visualize-data/dashboards/).\n"
+        },
+        {
+          "info": {
+            "name": "Create a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/dashboards",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a dashboard"
+        },
+        {
+          "info": {
+            "name": "Retrieve a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards/:dashboardID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              },
+              {
+                "name": "include",
+                "value": "",
+                "type": "query",
+                "description": "If `properties`, includes the cell view properties in the response."
+              }
+            ]
+          },
+          "docs": "Retrieve a dashboard"
+        },
+        {
+          "info": {
+            "name": "Update a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/dashboards/:dashboardID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a dashboard"
+        },
+        {
+          "info": {
+            "name": "Delete a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/dashboards/:dashboardID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              }
+            ]
+          },
+          "docs": "Delete a dashboard"
+        },
+        {
+          "info": {
+            "name": "Create a dashboard cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/dashboards/:dashboardID/cells",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a dashboard cell"
+        },
+        {
+          "info": {
+            "name": "Replace cells in a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "/api/v2/dashboards/:dashboardID/cells",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Replaces all cells in a dashboard. This is used primarily to update the positional information of all cells."
+        },
+        {
+          "info": {
+            "name": "Update the non-positional information related to a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cell to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the non positional information related to a cell. Updates to a single cell's positional data could cause grid conflicts."
+        },
+        {
+          "info": {
+            "name": "Delete a dashboard cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to delete."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cell to delete."
+              }
+            ]
+          },
+          "docs": "Delete a dashboard cell"
+        },
+        {
+          "info": {
+            "name": "Retrieve the view for a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID/view",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The cell ID."
+              }
+            ]
+          },
+          "docs": "Retrieve the view for a cell"
+        },
+        {
+          "info": {
+            "name": "Update the view for a cell",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "/api/v2/dashboards/:dashboardID/cells/:cellID/view",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the dashboard to update."
+              },
+              {
+                "name": "cellID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the cell to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the view for a cell"
+        },
+        {
+          "info": {
+            "name": "List all labels for a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards/:dashboardID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ]
+          },
+          "docs": "List all labels for a dashboard"
+        },
+        {
+          "info": {
+            "name": "Add a label to a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/dashboards/:dashboardID/labels",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a label to a dashboard"
+        },
+        {
+          "info": {
+            "name": "Delete a label from a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/dashboards/:dashboardID/labels/:labelID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              },
+              {
+                "name": "labelID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the label to delete."
+              }
+            ]
+          },
+          "docs": "Delete a label from a dashboard"
+        },
+        {
+          "info": {
+            "name": "List all dashboard members",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards/:dashboardID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ]
+          },
+          "docs": "List all dashboard members"
+        },
+        {
+          "info": {
+            "name": "Add a member to a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/dashboards/:dashboardID/members",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a member to a dashboard"
+        },
+        {
+          "info": {
+            "name": "Remove a member from a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/dashboards/:dashboardID/members/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the member to remove."
+              },
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ]
+          },
+          "docs": "Remove a member from a dashboard"
+        },
+        {
+          "info": {
+            "name": "List all dashboard owners",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "/api/v2/dashboards/:dashboardID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ]
+          },
+          "docs": "List all dashboard owners"
+        },
+        {
+          "info": {
+            "name": "Add an owner to a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "/api/v2/dashboards/:dashboardID/owners",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add an owner to a dashboard"
+        },
+        {
+          "info": {
+            "name": "Remove an owner from a dashboard",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "/api/v2/dashboards/:dashboardID/owners/:userID",
+            "headers": [
+              {
+                "name": "Zap-Trace-Span",
+                "value": "[object Object]"
+              }
+            ],
+            "params": [
+              {
+                "name": "userID",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the owner to remove."
+              },
+              {
+                "name": "dashboardID",
+                "value": "",
+                "type": "path",
+                "description": "The dashboard ID."
+              }
+            ]
+          },
+          "docs": "Remove an owner from a dashboard"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
