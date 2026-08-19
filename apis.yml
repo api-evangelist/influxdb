@@ -23,7 +23,7 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/influxdb.p
 url: https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/apis.yml
 created: '2024-09-25'
 modified: '2026-05-30'
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 position: Consuming
 access: 3rd-Party
 tags:
