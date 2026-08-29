@@ -1294,6 +1294,9 @@ apis:
   - type: Source
     url: https://github.com/influxdata/openapi
 common:
+  - type: CapabilityMap
+    url: capabilities/influxdb-capability-edges.yml
+    name: InfluxDB Business Capability Map
   - type: AgenticAccess
     url: agentic-access/influxdb-agentic-access.yml
   - type: TrustCenter

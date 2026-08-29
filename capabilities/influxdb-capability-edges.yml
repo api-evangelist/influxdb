@@ -1,0 +1,66 @@
+slug: influxdb
+provider: InfluxDB
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 5
+edges:
+- tag: Security and access endpoints
+  spec_file: influxdb-security-and-access-endpoints-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.88
+  evidence: 'POST /api/v2/authorizations  Create an authorization; DELETE /api/v2/orgs/{orgID}/members/{userID}  Remove
+    a member from an organization; schemas: Permission, Authorization, ResourceOwner'
+  reason: Surface issues and revokes tokens/permissions and manages org membership and ownership — identity
+    and access management.
+- tag: Dashboards
+  spec_file: influxdb-dashboards-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.78
+  evidence: POST /api/v2/dashboards  PostDashboards  Create a dashboard ... GET /api/v2/dashboards/{dashboardID}/cells/{cellID}/view
+  reason: Full CRUD over dashboards, their cells and view properties — authoring and delivery of analytical
+    dashboards, which is Analytics & BI Management. Confident on the L1/L2 reading; small residual doubt
+    because dashboards here chiefly serve operational monitoring.
+- tag: Secrets
+  spec_file: influxdb-secrets-api-openapi.yml
+  capability_id: BC-4210.60
+  capability_id_l1: BC-4210
+  capability_name: Configuration & Secrets Management
+  confidence: 0.75
+  evidence: GET /api/v2/orgs/{orgID}/secrets  List all secret keys for an organization; PATCH /api/v2/orgs/{orgID}/secrets  Update
+    secrets in an organization
+  reason: Operations manage runtime secret keys/values scoped to an organization, matching Configuration
+    & Secrets Management.
+- tag: Cells
+  spec_file: influxdb-cells-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.7
+  evidence: POST /api/v2/dashboards/{dashboardID}/cells  PostDashboardsIDCells  Create a dashboard cell
+    ... XYViewProperties, HeatmapViewProperties, TableViewProperties
+  reason: Operations manage visualisation cells and their view properties within dashboards — building
+    blocks of reporting/BI delivery. Mapped to Analytics & BI Management; slightly below 0.8 as cells
+    are a sub-object of the Dashboards surface.
+- tag: Users
+  spec_file: influxdb-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /api/v2/users  PostUsers  Create a user; PUT /api/v2/me/password  PutMePassword  Update
+    a password
+  reason: Operations are lifecycle management of platform user accounts and credentials (create/update/delete
+    user, set password), i.e. identity and access administration rather than any HR or customer capability.
