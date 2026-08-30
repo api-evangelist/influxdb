@@ -624,7 +624,7 @@ apis:
   humanURL: https://www.influxdata.com/
   baseURL: https://cloud2.influxdata.com/api/v2
   tags:
-  - Notification Rules
+  - NotificationRules
   tags_raw:
   - NotificationRules
   properties:
@@ -889,7 +889,7 @@ apis:
   humanURL: https://www.influxdata.com/
   baseURL: https://cloud2.influxdata.com/api/v2
   tags:
-  - Sign In
+  - Signin
   tags_raw:
   - Signin
   properties:
