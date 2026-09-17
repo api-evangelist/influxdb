@@ -619,33 +619,6 @@ apis:
     url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers
   - type: Source
     url: https://github.com/influxdata/openapi
-- aid: influxdb:influxdb-notificationrules-api
-  name: InfluxDB NotificationRules API
-  description: The NotificationRules API from InfluxDB — 4 operation(s) for notificationrules.
-  humanURL: https://www.influxdata.com/
-  baseURL: https://cloud2.influxdata.com/api/v2
-  tags:
-  - Notification Rules
-  tags_raw:
-  - NotificationRules
-  properties:
-  - type: OpenAPI
-    url: openapi/influxdb-notificationrules-api-openapi.yml
-  - type: Documentation
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/
-  - type: AsyncAPI
-    url: >-
-      https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-asyncapi.yml
-  - type: Authentication
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication
-  - type: GettingStarted
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start
-  - type: Pagination
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination
-  - type: Headers
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers
-  - type: Source
-    url: https://github.com/influxdata/openapi
 - aid: influxdb:influxdb-organizations-api
   name: InfluxDB Organizations API
   description: >-
@@ -869,33 +842,6 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/influxdb-setup-api-openapi.yml
-  - type: Documentation
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/
-  - type: AsyncAPI
-    url: >-
-      https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-asyncapi.yml
-  - type: Authentication
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication
-  - type: GettingStarted
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start
-  - type: Pagination
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination
-  - type: Headers
-    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers
-  - type: Source
-    url: https://github.com/influxdata/openapi
-- aid: influxdb:influxdb-signin-api
-  name: InfluxDB Signin API
-  description: The Signin API from InfluxDB — 1 operation(s) for signin.
-  humanURL: https://www.influxdata.com/
-  baseURL: https://cloud2.influxdata.com/api/v2
-  tags:
-  - Sign In
-  tags_raw:
-  - Signin
-  properties:
-  - type: OpenAPI
-    url: openapi/influxdb-signin-api-openapi.yml
   - type: Documentation
     url: https://docs.influxdata.com/influxdb/cloud/api/v2/
   - type: AsyncAPI
@@ -1279,6 +1225,56 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/influxdb-write-api-openapi.yml
+  - type: Documentation
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/
+  - type: AsyncAPI
+    url: >-
+      https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-asyncapi.yml
+  - type: Authentication
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication
+  - type: GettingStarted
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start
+  - type: Pagination
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination
+  - type: Headers
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers
+  - type: Source
+    url: https://github.com/influxdata/openapi
+- aid: influxdb:influxdb-notification-rules-api
+  name: InfluxDB Notification Rules API
+  description: The Notification Rules API from InfluxDB — 4 operation(s) for notification rules.
+  humanURL: https://www.influxdata.com/
+  baseURL: https://cloud2.influxdata.com/api/v2
+  tags:
+  - Notification Rules
+  properties:
+  - type: OpenAPI
+    url: openapi/influxdb-notification-rules-api-openapi.yml
+  - type: Documentation
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/
+  - type: AsyncAPI
+    url: >-
+      https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-asyncapi.yml
+  - type: Authentication
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication
+  - type: GettingStarted
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start
+  - type: Pagination
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination
+  - type: Headers
+    url: https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers
+  - type: Source
+    url: https://github.com/influxdata/openapi
+- aid: influxdb:influxdb-sign-in-api
+  name: InfluxDB Sign In API
+  description: The Sign In API from InfluxDB — 1 operation(s) for sign in.
+  humanURL: https://www.influxdata.com/
+  baseURL: https://cloud2.influxdata.com/api/v2
+  tags:
+  - Sign In
+  properties:
+  - type: OpenAPI
+    url: openapi/influxdb-sign-in-api-openapi.yml
   - type: Documentation
     url: https://docs.influxdata.com/influxdb/cloud/api/v2/
   - type: AsyncAPI
