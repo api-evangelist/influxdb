@@ -9,18 +9,11 @@ note: ESTIMATES, not quotes. Computed by API Evangelist from the prices this pro
 audience_of_source_pricing: developer-api
 pricing_basis: usage-other
 delivery: open-core
-delivery_method: keyword
+delivery_method: page
+delivery_evidence: InfluxDB 3 Core Open source. Local dev, exploration, and prototyping. Free Forever
+  Self-managed. Community supported.
 free_self_hosted_tiers:
-- 'InfluxDB 3 Core (OSS): Free Forever'
-managed_premium:
-  grade: A
-  usd_per_month: 1500.0
-  plan: Telegraf Enterprise
-  price_text: Plans start at $18,000 / year
-  same_product: unverified
-  meaning: the cheapest priced tier beside the free edition on the same page. When same_product is verified-by-name
-    it is the provider's own price for operating what it gives away; when unverified it may be a different
-    product. Self-hosting cost itself is unmeasured.
+- InfluxDB 3 Core
 estimate_count: 2
 estimates:
 - kind: entry_cost
