@@ -12,6 +12,10 @@ delivery: open-core
 delivery_method: page
 delivery_evidence: InfluxDB 3 Core Open source. Local dev, exploration, and prototyping. Free Forever
   Self-managed. Community supported.
+open_source_repository:
+  repo: influxdata/influxdb
+  license: Apache-2.0
+  stars: 31747
 free_self_hosted_tiers:
 - InfluxDB 3 Core
 estimate_count: 2
