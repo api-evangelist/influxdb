@@ -1291,6 +1291,8 @@ apis:
   - type: Source
     url: https://github.com/influxdata/openapi
 common:
+  - type: Plans
+    url: plans/influxdb-plans-pricing.yml
   - type: CapabilityMap
     url: capabilities/influxdb-capability-edges.yml
     name: InfluxDB Business Capability Map
