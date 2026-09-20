@@ -10,6 +10,14 @@ provenance:
   grounding: every price_text was found verbatim in the fetched page text
 audience: developer-api
 pricing_basis: usage-other
+delivery:
+  delivery: open-core
+  method: page
+  read: '2026-09-20'
+  evidence: InfluxDB 3 Core Open source. Local dev, exploration, and prototyping. Free Forever Self-managed.
+    Community supported.
+  free_edition: InfluxDB 3 Core
+  managed_tier: Cloud Serverless
 published: true
 note: Page mixes custom/negotiated enterprise tiers with published usage-based Cloud Serverless rates
   and a Telegraf Enterprise starting annual price.
