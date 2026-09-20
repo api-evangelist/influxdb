@@ -1,0 +1,36 @@
+# ESTIMATES computed by API Evangelist — not published by the provider. See `note` and `replace_by`.
+generated: '2026-09-20'
+method: estimated
+estimator: 'planning/api-economics/estimate_prices.py — design: ESTIMATION.md'
+note: ESTIMATES, not quotes. Computed by API Evangelist from the prices this provider publishes on https://www.influxdata.com/influxdb-pricing/
+  (transcribed in plans/influxdb-plans-pricing.yml). Nothing here overrides a published price. Each estimate
+  names the figure it came from, the formula, any assumption, and the field the provider can publish to
+  replace it — publish that and the estimate is retired.
+audience_of_source_pricing: developer-api
+pricing_basis: usage-other
+estimate_count: 2
+estimates:
+- kind: entry_cost
+  grade: A
+  grade_meaning: quoted — the page states this figure
+  usd_per_month: 1500.0
+  meaning: the cheapest published paid tier — a floor on the cost of getting in, NOT the price of the
+    API alone
+  inputs:
+  - file: plans/influxdb-plans-pricing.yml
+    plan: Telegraf Enterprise
+    price_text: Plans start at $18,000 / year
+  replace_by: 'API Commons Plans — plans[].entries[] with type: fee, a numeric `price`, `timeFrame: month`
+    and the tier that includes API access stated in `elements`'
+- kind: marginal_cost
+  grade: A
+  grade_meaning: quoted — the page states this figure
+  usd: 0.00012
+  per: request
+  formula: quoted price / quoted unit count
+  inputs:
+  - file: plans/influxdb-plans-pricing.yml
+    plan: Cloud Serverless - Query Count
+    price_text: $0.012 per 100 query executions
+  replace_by: 'API Commons Plans — plans[].entries[] with type: metered, `metric` (request | token | transaction
+    | message), `unit` and a numeric `price`; and FinOps `primaryUnit` + `meters[]`'
