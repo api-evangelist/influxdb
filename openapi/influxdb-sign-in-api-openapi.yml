@@ -1,66 +1,57 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Signin API
-  description: 'Create and manage authorizations (API tokens).
-
-
-    An _authorization_ contains a list of `read` and `write`
-
-    permissions for organization resources and provides an API token for authentication.
-
-    An authorization belongs to an organization and only contains permissions for that organization.
-
-
-    We recommend the following for managing your tokens:
-
-
-    - Create a generic user to create and manage tokens for writing data.
-
-    - Store your tokens in a secure password vault for future access.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, when creating an authorization, you can scope it to a specific user.
-
-    If the user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related endpoints
-
-
-    - [Signin](#tag/Signin)
-
-    - [Signout](#tag/Signout)
-
-
-    ### Related guides
-
-
-    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
-
-    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
-
-    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-
-    '
+  title: Complete InfluxDB Cloud Signin API
 servers:
 - url: ''
 security:
 - TokenAuthentication: []
 tags:
-- name: Signin
+- name: Sign In
 paths:
   /api/v2/signin:
     post:
-      description: "Authenticates [Basic authentication credentials](#section/Authentication/BasicAuthentication)\nfor a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user),\nand then, if successful, generates a user session.\n\nTo authenticate a user, pass the HTTP `Authorization` header with the\n`Basic` scheme and the base64-encoded username and password.\nFor syntax and more information, see [Basic Authentication](#section/Authentication/BasicAuthentication) for\nsyntax and more information.\n\nIf authentication is successful, InfluxDB creates a new session for the user\nand then returns the session cookie in the `Set-Cookie` response header.\n\nInfluxDB stores user sessions in memory only.\nThey expire within ten minutes and during restarts of the InfluxDB instance.\n\n#### User sessions with authorizations\n\n- In InfluxDB Cloud, a user session inherits all the user's permissions for\n  the organization.\n- In InfluxDB OSS, a user session inherits all the user's permissions for all\n  the organizations that the user belongs to.\n\n#### Related endpoints\n\n- [Signout](#tag/Signout)\n"
+      description: 'Authenticates Basic authentication credentials
+
+        for a user,
+
+        and then, if successful, generates a user session.
+
+
+        To authenticate a user, pass the HTTP `Authorization` header with the
+
+        `Basic` scheme and the base64-encoded username and password.
+
+        For syntax and more information, see Basic Authentication for
+
+        syntax and more information.
+
+
+        If authentication is successful, InfluxDB creates a new session for the user
+
+        and then returns the session cookie in the `Set-Cookie` response header.
+
+
+        InfluxDB stores user sessions in memory only.
+
+        They expire within ten minutes and during restarts of the InfluxDB instance.
+
+
+        #### User sessions with authorizations
+
+
+        - In InfluxDB Cloud, a user session inherits all the user''s permissions for
+
+        the organization.
+
+        - In InfluxDB OSS, a user session inherits all the user''s permissions for all
+
+        the organizations that the user belongs to.
+
+
+        #### Related endpoints
+
+
+        - Signout'
       operationId: PostSignin
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -104,28 +95,34 @@ paths:
           description: Unsuccessful authentication.
       security:
       - BasicAuthentication: []
-      summary: Create a user session.
+      summary: Create a user session
       tags:
-      - Signin
+      - Sign In
       x-codeSamples:
       - label: 'cURL: signin with --user option encoding'
         lang: Shell
         source: "curl --request POST http://localhost:8086/api/v2/signin \\\n     --user \"USERNAME:PASSWORD\"\n"
 components:
-  parameters:
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
   schemas:
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
     Error:
       properties:
         code:
@@ -162,25 +159,19 @@ components:
           type: string
       required:
       - code
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"

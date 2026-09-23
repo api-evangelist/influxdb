@@ -1,69 +1,81 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Write API
-  description: 'Create and manage authorizations (API tokens).
-
-
-    An _authorization_ contains a list of `read` and `write`
-
-    permissions for organization resources and provides an API token for authentication.
-
-    An authorization belongs to an organization and only contains permissions for that organization.
-
-
-    We recommend the following for managing your tokens:
-
-
-    - Create a generic user to create and manage tokens for writing data.
-
-    - Store your tokens in a secure password vault for future access.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, when creating an authorization, you can scope it to a specific user.
-
-    If the user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related endpoints
-
-
-    - [Signin](#tag/Signin)
-
-    - [Signout](#tag/Signout)
-
-
-    ### Related guides
-
-
-    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
-
-    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
-
-    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-
-    '
+  title: Complete InfluxDB Cloud Write API
+  description: Write time series data to buckets.
 servers:
 - url: ''
 security:
 - TokenAuthentication: []
 tags:
-- description: 'Write time series data to [buckets](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket).
-
-    '
+- description: Write time series data to buckets.
   name: Write
 paths:
   /api/v2/write:
     post:
-      description: "Writes data to a bucket.\n\nUse this endpoint to send data in [line protocol](https://docs.influxdata.com/influxdb/cloud/reference/syntax/line-protocol/) format to InfluxDB.\n\n#### InfluxDB Cloud\n\n- Does the following when you send a write request:\n\n  1. Validates the request and queues the write.\n  2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.\n  3. Handles the delete asynchronously and reaches eventual consistency.\n\n  To ensure that InfluxDB Cloud handles writes and deletes in the order you request them,\n  wait for a success response (HTTP `2xx` status code) before you send the next request.\n\n  Because writes and deletes are asynchronous, your change might not yet be readable\n  when you receive the response.\n\n#### InfluxDB OSS\n\n- Validates the request and handles the write synchronously.\n- If all points were written successfully, responds with HTTP `2xx` status code;\n  otherwise, returns the first line that failed.\n\n#### Required permissions\n\n- `write-buckets` or `write-bucket BUCKET_ID`.\n\n *`BUCKET_ID`* is the ID of the destination bucket.\n\n#### Rate limits (with InfluxDB Cloud)\n\n`write` rate limits apply.\nFor more information, see [limits and adjustable quotas](https://docs.influxdata.com/influxdb/cloud/account-management/limits/).\n\n#### Related guides\n\n- [Write data with the InfluxDB API](https://docs.influxdata.com/influxdb/cloud/write-data/developer-tools/api)\n- [Optimize writes to InfluxDB](https://docs.influxdata.com/influxdb/cloud/write-data/best-practices/optimize-writes/)\n- [Troubleshoot issues writing data](https://docs.influxdata.com/influxdb/cloud/write-data/troubleshoot/)\n"
+      description: 'Writes data to a bucket.
+
+
+        Use this endpoint to send data in line protocol format to InfluxDB.
+
+
+        #### InfluxDB Cloud
+
+
+        - Does the following when you send a write request:
+
+
+        1. Validates the request and queues the write.
+
+        2. If queued, responds with _success_ (HTTP `2xx` status code); _error_ otherwise.
+
+        3. Handles the delete asynchronously and reaches eventual consistency.
+
+
+        To ensure that InfluxDB Cloud handles writes and deletes in the order you request them,
+
+        wait for a success response (HTTP `2xx` status code) before you send the next request.
+
+
+        Because writes and deletes are asynchronous, your change might not yet be readable
+
+        when you receive the response.
+
+
+        #### InfluxDB OSS
+
+
+        - Validates the request and handles the write synchronously.
+
+        - If all points were written successfully, responds with HTTP `2xx` status code;
+
+        otherwise, returns the first line that failed.
+
+
+        #### Required permissions
+
+
+        - `write-buckets` or `write-bucket BUCKET_ID`.
+
+
+        *`BUCKET_ID`* is the ID of the destination bucket.
+
+
+        #### Rate limits (with InfluxDB Cloud)
+
+
+        `write` rate limits apply.
+
+        For more information, see limits and adjustable quotas.
+
+
+        #### Related guides
+
+
+        - Write data with the InfluxDB API
+
+        - Optimize writes to InfluxDB
+
+        - Troubleshoot issues writing data'
       operationId: PostWrite
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -277,7 +289,140 @@ paths:
       tags:
       - Write
 components:
+  schemas:
+    LineProtocolError:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          enum:
+          - internal error
+          - not found
+          - conflict
+          - invalid
+          - empty value
+          - unavailable
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        line:
+          description: First line in the request body that contains malformed data.
+          format: int32
+          readOnly: true
+          type: integer
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    WritePrecision:
+      enum:
+      - ms
+      - s
+      - us
+      - ns
+      type: string
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    LineProtocolLengthError:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          enum:
+          - invalid
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+      required:
+      - code
+      - message
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
   responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     GeneralServerError:
       content:
         application/json:
@@ -330,139 +475,6 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
-  schemas:
-    LineProtocolError:
-      properties:
-        code:
-          description: Code is the machine-readable error code.
-          enum:
-          - internal error
-          - not found
-          - conflict
-          - invalid
-          - empty value
-          - unavailable
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        line:
-          description: First line in the request body that contains malformed data.
-          format: int32
-          readOnly: true
-          type: integer
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    WritePrecision:
-      enum:
-      - ms
-      - s
-      - us
-      - ns
-      type: string
-    LineProtocolLengthError:
-      properties:
-        code:
-          description: Code is the machine-readable error code.
-          enum:
-          - invalid
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-      required:
-      - code
-      - message
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-  parameters:
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"

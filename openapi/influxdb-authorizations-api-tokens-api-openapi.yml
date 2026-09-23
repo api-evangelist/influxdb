@@ -1,116 +1,52 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Authorizations (API tokens) API
-  description: 'Create and manage authorizations (API tokens).
-
-
-    An _authorization_ contains a list of `read` and `write`
-
-    permissions for organization resources and provides an API token for authentication.
-
-    An authorization belongs to an organization and only contains permissions for that organization.
-
-
-    We recommend the following for managing your tokens:
-
-
-    - Create a generic user to create and manage tokens for writing data.
-
-    - Store your tokens in a secure password vault for future access.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, when creating an authorization, you can scope it to a specific user.
-
-    If the user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related endpoints
-
-
-    - [Signin](#tag/Signin)
-
-    - [Signout](#tag/Signout)
-
-
-    ### Related guides
-
-
-    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
-
-    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
-
-    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-
-    '
+  title: Complete InfluxDB Cloud Authorizations (API tokens) API
+  description: Create and manage authorizations (API tokens).
 servers:
 - url: ''
 security:
 - TokenAuthentication: []
 tags:
-- description: 'Create and manage authorizations (API tokens).
-
-
-    An _authorization_ contains a list of `read` and `write`
-
-    permissions for organization resources and provides an API token for authentication.
-
-    An authorization belongs to an organization and only contains permissions for that organization.
-
-
-    We recommend the following for managing your tokens:
-
-
-    - Create a generic user to create and manage tokens for writing data.
-
-    - Store your tokens in a secure password vault for future access.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, when creating an authorization, you can scope it to a specific user.
-
-    If the user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related endpoints
-
-
-    - [Signin](#tag/Signin)
-
-    - [Signout](#tag/Signout)
-
-
-    ### Related guides
-
-
-    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
-
-    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
-
-    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-
-    '
+- description: Create and manage authorizations (API tokens).
   name: Authorizations (API tokens)
 paths:
   /api/v2/authorizations:
     get:
-      description: "Lists authorizations.\n\nTo limit which authorizations are returned, pass query parameters in your request.\nIf no query parameters are passed, InfluxDB returns all authorizations.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud doesn't expose [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n  values in `GET /api/v2/authorizations` responses;\n  returns `token: redacted` for all authorizations.\n\n#### Required permissions\n\nTo retrieve an authorization, the request must use an API token that has the\nfollowing permissions:\n\n- `read-authorizations`\n- `read-user` for the user that the authorization is scoped to\n\n#### Related guides\n\n- [View tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/view-tokens/)\n"
+      description: 'Lists authorizations.
+
+
+        To limit which authorizations are returned, pass query parameters in your request.
+
+        If no query parameters are passed, InfluxDB returns all authorizations.
+
+
+        #### InfluxDB Cloud
+
+
+        - InfluxDB Cloud doesn''t expose API token
+
+        values in `GET /api/v2/authorizations` responses;
+
+        returns `token: redacted` for all authorizations.
+
+
+        #### Required permissions
+
+
+        To retrieve an authorization, the request must use an API token that has the
+
+        following permissions:
+
+
+        - `read-authorizations`
+
+        - `read-user` for the user that the authorization is scoped to
+
+
+        #### Related guides
+
+
+        - View tokens'
       operationId: GetAuthorizations
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -172,7 +108,50 @@ paths:
       tags:
       - Authorizations (API tokens)
     post:
-      description: "Creates an authorization and returns the authorization with the\ngenerated API [token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token).\n\nUse this endpoint to create an authorization, which generates an API token\nwith permissions to `read` or `write` to a specific resource or `type` of resource.\nThe API token is the authorization's `token` property value.\n\nTo follow best practices for secure API token generation and retrieval,\nInfluxDB enforces access restrictions on API tokens.\n\n  - InfluxDB allows access to the API token value immediately after the authorization is created.\n  - You can’t change access (read/write) permissions for an API token after it’s created.\n  - Tokens stop working when the user who created the token is deleted.\n\nWe recommend the following for managing your tokens:\n\n  - Create a generic user to create and manage tokens for writing data.\n  - Store your tokens in a secure password vault for future access.\n\n#### Required permissions\n\n- `write-authorizations`\n- `write-user` for the user that the authorization is scoped to\n\n#### Related guides\n\n- [Create a token](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)\n"
+      description: 'Creates an authorization and returns the authorization with the
+
+        generated API token.
+
+
+        Use this endpoint to create an authorization, which generates an API token
+
+        with permissions to `read` or `write` to a specific resource or `type` of resource.
+
+        The API token is the authorization''s `token` property value.
+
+
+        To follow best practices for secure API token generation and retrieval,
+
+        InfluxDB enforces access restrictions on API tokens.
+
+
+        - InfluxDB allows access to the API token value immediately after the authorization is created.
+
+        - You can’t change access (read/write) permissions for an API token after it’s created.
+
+        - Tokens stop working when the user who created the token is deleted.
+
+
+        We recommend the following for managing your tokens:
+
+
+        - Create a generic user to create and manage tokens for writing data.
+
+        - Store your tokens in a secure password vault for future access.
+
+
+        #### Required permissions
+
+
+        - `write-authorizations`
+
+        - `write-user` for the user that the authorization is scoped to
+
+
+        #### Related guides
+
+
+        - Create a token'
       operationId: PostAuthorizations
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -224,9 +203,7 @@ paths:
 
         If you want to disable an API token instead of delete it,
 
-        [update the authorization''s status to `inactive`](#operation/PatchAuthorizationsID).
-
-        '
+        update the authorization''s status to `inactive`.'
       operationId: DeleteAuthorizationsID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -282,7 +259,30 @@ paths:
       tags:
       - Authorizations (API tokens)
     get:
-      description: "Retrieves an authorization.\n\nUse this endpoint to retrieve information about an API token, including\nthe token's permissions and the user that the token is scoped to.\n\n#### InfluxDB OSS\n\n- InfluxDB OSS returns\n  [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token) values in authorizations.\n- If the request uses an _[operator token](https://docs.influxdata.com/influxdb/latest/security/tokens/#operator-token)_,\n  InfluxDB OSS returns authorizations for all organizations in the instance.\n\n#### Related guides\n\n- [View tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/view-tokens/)\n"
+      description: 'Retrieves an authorization.
+
+
+        Use this endpoint to retrieve information about an API token, including
+
+        the token''s permissions and the user that the token is scoped to.
+
+
+        #### InfluxDB OSS
+
+
+        - InfluxDB OSS returns
+
+        API token values in authorizations.
+
+        - If the request uses an _operator token_,
+
+        InfluxDB OSS returns authorizations for all organizations in the instance.
+
+
+        #### Related guides
+
+
+        - View tokens'
       externalDocs:
         description: View tokens
         url: https://docs.influxdata.com/influxdb/cloud/security/tokens/view-tokens/
@@ -350,9 +350,7 @@ paths:
 
         Use this endpoint to set an API token''s status to be _active_ or _inactive_.
 
-        InfluxDB rejects requests that use inactive API tokens.
-
-        '
+        InfluxDB rejects requests that use inactive API tokens.'
       operationId: PatchAuthorizationsID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -462,86 +460,15 @@ components:
       required:
       - action
       - resource
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
+    Authorizations:
       properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    Resource:
-      properties:
-        id:
-          description: 'A resource ID.
-
-            Identifies a specific resource.
-
-            '
-          type: string
-        name:
-          description: 'The name of the resource.
-
-            _Note: not all resource types have a `name` property_.
-
-            '
-          type: string
-        org:
-          description: 'An organization name.
-
-            The organization that owns the resource.
-
-            '
-          type: string
-        orgID:
-          description: 'An organization ID.
-
-            Identifies the organization that owns the resource.
-
-            '
-          type: string
-        type:
-          description: 'A resource type.
-
-            Identifies the API resource''s type (or _kind_).
-
-            '
-          enum:
-          - authorizations
-          - buckets
-          - dashboards
-          - orgs
-          - tasks
-          - telegrafs
-          - users
-          - variables
-          - secrets
-          - labels
-          - views
-          - documents
-          - notificationRules
-          - notificationEndpoints
-          - checks
-          - dbrp
-          - annotations
-          - sources
-          - scrapers
-          - notebooks
-          - remotes
-          - replications
-          - instance
-          - flows
-          - functions
-          - subscriptions
-          type: string
-      required:
-      - type
+        authorizations:
+          items:
+            $ref: '#/components/schemas/Authorization'
+          type: array
+        links:
+          $ref: '#/components/schemas/Links'
+          readOnly: true
       type: object
     Authorization:
       allOf:
@@ -635,20 +562,19 @@ components:
       required:
       - orgID
       - permissions
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    Authorizations:
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
       properties:
-        authorizations:
-          items:
-            $ref: '#/components/schemas/Authorization'
-          type: array
-        links:
-          $ref: '#/components/schemas/Links'
-          readOnly: true
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
       type: object
     ErrorCode:
       description: code is the machine-readable error code.
@@ -681,6 +607,114 @@ components:
           - active
           - inactive
           type: string
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    Resource:
+      properties:
+        id:
+          description: 'A resource ID.
+
+            Identifies a specific resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the resource.
+
+            _Note: not all resource types have a `name` property_.
+
+            '
+          type: string
+        org:
+          description: 'An organization name.
+
+            The organization that owns the resource.
+
+            '
+          type: string
+        orgID:
+          description: 'An organization ID.
+
+            Identifies the organization that owns the resource.
+
+            '
+          type: string
+        type:
+          description: 'A resource type.
+
+            Identifies the API resource''s type (or _kind_).
+
+            '
+          enum:
+          - authorizations
+          - buckets
+          - dashboards
+          - orgs
+          - tasks
+          - telegrafs
+          - users
+          - variables
+          - secrets
+          - labels
+          - views
+          - documents
+          - notificationRules
+          - notificationEndpoints
+          - checks
+          - dbrp
+          - annotations
+          - sources
+          - scrapers
+          - notebooks
+          - remotes
+          - replications
+          - instance
+          - flows
+          - functions
+          - subscriptions
+          type: string
+      required:
+      - type
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
     AuthorizationPostRequest:
       allOf:
       - $ref: '#/components/schemas/AuthorizationUpdateRequest'
@@ -729,43 +763,23 @@ components:
       required:
       - orgID
       - permissions
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
   responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
+    GeneralServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Non 2XX error response from server.
     AuthorizationError:
       content:
         application/json:
@@ -790,56 +804,6 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    GeneralServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Non 2XX error response from server.
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
-  examples:
-    AuthorizationWithUserPostRequest:
-      description: Creates an authorization scoped to a specific user.
-      summary: An authorization scoped to a user
-      value:
-        description: iot_user write to bucket
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: write
-          resource:
-            id: INFLUX_BUCKET_ID
-            type: buckets
-        userID: INFLUX_USER_ID
-    AuthorizationPostRequest:
-      description: Creates an authorization.
-      summary: An authorization for a resource type
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            type: buckets
-    AuthorizationWithResourcePostRequest:
-      description: Creates an authorization for access to a specific resource.
-      summary: An authorization for a resource
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            id: INFLUX_BUCKET_ID
-            type: buckets
   parameters:
     TraceSpan:
       description: OpenTracing span context
@@ -853,6 +817,40 @@ components:
       required: false
       schema:
         type: string
+  examples:
+    AuthorizationWithUserPostRequest:
+      description: Creates an authorization scoped to a specific user.
+      summary: An authorization scoped to a user
+      value:
+        description: iot_user write to bucket
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: write
+          resource:
+            id: INFLUX_BUCKET_ID
+            type: buckets
+        userID: INFLUX_USER_ID
+    AuthorizationWithResourcePostRequest:
+      description: Creates an authorization for access to a specific resource.
+      summary: An authorization for a resource
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            id: INFLUX_BUCKET_ID
+            type: buckets
+    AuthorizationPostRequest:
+      description: Creates an authorization.
+      summary: An authorization for a resource type
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            type: buckets
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"

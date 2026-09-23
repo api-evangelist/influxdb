@@ -1,0 +1,29 @@
+# Front Door AI Index — influxdb — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: influxdb
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.influxdata.com
+  final_host: www.influxdata.com
+  ownership: shared
+  owner: influxdata
+  shares_host_with:
+  - influxdata
+  inherited_from: null
+  verdict: scored
+  score: null
+  host_score: 14
+  density: null
+  words: 1826
+  tiers:
+    agentic: 0
+    core: 14
+    model: 0
+  ambiguous: 3
+  top_terms:
+    AI: 10
+    predictive: 3
+    ML: 2
+    machine learning: 2

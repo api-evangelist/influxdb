@@ -1,110 +1,27 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Tasks API
-  description: 'Create and manage authorizations (API tokens).
+  title: Complete InfluxDB Cloud Tasks API
+  description: 'Process and analyze your data with tasks
 
-
-    An _authorization_ contains a list of `read` and `write`
-
-    permissions for organization resources and provides an API token for authentication.
-
-    An authorization belongs to an organization and only contains permissions for that organization.
-
-
-    We recommend the following for managing your tokens:
-
-
-    - Create a generic user to create and manage tokens for writing data.
-
-    - Store your tokens in a secure password vault for future access.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, when creating an authorization, you can scope it to a specific user.
-
-    If the user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related endpoints
-
-
-    - [Signin](#tag/Signin)
-
-    - [Signout](#tag/Signout)
-
-
-    ### Related guides
-
-
-    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
-
-    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
-
-    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-
-    '
+    in the InfluxDB task engine.'
 servers:
 - url: ''
 security:
 - TokenAuthentication: []
 tags:
-- description: 'Process and analyze your data with [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task)
+- description: 'Process and analyze your data with tasks
 
-    in the InfluxDB task engine.
-
-    Use the `/api/v2/tasks` endpoints to schedule and manage tasks, retry task runs, and retrieve run logs.
-
-
-    To configure a task, provide the script and the schedule to run the task.
-
-    For examples, see how to create a task with the [`POST /api/v2/tasks` endpoint](#operation/PostTasks).
-
-
-    <span id="tasks-schemaref-task" />
-
-
-    ### Properties
-
-
-    A `task` object contains information about an InfluxDB task resource.
-
-
-    The following table defines the properties that appear in this object:
-
-
-    <SchemaDefinition schemaRef="#/components/schemas/Task" />
-
-
-    ### Related guides
-
-
-    - [Get started with tasks](https://docs.influxdata.com/influxdb/cloud/process-data/get-started/)
-
-    - [Common data processing tasks](https://docs.influxdata.com/influxdb/cloud/process-data/common-tasks/)
-
-    - [Create a script](https://docs.influxdata.com/influxdb/cloud/api-guide/api-invokable-scripts/#create-an-invokable-script)
-
-    '
+    in the InfluxDB task engine.'
   name: Tasks
 paths:
   /api/v2/tasks:
     get:
-      description: 'Retrieves a list of [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
+      description: 'Retrieves a list of tasks.
 
 
         To limit which tasks are returned, pass query parameters in your request.
 
-        If no query parameters are passed, InfluxDB returns all tasks up to the default `limit`.
-
-        '
+        If no query parameters are passed, InfluxDB returns all tasks up to the default `limit`.'
       operationId: GetTasks
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -331,7 +248,104 @@ paths:
         lang: Shell
         source: "curl INFLUX_URL/api/v2/tasks/?limit=-1&type=basic \\\n  --header 'Content-Type: application/json' \\\n  --header 'Authorization: Token INFLUX_API_TOKEN'\n"
     post:
-      description: "Creates a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) and returns the task.\n\nUse this endpoint to create a scheduled task that runs a Flux script.\n\n#### InfluxDB Cloud\n\n- You can use either `flux` or `scriptID` to provide the task script.\n\n  - `flux`: a string of \"raw\" Flux that contains task options and the script--for example:\n\n    ```json\n    {\n      \"flux\": \"option task = {name: \\\"CPU Total 1 Hour New\\\", every: 1h}\\\n      from(bucket: \\\"telegraf\\\")\n        |> range(start: -1h)\n        |> filter(fn: (r) => (r._measurement == \\\"cpu\\\"))\n        |> filter(fn: (r) =>\\n\\t\\t(r._field == \\\"usage_system\\\"))\n        |> filter(fn: (r) => (r.cpu == \\\"cpu-total\\\"))\n        |> aggregateWindow(every: 1h, fn: max)\n        |> to(bucket: \\\"cpu_usage_user_total_1h\\\", org: \\\"INFLUX_ORG\\\")\",\n      \"status\": \"active\",\n      \"description\": \"This task downsamples CPU data every hour\"\n    }\n    ```\n\n  - `scriptID`: the ID of an [invokable script](#tag/Invokable-Scripts)\n    for the task to run.\n    To pass task options when using `scriptID`, pass the options as\n    properties in the request body--for example:\n\n    ```json\n    {\n      \"name\": \"CPU Total 1 Hour New\",\n      \"description\": \"This task downsamples CPU data every hour\",\n      \"every\": \"1h\",\n      \"scriptID\": \"SCRIPT_ID\",\n      \"scriptParameters\":\n        {\n          \"rangeStart\": \"-1h\",\n          \"bucket\": \"telegraf\",\n          \"filterField\": \"cpu-total\"\n        }\n      }\n    ```\n\n#### Limitations:\n\n- You can't use `flux` and `scriptID` for the same task.\n\n#### Related guides\n\n- [Get started with tasks](https://docs.influxdata.com/influxdb/cloud/process-data/get-started/)\n- [Create a task](https://docs.influxdata.com/influxdb/cloud/process-data/manage-tasks/create-task/)\n- [Common tasks](https://docs.influxdata.com/influxdb/cloud/process-data/common-tasks/)\n- [Task configuration options](https://docs.influxdata.com/influxdb/cloud/process-data/task-options/)\n"
+      description: 'Creates a task and returns the task.
+
+
+        Use this endpoint to create a scheduled task that runs a Flux script.
+
+
+        #### InfluxDB Cloud
+
+
+        - You can use either `flux` or `scriptID` to provide the task script.
+
+
+        - `flux`: a string of "raw" Flux that contains task options and the script--for example:
+
+
+        ```json
+
+        {
+
+        "flux": "option task = {name: \"CPU Total 1 Hour New\", every: 1h}\
+
+        from(bucket: \"telegraf\")
+
+        |> range(start: -1h)
+
+        |> filter(fn: (r) => (r._measurement == \"cpu\"))
+
+        |> filter(fn: (r) =>\n\t\t(r._field == \"usage_system\"))
+
+        |> filter(fn: (r) => (r.cpu == \"cpu-total\"))
+
+        |> aggregateWindow(every: 1h, fn: max)
+
+        |> to(bucket: \"cpu_usage_user_total_1h\", org: \"INFLUX_ORG\")",
+
+        "status": "active",
+
+        "description": "This task downsamples CPU data every hour"
+
+        }
+
+        ```
+
+
+        - `scriptID`: the ID of an invokable script
+
+        for the task to run.
+
+        To pass task options when using `scriptID`, pass the options as
+
+        properties in the request body--for example:
+
+
+        ```json
+
+        {
+
+        "name": "CPU Total 1 Hour New",
+
+        "description": "This task downsamples CPU data every hour",
+
+        "every": "1h",
+
+        "scriptID": "SCRIPT_ID",
+
+        "scriptParameters":
+
+        {
+
+        "rangeStart": "-1h",
+
+        "bucket": "telegraf",
+
+        "filterField": "cpu-total"
+
+        }
+
+        }
+
+        ```
+
+
+        #### Limitations:
+
+
+        - You can''t use `flux` and `scriptID` for the same task.
+
+
+        #### Related guides
+
+
+        - Get started with tasks
+
+        - Create a task
+
+        - Common tasks
+
+        - Task configuration options'
       operationId: PostTasks
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -400,7 +414,7 @@ paths:
         source: "curl INFLUX_URL/api/v2/tasks \\\n--header \"Content-type: application/json\" \\\n--header \"Authorization: Token INFLUX_API_TOKEN\" \\\n--data-binary @- << EOF\n  {\n    \"orgID\": \"INFLUX_ORG_ID\",\n    \"description\": \"IoT Center 30d environment average.\",\n    \"scriptID\": \"085138a111448000\",\n    \"scriptParameters\":\n      {\n        \"rangeStart\": \"-30d\",\n        \"bucket\": \"air_sensor\",\n        \"filterField\": \"temperature\",\n        \"groupColumn\": \"_time\"\n      }\n  }\nEOF\n"
   /api/v2/tasks/{taskID}:
     delete:
-      description: 'Deletes a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) and associated records.
+      description: 'Deletes a task and associated records.
 
 
         Use this endpoint to delete a task and all associated records (task runs, logs, and labels).
@@ -408,9 +422,7 @@ paths:
         Once the task is deleted, InfluxDB cancels all scheduled runs of the task.
 
 
-        If you want to disable a task instead of delete it, [update the task status to `inactive`](#operation/PatchTasksID).
-
-        '
+        If you want to disable a task instead of delete it, update the task status to `inactive`.'
       operationId: DeleteTasksID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -437,9 +449,7 @@ paths:
       tags:
       - Tasks
     get:
-      description: 'Retrieves a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
-
-        '
+      description: Retrieves a task.
       operationId: GetTasksID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -474,7 +484,103 @@ paths:
       tags:
       - Tasks
     patch:
-      description: "Updates a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task),\nand then cancels all scheduled runs of the task.\n\nUse this endpoint to set, modify, or clear task properties--for example: `cron`, `name`, `flux`, `status`.\nOnce InfluxDB applies the update, it cancels all previously scheduled runs of the task.\n\nTo update a task, pass an object that contains the updated key-value pairs.\nTo activate or inactivate a task, set the `status` property.\n_`\"status\": \"inactive\"`_ cancels scheduled runs and prevents manual runs of the task.\n\n#### InfluxDB Cloud\n\n- Use either `flux` or `scriptID` to provide the task script.\n\n  - `flux`: a string of \"raw\" Flux that contains task options and the script--for example:\n\n    ```json\n    {\n      \"flux\": \"option task = {name: \\\"CPU Total 1 Hour New\\\", every: 1h}\\\n      from(bucket: \\\"telegraf\\\")\n        |> range(start: -1h)\n        |> filter(fn: (r) => (r._measurement == \\\"cpu\\\"))\n        |> filter(fn: (r) =>\\n\\t\\t(r._field == \\\"usage_system\\\"))\n        |> filter(fn: (r) => (r.cpu == \\\"cpu-total\\\"))\n        |> aggregateWindow(every: 1h, fn: max)\n        |> to(bucket: \\\"cpu_usage_user_total_1h\\\", org: \\\"INFLUX_ORG\\\")\",\n      \"status\": \"active\",\n      \"description\": \"This task downsamples CPU data every hour\"\n    }\n    ```\n\n  - `scriptID`: the ID of an [invokable script](#tag/Invokable-Scripts)\n    for the task to run.\n    To pass task options when using `scriptID`, pass the options as\n    properties in the request body--for example:\n\n    ```json\n    {\n      \"name\": \"CPU Total 1 Hour New\",\n      \"description\": \"This task downsamples CPU data every hour\",\n      \"every\": \"1h\",\n      \"scriptID\": \"SCRIPT_ID\",\n      \"scriptParameters\":\n        {\n          \"rangeStart\": \"-1h\",\n          \"bucket\": \"telegraf\",\n          \"filterField\": \"cpu-total\"\n        }\n      }\n    ```\n\n#### Limitations:\n\n- You can't use `flux` and `scriptID` for the same task.\n"
+      description: 'Updates a task,
+
+        and then cancels all scheduled runs of the task.
+
+
+        Use this endpoint to set, modify, or clear task properties--for example: `cron`, `name`, `flux`, `status`.
+
+        Once InfluxDB applies the update, it cancels all previously scheduled runs of the task.
+
+
+        To update a task, pass an object that contains the updated key-value pairs.
+
+        To activate or inactivate a task, set the `status` property.
+
+        _`"status": "inactive"`_ cancels scheduled runs and prevents manual runs of the task.
+
+
+        #### InfluxDB Cloud
+
+
+        - Use either `flux` or `scriptID` to provide the task script.
+
+
+        - `flux`: a string of "raw" Flux that contains task options and the script--for example:
+
+
+        ```json
+
+        {
+
+        "flux": "option task = {name: \"CPU Total 1 Hour New\", every: 1h}\
+
+        from(bucket: \"telegraf\")
+
+        |> range(start: -1h)
+
+        |> filter(fn: (r) => (r._measurement == \"cpu\"))
+
+        |> filter(fn: (r) =>\n\t\t(r._field == \"usage_system\"))
+
+        |> filter(fn: (r) => (r.cpu == \"cpu-total\"))
+
+        |> aggregateWindow(every: 1h, fn: max)
+
+        |> to(bucket: \"cpu_usage_user_total_1h\", org: \"INFLUX_ORG\")",
+
+        "status": "active",
+
+        "description": "This task downsamples CPU data every hour"
+
+        }
+
+        ```
+
+
+        - `scriptID`: the ID of an invokable script
+
+        for the task to run.
+
+        To pass task options when using `scriptID`, pass the options as
+
+        properties in the request body--for example:
+
+
+        ```json
+
+        {
+
+        "name": "CPU Total 1 Hour New",
+
+        "description": "This task downsamples CPU data every hour",
+
+        "every": "1h",
+
+        "scriptID": "SCRIPT_ID",
+
+        "scriptParameters":
+
+        {
+
+        "rangeStart": "-1h",
+
+        "bucket": "telegraf",
+
+        "filterField": "cpu-total"
+
+        }
+
+        }
+
+        ```
+
+
+        #### Limitations:
+
+
+        - You can''t use `flux` and `scriptID` for the same task.'
       operationId: PatchTasksID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -520,9 +626,7 @@ paths:
       description: 'Retrieves a list of all labels for a task.
 
 
-        Labels may be used for grouping and filtering tasks.
-
-        '
+        Labels may be used for grouping and filtering tasks.'
       operationId: GetTasksIDLabels
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -556,9 +660,7 @@ paths:
       description: 'Adds a label to a task.
 
 
-        Use this endpoint to add a label that you can use to filter tasks in the InfluxDB UI.
-
-        '
+        Use this endpoint to add a label that you can use to filter tasks in the InfluxDB UI.'
       operationId: PostTasksIDLabels
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -597,9 +699,7 @@ paths:
       - Tasks
   /api/v2/tasks/{taskID}/labels/{labelID}:
     delete:
-      description: 'Deletes a label from a task.
-
-        '
+      description: Deletes a label from a task.
       operationId: DeleteTasksIDLabelsID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -633,7 +733,7 @@ paths:
       - Tasks
   /api/v2/tasks/{taskID}/logs:
     get:
-      description: 'Retrieves a list of all logs for a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
+      description: 'Retrieves a list of all logs for a task.
 
 
         When an InfluxDB task runs, a “run” record is created in the task’s history.
@@ -643,9 +743,7 @@ paths:
 
         Use this endpoint to retrieve only the log events for a task,
 
-        without additional task metadata.
-
-        '
+        without additional task metadata.'
       operationId: GetTasksIDLogs
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -710,12 +808,10 @@ paths:
       deprecated: true
       description: '**Deprecated**: Tasks don''t use `owner` and `member` roles.
 
-        Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.
+        Use `/api/v2/authorizations`) to assign user permissions.
 
 
-        Lists all users that have the `member` role for the specified [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
-
-        '
+        Lists all users that have the `member` role for the specified task.'
       operationId: GetTasksIDMembers
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -749,12 +845,10 @@ paths:
       deprecated: true
       description: '**Deprecated**: Tasks don''t use `owner` and `member` roles.
 
-        Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.
+        Use `/api/v2/authorizations`) to assign user permissions.
 
 
-        Adds a user to members of a task and returns the member.
-
-        '
+        Adds a user to members of a task and returns the member.'
       operationId: PostTasksIDMembers
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -792,12 +886,10 @@ paths:
       deprecated: true
       description: '**Deprecated**: Tasks don''t use `owner` and `member` roles.
 
-        Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.
+        Use `/api/v2/authorizations`) to assign user permissions.
 
 
-        Removes a member from a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
-
-        '
+        Removes a member from a task.'
       operationId: DeleteTasksIDMembersID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -830,12 +922,10 @@ paths:
       deprecated: true
       description: '**Deprecated**: Tasks don''t use `owner` and `member` roles.
 
-        Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.
+        Use `/api/v2/authorizations`) to assign user permissions.
 
 
-        Retrieves all users that have owner permission for a task.
-
-        '
+        Retrieves all users that have owner permission for a task.'
       operationId: GetTasksIDOwners
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -892,7 +982,7 @@ paths:
       deprecated: true
       description: '**Deprecated**: Tasks don''t use `owner` and `member` roles.
 
-        Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.
+        Use `/api/v2/authorizations`) to assign user permissions.
 
 
         Assigns a task `owner` role to a user.
@@ -900,9 +990,7 @@ paths:
 
         Use this endpoint to create a _resource owner_ for the task.
 
-        A _resource owner_ is a user with `role: owner` for a specific resource.
-
-        '
+        A _resource owner_ is a user with `role: owner` for a specific resource.'
       operationId: PostTasksIDOwners
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -977,9 +1065,7 @@ paths:
       deprecated: true
       description: '**Deprecated**: Tasks don''t use `owner` and `member` roles.
 
-        Use [`/api/v2/authorizations`](#tag/Authorizations-(API-tokens)) to assign user permissions.
-
-        '
+        Use `/api/v2/authorizations`) to assign user permissions.'
       operationId: DeleteTasksIDOwnersID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -1009,14 +1095,12 @@ paths:
       - Tasks
   /api/v2/tasks/{taskID}/runs:
     get:
-      description: 'Retrieves a list of runs for a [task](https://docs.influxdata.com/influxdb/cloud/process-data/).
+      description: 'Retrieves a list of runs for a task.
 
 
         To limit which task runs are returned, pass query parameters in your request.
 
-        If no query parameters are passed, InfluxDB returns all task runs up to the default `limit`.
-
-        '
+        If no query parameters are passed, InfluxDB returns all task runs up to the default `limit`.'
       operationId: GetTasksIDRuns
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -1094,9 +1178,7 @@ paths:
 
         To _retry_ a previous run (and avoid creating a new run),
 
-        use the [`POST /api/v2/tasks/{taskID}/runs/{runID}/retry` endpoint](#operation/PostTasksIDRunsIDRetry).
-
-        '
+        use the `POST /api/v2/tasks/{taskID}/runs/{runID}/retry` endpoint.'
       operationId: PostTasksIDRuns
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -1128,7 +1210,7 @@ paths:
       - Tasks
   /api/v2/tasks/{taskID}/runs/{runID}:
     delete:
-      description: 'Cancels a running [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
+      description: 'Cancels a running task.
 
 
         Use this endpoint with InfluxDB OSS to cancel a running task.
@@ -1137,9 +1219,7 @@ paths:
         #### InfluxDB Cloud
 
 
-        - Doesn''t support this operation.
-
-        '
+        - Doesn''t support this operation.'
       operationId: DeleteTasksIDRunsID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -1188,12 +1268,10 @@ paths:
       tags:
       - Tasks
     get:
-      description: 'Retrieves a specific run for a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task).
+      description: 'Retrieves a specific run for a task.
 
 
-        Use this endpoint to retrieve detail and logs for a specific task run.
-
-        '
+        Use this endpoint to retrieve detail and logs for a specific task run.'
       operationId: GetTasksIDRunsID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -1249,7 +1327,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         default:
           $ref: '#/components/responses/GeneralServerError'
-      summary: Retrieve a run for a task.
+      summary: Retrieve a run for a task
       tags:
       - Tasks
   /api/v2/tasks/{taskID}/runs/{runID}/logs:
@@ -1259,9 +1337,7 @@ paths:
         A log is a list of run events with `runID`, `time`, and `message` properties.
 
 
-        Use this endpoint to help analyze task performance and troubleshoot failed task runs.
-
-        '
+        Use this endpoint to help analyze task performance and troubleshoot failed task runs.'
       operationId: GetTasksIDRunsIDLogs
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -1329,22 +1405,20 @@ paths:
       - Tasks
   /api/v2/tasks/{taskID}/runs/{runID}/retry:
     post:
-      description: 'Queues a [task](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task)  run to
+      description: 'Queues a task run to
 
         retry and returns the scheduled run.
 
 
         To manually start a _new_ task run, use the
 
-        [`POST /api/v2/tasks/{taskID}/runs` endpoint](#operation/PostTasksIDRuns).
+        `POST /api/v2/tasks/{taskID}/runs` endpoint.
 
 
         #### Limitations
 
 
-        - The task must be _active_ (`status: "active"`).
-
-        '
+        - The task must be _active_ (`status: "active"`).'
       operationId: PostTasksIDRunsIDRetry
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -1435,7 +1509,276 @@ paths:
       tags:
       - Tasks
 components:
+  responses:
+    BadRequestError:
+      content:
+        application/json:
+          examples:
+            orgProvidedNotFound:
+              summary: The org or orgID passed doesn't own the token passed in the header
+              value:
+                code: invalid
+                message: 'failed to decode request body: organization not found'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Bad request.
+
+        The response body contains detail about the error.
+
+
+        #### InfluxDB OSS
+
+
+        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
+
+        '
+    ResourceNotFoundError:
+      content:
+        application/json:
+          examples:
+            bucket-not-found:
+              summary: Bucket name not found
+              value:
+                code: not found
+                message: bucket "air_sensor" not found
+            org-not-found:
+              summary: Organization name not found
+              value:
+                code: not found
+                message: organization name "my-org" not found
+            orgID-not-found:
+              summary: Organization ID not found
+              value:
+                code: not found
+                message: organization not found
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
+    GeneralServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Non 2XX error response from server.
+    AuthorizationError:
+      content:
+        application/json:
+          examples:
+            tokenNotAuthorized:
+              summary: Token is not authorized to access a resource
+              value:
+                code: unauthorized
+                message: unauthorized access
+          schema:
+            properties:
+              code:
+                description: 'The HTTP status code description. Default is `unauthorized`.
+
+                  '
+                enum:
+                - unauthorized
+                readOnly: true
+                type: string
+              message:
+                description: A human-readable message that may contain detail about the error.
+                readOnly: true
+                type: string
+      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
   schemas:
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    UserResponse:
+      properties:
+        id:
+          description: 'The user ID.
+
+            '
+          readOnly: true
+          type: string
+        links:
+          example:
+            self: /api/v2/users/1
+          properties:
+            self:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        name:
+          description: 'The user name.
+
+            '
+          type: string
+        status:
+          default: active
+          description: 'The status of a user.
+
+            An inactive user can''t read or write resources.
+
+            '
+          enum:
+          - active
+          - inactive
+          type: string
+      required:
+      - name
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    RunManually:
+      properties:
+        scheduledFor:
+          description: 'The time [RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)
+
+            used for the run''s `now` option.
+
+            Default is the server _now_ time.
+
+            '
+          format: date-time
+          type:
+          - string
+          - 'null'
+    Run:
+      properties:
+        finishedAt:
+          description: The time ([RFC3339Nano date/time format](https://go.dev/src/time/format.go)) the run finished executing.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+        flux:
+          description: Flux used for the task
+          readOnly: true
+          type: string
+        id:
+          readOnly: true
+          type: string
+        links:
+          example:
+            retry: /api/v2/tasks/1/runs/1/retry
+            self: /api/v2/tasks/1/runs/1
+            task: /api/v2/tasks/1
+          properties:
+            retry:
+              format: uri
+              type: string
+            self:
+              format: uri
+              type: string
+            task:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        log:
+          description: An array of logs associated with the run.
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+          type: array
+        requestedAt:
+          description: The time ([RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp)) the run was manually requested.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+        scheduledFor:
+          description: The time [RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp) used for the run's `now` option.
+          format: date-time
+          type: string
+        startedAt:
+          description: The time ([RFC3339Nano date/time format](https://go.dev/src/time/format.go)) the run started executing.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+        status:
+          enum:
+          - scheduled
+          - started
+          - failed
+          - success
+          - canceled
+          readOnly: true
+          type: string
+        taskID:
+          readOnly: true
+          type: string
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    TaskStatusType:
+      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
+
+        '
+      enum:
+      - active
+      - inactive
+      type: string
     Task:
       properties:
         authorizationID:
@@ -1597,36 +1940,19 @@ components:
       - name
       - orgID
       type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    LabelResponse:
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    Tasks:
       properties:
-        label:
-          $ref: '#/components/schemas/Label'
         links:
           $ref: '#/components/schemas/Links'
+          readOnly: true
+        tasks:
+          items:
+            $ref: '#/components/schemas/Task'
+          type: array
       type: object
     TaskCreateRequest:
       properties:
@@ -1694,16 +2020,14 @@ components:
         status:
           $ref: '#/components/schemas/TaskStatusType'
       type: object
-    ResourceOwner:
-      allOf:
-      - $ref: '#/components/schemas/UserResponse'
-      - properties:
-          role:
-            default: owner
-            enum:
-            - owner
-            type: string
-        type: object
+    Logs:
+      properties:
+        events:
+          items:
+            $ref: '#/components/schemas/LogEvent'
+          readOnly: true
+          type: array
+      type: object
     ResourceMembers:
       properties:
         links:
@@ -1717,41 +2041,39 @@ components:
             $ref: '#/components/schemas/ResourceMember'
           type: array
       type: object
-    UserResponse:
+    LogEvent:
+      properties:
+        message:
+          description: A description of the event that occurred.
+          example: Halt and catch fire
+          readOnly: true
+          type: string
+        runID:
+          description: The ID of the task run that generated the event.
+          readOnly: true
+          type: string
+        time:
+          description: The time ([RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp)) that the event occurred.
+          example: 2006-01-02T15:04:05.999999999Z07:00
+          format: date-time
+          readOnly: true
+          type: string
+      type: object
+    AddResourceMemberRequestBody:
       properties:
         id:
-          description: 'The user ID.
+          description: 'The ID of the user to add to the resource.
 
             '
-          readOnly: true
           type: string
-        links:
-          example:
-            self: /api/v2/users/1
-          properties:
-            self:
-              format: uri
-              type: string
-          readOnly: true
-          type: object
         name:
-          description: 'The user name.
+          description: 'The name of the user to add to the resource.
 
             '
-          type: string
-        status:
-          default: active
-          description: 'The status of a user.
-
-            An inactive user can''t read or write resources.
-
-            '
-          enum:
-          - active
-          - inactive
           type: string
       required:
-      - name
+      - id
+      type: object
     TaskUpdateRequest:
       properties:
         cron:
@@ -1781,99 +2103,6 @@ components:
         status:
           $ref: '#/components/schemas/TaskStatusType'
       type: object
-    Label:
-      properties:
-        id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
-
-            To remove a property, send an update with an empty value (`""`) for the key.
-
-            '
-          example:
-            color: ffb3b3
-            description: this is a description
-          type: object
-      type: object
-    Run:
-      properties:
-        finishedAt:
-          description: The time ([RFC3339Nano date/time format](https://go.dev/src/time/format.go)) the run finished executing.
-          example: 2006-01-02T15:04:05.999999999Z07:00
-          format: date-time
-          readOnly: true
-          type: string
-        flux:
-          description: Flux used for the task
-          readOnly: true
-          type: string
-        id:
-          readOnly: true
-          type: string
-        links:
-          example:
-            retry: /api/v2/tasks/1/runs/1/retry
-            self: /api/v2/tasks/1/runs/1
-            task: /api/v2/tasks/1
-          properties:
-            retry:
-              format: uri
-              type: string
-            self:
-              format: uri
-              type: string
-            task:
-              format: uri
-              type: string
-          readOnly: true
-          type: object
-        log:
-          description: An array of logs associated with the run.
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-          type: array
-        requestedAt:
-          description: The time ([RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp)) the run was manually requested.
-          example: 2006-01-02T15:04:05.999999999Z07:00
-          format: date-time
-          readOnly: true
-          type: string
-        scheduledFor:
-          description: The time [RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp) used for the run's `now` option.
-          format: date-time
-          type: string
-        startedAt:
-          description: The time ([RFC3339Nano date/time format](https://go.dev/src/time/format.go)) the run started executing.
-          example: 2006-01-02T15:04:05.999999999Z07:00
-          format: date-time
-          readOnly: true
-          type: string
-        status:
-          enum:
-          - scheduled
-          - started
-          - failed
-          - success
-          - canceled
-          readOnly: true
-          type: string
-        taskID:
-          readOnly: true
-          type: string
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
     Error:
       properties:
         code:
@@ -1910,24 +2139,23 @@ components:
           type: string
       required:
       - code
-    LogEvent:
+    LabelResponse:
       properties:
-        message:
-          description: A description of the event that occurred.
-          example: Halt and catch fire
-          readOnly: true
-          type: string
-        runID:
-          description: The ID of the task run that generated the event.
-          readOnly: true
-          type: string
-        time:
-          description: The time ([RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp)) that the event occurred.
-          example: 2006-01-02T15:04:05.999999999Z07:00
-          format: date-time
-          readOnly: true
-          type: string
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
       type: object
+    ResourceOwner:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: owner
+            enum:
+            - owner
+            type: string
+        type: object
     ResourceMember:
       allOf:
       - $ref: '#/components/schemas/UserResponse'
@@ -1938,66 +2166,6 @@ components:
             - member
             type: string
         type: object
-    RunManually:
-      properties:
-        scheduledFor:
-          description: 'The time [RFC3339 date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339-timestamp)
-
-            used for the run''s `now` option.
-
-            Default is the server _now_ time.
-
-            '
-          format: date-time
-          nullable: true
-          type: string
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    TaskStatusType:
-      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
-
-        '
-      enum:
-      - active
-      - inactive
-      type: string
-    Logs:
-      properties:
-        events:
-          items:
-            $ref: '#/components/schemas/LogEvent'
-          readOnly: true
-          type: array
-      type: object
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    Tasks:
-      properties:
-        links:
-          $ref: '#/components/schemas/Links'
-          readOnly: true
-        tasks:
-          items:
-            $ref: '#/components/schemas/Task'
-          type: array
-      type: object
     Runs:
       properties:
         links:
@@ -2006,34 +2174,6 @@ components:
           items:
             $ref: '#/components/schemas/Run'
           type: array
-      type: object
-    ResourceOwners:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/ResourceOwner'
-          type: array
-      type: object
-    AddResourceMemberRequestBody:
-      properties:
-        id:
-          description: 'The ID of the user to add to the resource.
-
-            '
-          type: string
-        name:
-          description: 'The name of the user to add to the resource.
-
-            '
-          type: string
-      required:
-      - id
       type: object
     LabelMapping:
       description: A _label mapping_ contains a `label` ID to attach to a resource.
@@ -2048,91 +2188,26 @@ components:
       required:
       - labelID
       type: object
-  responses:
-    GeneralServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Non 2XX error response from server.
-    AuthorizationError:
-      content:
-        application/json:
-          examples:
-            tokenNotAuthorized:
-              summary: Token is not authorized to access a resource
-              value:
-                code: unauthorized
-                message: unauthorized access
-          schema:
-            properties:
-              code:
-                description: 'The HTTP status code description. Default is `unauthorized`.
-
-                  '
-                enum:
-                - unauthorized
-                readOnly: true
-                type: string
-              message:
-                description: A human-readable message that may contain detail about the error.
-                readOnly: true
-                type: string
-      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    BadRequestError:
-      content:
-        application/json:
-          examples:
-            orgProvidedNotFound:
-              summary: The org or orgID passed doesn't own the token passed in the header
-              value:
-                code: invalid
-                message: 'failed to decode request body: organization not found'
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Bad request.
-
-        The response body contains detail about the error.
-
-
-        #### InfluxDB OSS
-
-
-        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
-
-        '
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
-    ResourceNotFoundError:
-      content:
-        application/json:
-          examples:
-            bucket-not-found:
-              summary: Bucket name not found
-              value:
-                code: not found
-                message: bucket "air_sensor" not found
-            org-not-found:
-              summary: Organization name not found
-              value:
-                code: not found
-                message: organization name "my-org" not found
-            orgID-not-found:
-              summary: Organization ID not found
-              value:
-                code: not found
-                message: organization not found
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
+    ResourceOwners:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+          type: array
+      type: object
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
   parameters:
     TraceSpan:
       description: OpenTracing span context

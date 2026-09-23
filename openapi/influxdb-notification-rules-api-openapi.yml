@@ -1,62 +1,12 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) NotificationRules API
-  description: 'Create and manage authorizations (API tokens).
-
-
-    An _authorization_ contains a list of `read` and `write`
-
-    permissions for organization resources and provides an API token for authentication.
-
-    An authorization belongs to an organization and only contains permissions for that organization.
-
-
-    We recommend the following for managing your tokens:
-
-
-    - Create a generic user to create and manage tokens for writing data.
-
-    - Store your tokens in a secure password vault for future access.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, when creating an authorization, you can scope it to a specific user.
-
-    If the user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related endpoints
-
-
-    - [Signin](#tag/Signin)
-
-    - [Signout](#tag/Signout)
-
-
-    ### Related guides
-
-
-    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
-
-    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
-
-    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-
-    '
+  title: Complete InfluxDB Cloud Notification Rules API
 servers:
 - url: ''
 security:
 - TokenAuthentication: []
 tags:
-- name: NotificationRules
+- name: Notification Rules
 paths:
   /api/v2/notificationRules:
     get:
@@ -98,7 +48,7 @@ paths:
           description: Unexpected error
       summary: List all notification rules
       tags:
-      - NotificationRules
+      - Notification Rules
     post:
       operationId: CreateNotificationRule
       requestBody:
@@ -123,7 +73,7 @@ paths:
           description: Unexpected error
       summary: Add a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
   /api/v2/notificationRules/{ruleID}:
     delete:
       operationId: DeleteNotificationRulesID
@@ -152,7 +102,7 @@ paths:
           description: Unexpected error
       summary: Delete a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
     get:
       operationId: GetNotificationRulesID
       parameters:
@@ -178,7 +128,7 @@ paths:
           description: Unexpected error
       summary: Retrieve a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
     patch:
       operationId: PatchNotificationRulesID
       parameters:
@@ -217,7 +167,7 @@ paths:
           description: Unexpected error
       summary: Update a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
     put:
       operationId: PutNotificationRulesID
       parameters:
@@ -256,7 +206,7 @@ paths:
           description: Unexpected error
       summary: Update a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
   /api/v2/notificationRules/{ruleID}/labels:
     get:
       operationId: GetNotificationRulesIDLabels
@@ -283,7 +233,7 @@ paths:
           description: Unexpected error
       summary: List all labels for a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
     post:
       operationId: PostNotificationRuleIDLabels
       parameters:
@@ -316,7 +266,7 @@ paths:
           description: Unexpected error
       summary: Add a label to a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
   /api/v2/notificationRules/{ruleID}/labels/{labelID}:
     delete:
       operationId: DeleteNotificationRulesIDLabelsID
@@ -351,92 +301,40 @@ paths:
           description: Unexpected error
       summary: Delete label from a notification rule
       tags:
-      - NotificationRules
+      - Notification Rules
 components:
-  parameters:
-    Offset:
-      description: 'The offset for pagination.
-
-        The number of records to skip.
-
-
-        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
-
-        '
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    Limit:
-      description: 'Limits the number of records returned. Default is `20`.
-
-        '
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 20
-        maximum: 100
-        minimum: 1
-        type: integer
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
   schemas:
-    TelegramNotificationRuleBase:
+    TagRule:
       properties:
-        disableWebPagePreview:
-          description: Disables preview of web links in the sent messages when "true". Defaults to "false".
-          type: boolean
-        messageTemplate:
-          description: The message template as a flux interpolated string.
+        key:
           type: string
-        parseMode:
-          description: Parse mode of the message text per https://core.telegram.org/bots/api#formatting-options. Defaults to "MarkdownV2".
+        operator:
           enum:
-          - MarkdownV2
-          - HTML
-          - Markdown
+          - equal
+          - notequal
+          - equalregex
+          - notequalregex
+          type: string
+        value:
+          type: string
+      type: object
+    SMTPNotificationRuleBase:
+      properties:
+        bodyTemplate:
+          type: string
+        subjectTemplate:
+          type: string
+        to:
           type: string
         type:
-          description: The discriminator between other types of notification rules is "telegram".
           enum:
-          - telegram
+          - smtp
           type: string
       required:
       - type
-      - messageTemplate
-      - channel
+      - subjectTemplate
+      - to
       type: object
-    LabelMapping:
-      description: A _label mapping_ contains a `label` ID to attach to a resource.
-      properties:
-        labelID:
-          description: 'A label ID.
-
-            Specifies the label to attach.
-
-            '
-          type: string
-      required:
-      - labelID
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -456,80 +354,6 @@ components:
       - unsupported media type
       readOnly: true
       type: string
-    LabelResponse:
-      properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    TagRule:
-      properties:
-        key:
-          type: string
-        operator:
-          enum:
-          - equal
-          - notequal
-          - equalregex
-          - notequalregex
-          type: string
-        value:
-          type: string
-      type: object
-    NotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
-    RuleStatusLevel:
-      description: The state to record if check matches a criteria.
-      enum:
-      - UNKNOWN
-      - OK
-      - INFO
-      - CRIT
-      - WARN
-      - ANY
-      type: string
-    PagerDutyNotificationRuleBase:
-      properties:
-        messageTemplate:
-          type: string
-        type:
-          enum:
-          - pagerduty
-          type: string
-      required:
-      - type
-      - messageTemplate
-      type: object
-    StatusRule:
-      properties:
-        count:
-          type: integer
-        currentLevel:
-          $ref: '#/components/schemas/RuleStatusLevel'
-        period:
-          type: string
-        previousLevel:
-          $ref: '#/components/schemas/RuleStatusLevel'
-      type: object
-    SMTPNotificationRuleBase:
-      properties:
-        bodyTemplate:
-          type: string
-        subjectTemplate:
-          type: string
-        to:
-          type: string
-        type:
-          enum:
-          - smtp
-          type: string
-      required:
-      - type
-      - subjectTemplate
-      - to
-      type: object
     Label:
       properties:
         id:
@@ -553,10 +377,124 @@ components:
             description: this is a description
           type: object
       type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    SMTPNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/SMTPNotificationRuleBase'
+    NotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
+    RuleStatusLevel:
+      description: The state to record if check matches a criteria.
+      enum:
+      - UNKNOWN
+      - OK
+      - INFO
+      - CRIT
+      - WARN
+      - ANY
+      type: string
+    HTTPNotificationRuleBase:
+      properties:
+        type:
+          enum:
+          - http
+          type: string
+        url:
+          type: string
+      required:
+      - type
+      type: object
+    SlackNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/SlackNotificationRuleBase'
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    TaskStatusType:
+      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
+
+        '
+      enum:
+      - active
+      - inactive
+      type: string
+    StatusRule:
+      properties:
+        count:
+          type: integer
+        currentLevel:
+          $ref: '#/components/schemas/RuleStatusLevel'
+        period:
+          type: string
+        previousLevel:
+          $ref: '#/components/schemas/RuleStatusLevel'
+      type: object
     Labels:
       items:
         $ref: '#/components/schemas/Label'
       type: array
+    PagerDutyNotificationRuleBase:
+      properties:
+        messageTemplate:
+          type: string
+        type:
+          enum:
+          - pagerduty
+          type: string
+      required:
+      - type
+      - messageTemplate
+      type: object
+    SlackNotificationRuleBase:
+      properties:
+        channel:
+          type: string
+        messageTemplate:
+          type: string
+        type:
+          enum:
+          - slack
+          type: string
+      required:
+      - type
+      - messageTemplate
+      type: object
+    NotificationRuleDiscriminator:
+      discriminator:
+        mapping:
+          http: '#/components/schemas/HTTPNotificationRule'
+          pagerduty: '#/components/schemas/PagerDutyNotificationRule'
+          slack: '#/components/schemas/SlackNotificationRule'
+          smtp: '#/components/schemas/SMTPNotificationRule'
+          telegram: '#/components/schemas/TelegramNotificationRule'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/SlackNotificationRule'
+      - $ref: '#/components/schemas/SMTPNotificationRule'
+      - $ref: '#/components/schemas/PagerDutyNotificationRule'
+      - $ref: '#/components/schemas/HTTPNotificationRule'
+      - $ref: '#/components/schemas/TelegramNotificationRule'
+    PostNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
     Error:
       properties:
         code:
@@ -593,17 +531,58 @@ components:
           type: string
       required:
       - code
-    HTTPNotificationRuleBase:
+    LabelResponse:
       properties:
-        type:
-          enum:
-          - http
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    NotificationRules:
+      properties:
+        links:
+          $ref: '#/components/schemas/Links'
+        notificationRules:
+          items:
+            $ref: '#/components/schemas/NotificationRule'
+          type: array
+    PagerDutyNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/PagerDutyNotificationRuleBase'
+    HTTPNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/HTTPNotificationRuleBase'
+    TelegramNotificationRuleBase:
+      properties:
+        disableWebPagePreview:
+          description: Disables preview of web links in the sent messages when "true". Defaults to "false".
+          type: boolean
+        messageTemplate:
+          description: The message template as a flux interpolated string.
           type: string
-        url:
+        parseMode:
+          description: Parse mode of the message text per https://core.telegram.org/bots/api#formatting-options. Defaults to "MarkdownV2".
+          enum:
+          - MarkdownV2
+          - HTML
+          - Markdown
+          type: string
+        type:
+          description: The discriminator between other types of notification rules is "telegram".
+          enum:
+          - telegram
           type: string
       required:
       - type
+      - messageTemplate
+      - channel
       type: object
+    TelegramNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/TelegramNotificationRuleBase'
     NotificationRuleUpdate:
       properties:
         description:
@@ -616,90 +595,18 @@ components:
           - inactive
           type: string
       type: object
-    NotificationRules:
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
       properties:
-        links:
-          $ref: '#/components/schemas/Links'
-        notificationRules:
-          items:
-            $ref: '#/components/schemas/NotificationRule'
-          type: array
-    NotificationRuleDiscriminator:
-      discriminator:
-        mapping:
-          http: '#/components/schemas/HTTPNotificationRule'
-          pagerduty: '#/components/schemas/PagerDutyNotificationRule'
-          slack: '#/components/schemas/SlackNotificationRule'
-          smtp: '#/components/schemas/SMTPNotificationRule'
-          telegram: '#/components/schemas/TelegramNotificationRule'
-        propertyName: type
-      oneOf:
-      - $ref: '#/components/schemas/SlackNotificationRule'
-      - $ref: '#/components/schemas/SMTPNotificationRule'
-      - $ref: '#/components/schemas/PagerDutyNotificationRule'
-      - $ref: '#/components/schemas/HTTPNotificationRule'
-      - $ref: '#/components/schemas/TelegramNotificationRule'
-    TelegramNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/TelegramNotificationRuleBase'
-    PagerDutyNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/PagerDutyNotificationRuleBase'
-    PostNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
-    Links:
-      description: 'URI pointers for additional paged results.
+        labelID:
+          description: 'A label ID.
 
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    TaskStatusType:
-      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
+            Specifies the label to attach.
 
-        '
-      enum:
-      - active
-      - inactive
-      type: string
-    HTTPNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/HTTPNotificationRuleBase'
-    SMTPNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/SMTPNotificationRuleBase'
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    SlackNotificationRuleBase:
-      properties:
-        channel:
-          type: string
-        messageTemplate:
-          type: string
-        type:
-          enum:
-          - slack
+            '
           type: string
       required:
-      - type
-      - messageTemplate
+      - labelID
       type: object
     NotificationRuleBase:
       properties:
@@ -810,10 +717,53 @@ components:
       - statusRules
       - endpointID
       type: object
-    SlackNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/SlackNotificationRuleBase'
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+  parameters:
+    Limit:
+      description: 'Limits the number of records returned. Default is `20`.
+
+        '
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 20
+        maximum: 100
+        minimum: 1
+        type: integer
+    Offset:
+      description: 'The offset for pagination.
+
+        The number of records to skip.
+
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"

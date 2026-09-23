@@ -1,95 +1,13 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Users API
-  description: 'Create and manage authorizations (API tokens).
-
-
-    An _authorization_ contains a list of `read` and `write`
-
-    permissions for organization resources and provides an API token for authentication.
-
-    An authorization belongs to an organization and only contains permissions for that organization.
-
-
-    We recommend the following for managing your tokens:
-
-
-    - Create a generic user to create and manage tokens for writing data.
-
-    - Store your tokens in a secure password vault for future access.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, when creating an authorization, you can scope it to a specific user.
-
-    If the user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    For more information, see [how to assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/).
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related endpoints
-
-
-    - [Signin](#tag/Signin)
-
-    - [Signout](#tag/Signout)
-
-
-    ### Related guides
-
-
-    - [Authorize API requests](https://docs.influxdata.com/influxdb/cloud/api-guide/api_intro/#authentication)
-
-    - [Manage API tokens](https://docs.influxdata.com/influxdb/cloud/security/tokens/)
-
-    - [Assign a token to a specific user](https://docs.influxdata.com/influxdb/cloud/security/tokens/create-token/)
-
-    '
+  title: Complete InfluxDB Cloud Users API
+  description: Retrieve specific users.
 servers:
 - url: ''
 security:
 - TokenAuthentication: []
 tags:
-- description: 'Retrieve specific users.
-
-
-    InfluxDB Cloud lets you invite and collaborate with multiple users in your organization.
-
-    To invite and remove users from your organization, use the InfluxDB Cloud user interface (UI);
-
-    you can''t use the InfluxDB API to manage users in InfluxDB Cloud.
-
-    Once a user is added to your organization, you can use the
-
-    `GET /api/v2/users` and `GET /api/v2/users/USER_ID` API endpoints to
-
-    view specific members.
-
-
-    ### User sessions with authorizations
-
-
-    Optionally, you can scope an authorization (and its API token) to a user.
-
-    If a user signs in with username and password, creating a _user session_,
-
-    the session carries the permissions granted by all the user''s authorizations.
-
-    To create a user session, use the [`POST /api/v2/signin` endpoint](#operation/PostSignin).
-
-
-    ### Related guides
-
-
-    - [Manage users](https://docs.influxdata.com/influxdb/cloud/organizations/users/)
-
-    '
+- description: Retrieve specific users.
   name: Users
 paths:
   /api/v2/me:
@@ -115,7 +33,52 @@ paths:
       - Users
   /api/v2/me/password:
     put:
-      description: "Updates the password for the signed-in [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\nThis endpoint represents the third step in the following three-step process to let a\nuser with a user session update their password:\n  1. Pass the user's [Basic authentication credentials](#section/Authentication/BasicAuthentication) to the `POST /api/v2/signin`\n     endpoint to create a user session and generate a session cookie.\n  2. From the response in the first step, extract the session cookie (`Set-Cookie`) header.\n  3. Pass the following in a request to the `PUT /api/v2/me/password` endpoint:\n     - The `Set-Cookie` header from the second step\n     - The `Authorization Basic` header with the user's _Basic authentication_ credentials\n     - `{\"password\": \"NEW_PASSWORD\"}` in the request body\n\n#### InfluxDB Cloud\n\n- Doesn't let you manage user passwords through the API.\n  Use the InfluxDB Cloud user interface (UI) to update your password.\n\n#### Related endpoints\n\n- [Signin](#tag/Signin)\n- [Signout](#tag/Signout)\n- [Users](#tag/Users)\n\n#### Related guides\n\n- [InfluxDB Cloud - Change your password](https://docs.influxdata.com/influxdb/cloud/account-management/change-password/)\n- [InfluxDB OSS - Change your password](https://docs.influxdata.com/influxdb/latest/users/change-password/)\n"
+      description: 'Updates the password for the signed-in user.
+
+
+        This endpoint represents the third step in the following three-step process to let a
+
+        user with a user session update their password:
+
+        1. Pass the user''s Basic authentication credentials to the `POST /api/v2/signin`
+
+        endpoint to create a user session and generate a session cookie.
+
+        2. From the response in the first step, extract the session cookie (`Set-Cookie`) header.
+
+        3. Pass the following in a request to the `PUT /api/v2/me/password` endpoint:
+
+        - The `Set-Cookie` header from the second step
+
+        - The `Authorization Basic` header with the user''s _Basic authentication_ credentials
+
+        - `{"password": "NEW_PASSWORD"}` in the request body
+
+
+        #### InfluxDB Cloud
+
+
+        - Doesn''t let you manage user passwords through the API.
+
+        Use the InfluxDB Cloud user interface (UI) to update your password.
+
+
+        #### Related endpoints
+
+
+        - Signin
+
+        - Signout
+
+        - Users
+
+
+        #### Related guides
+
+
+        - InfluxDB Cloud - Change your password
+
+        - InfluxDB OSS - Change your password'
       operationId: PutMePassword
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -179,7 +142,39 @@ paths:
       - Users
   /api/v2/users:
     get:
-      description: "Lists [users](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\nTo limit which users are returned, pass query parameters in your request.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud doesn't allow listing all users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions for InfluxDB Cloud\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| List all users | Operator token | InfluxData internal use only |\n| List a specific user | `read-users` or `read-user USER_ID` |\n\n*`USER_ID`* is the ID of the user that you want to retrieve.\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/organizations/users/)\n"
+      description: 'Lists users.
+
+
+        To limit which users are returned, pass query parameters in your request.
+
+
+        #### InfluxDB Cloud
+
+
+        - InfluxDB Cloud doesn''t allow listing all users through the API.
+
+        Use the InfluxDB Cloud user interface (UI) to manage account information.
+
+
+        #### Required permissions for InfluxDB Cloud
+
+
+        | Action | Permission required | Restriction |
+
+        |:-------|:--------------------|:------------|
+
+        | List all users | Operator token | InfluxData internal use only |
+
+        | List a specific user | `read-users` or `read-user USER_ID` |
+
+
+        *`USER_ID`* is the ID of the user that you want to retrieve.
+
+
+        #### Related guides
+
+
+        - Manage users'
       operationId: GetUsers
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -231,7 +226,36 @@ paths:
       tags:
       - Users
     post:
-      description: "(InfluxData internal use only)\n\nCreates and returns a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user)\nthat can access InfluxDB.\n\n#### InfluxDB Cloud\n\n- InfluxDB Cloud Doesn't let you manage users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions for InfluxDB Cloud\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| Create user | Operator token | InfluxData internal use only |\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/organizations/users/)\n"
+      description: '(InfluxData internal use only)
+
+
+        Creates and returns a user
+
+        that can access InfluxDB.
+
+
+        #### InfluxDB Cloud
+
+
+        - InfluxDB Cloud Doesn''t let you manage users through the API.
+
+        Use the InfluxDB Cloud user interface (UI) to manage account information.
+
+
+        #### Required permissions for InfluxDB Cloud
+
+
+        | Action | Permission required | Restriction |
+
+        |:-------|:--------------------|:------------|
+
+        | Create user | Operator token | InfluxData internal use only |
+
+
+        #### Related guides
+
+
+        - Manage users'
       operationId: PostUsers
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -275,7 +299,39 @@ paths:
       - Users
   /api/v2/users/{userID}:
     delete:
-      description: "(InfluxData internal use only)\n\nDeletes a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).\n\nFor security purposes, once an InfluxDB user account is deleted from an\norganization, the user (and their token) cannot be reactivated.\n\n#### InfluxDB Cloud\n\n- Doesn't let you manage users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| Delete user | Operator token | InfluxData internal use only |\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/organizations/users/)\n"
+      description: '(InfluxData internal use only)
+
+
+        Deletes a user.
+
+
+        For security purposes, once an InfluxDB user account is deleted from an
+
+        organization, the user (and their token) cannot be reactivated.
+
+
+        #### InfluxDB Cloud
+
+
+        - Doesn''t let you manage users through the API.
+
+        Use the InfluxDB Cloud user interface (UI) to manage account information.
+
+
+        #### Required permissions
+
+
+        | Action | Permission required | Restriction |
+
+        |:-------|:--------------------|:------------|
+
+        | Delete user | Operator token | InfluxData internal use only |
+
+
+        #### Related guides
+
+
+        - Manage users'
       operationId: DeleteUsersID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -306,15 +362,13 @@ paths:
       tags:
       - Users
     get:
-      description: 'Retrieves a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user).
+      description: 'Retrieves a user.
 
 
         #### Related guides
 
 
-        - [Manage users](https://docs.influxdata.com/influxdb/cloud/organizations/users/)
-
-        '
+        - Manage users'
       operationId: GetUsersID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -342,7 +396,34 @@ paths:
       tags:
       - Users
     patch:
-      description: "(InfluxData internal use only)\n\nUpdates a [user](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#user) and returns the user.\n\n#### InfluxDB Cloud\n\n- Doesn't let you manage users through the API.\n  Use the InfluxDB Cloud user interface (UI) to manage account information.\n\n#### Required permissions for InfluxDB Cloud\n\n| Action | Permission required | Restriction |\n|:-------|:--------------------|:------------|\n| Update user | Operator token | InfluxData internal use only |\n\n#### Related guides\n\n- [Manage users](https://docs.influxdata.com/influxdb/cloud/organizations/users/)\n"
+      description: '(InfluxData internal use only)
+
+
+        Updates a user and returns the user.
+
+
+        #### InfluxDB Cloud
+
+
+        - Doesn''t let you manage users through the API.
+
+        Use the InfluxDB Cloud user interface (UI) to manage account information.
+
+
+        #### Required permissions for InfluxDB Cloud
+
+
+        | Action | Permission required | Restriction |
+
+        |:-------|:--------------------|:------------|
+
+        | Update user | Operator token | InfluxData internal use only |
+
+
+        #### Related guides
+
+
+        - Manage users'
       operationId: PatchUsersID
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -385,7 +466,23 @@ paths:
       - Users
   /api/v2/users/{userID}/password:
     post:
-      description: "Updates a user password.\n\n#### InfluxDB Cloud\n\n- Doesn't allow you to manage user passwords through the API.\n  Use the InfluxDB Cloud user interface (UI) to update a password.\n\n#### Related guides\n\n- [InfluxDB Cloud - Change your password](https://docs.influxdata.com/influxdb/cloud/account-management/change-password/)\n- [InfluxDB OSS - Change your password](https://docs.influxdata.com/influxdb/latest/users/change-password/)\n"
+      description: 'Updates a user password.
+
+
+        #### InfluxDB Cloud
+
+
+        - Doesn''t allow you to manage user passwords through the API.
+
+        Use the InfluxDB Cloud user interface (UI) to update a password.
+
+
+        #### Related guides
+
+
+        - InfluxDB Cloud - Change your password
+
+        - InfluxDB OSS - Change your password'
       operationId: PostUsersIDPassword
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -442,7 +539,30 @@ paths:
         lang: Shell
         source: "curl --request POST \\\n   \"http://localhost:8086/api/v2/users/USER_ID/password\" \\\n  --header 'Content-type: application/json' \\\n  --header \"Authorization: Token INFLUX_TOKEN\" \\\n  --data-binary @- << EOF\n    {\"password\": \"NEW_USER_PASSWORD\"}\nEOF\n"
     put:
-      description: "Updates a user password.\n\nUse this endpoint to let a user authenticate with\n[Basic authentication credentials](#section/Authentication/BasicAuthentication)\nand set a new password.\n\n#### InfluxDB Cloud\n\n- Doesn't allow you to manage user passwords through the API.\n  Use the InfluxDB Cloud user interface (UI) to update a password.\n\n#### Related guides\n\n- [InfluxDB Cloud - Change your password](https://docs.influxdata.com/influxdb/cloud/account-management/change-password/)\n- [InfluxDB OSS - Change your password](https://docs.influxdata.com/influxdb/latest/users/change-password/)\n"
+      description: 'Updates a user password.
+
+
+        Use this endpoint to let a user authenticate with
+
+        Basic authentication credentials
+
+        and set a new password.
+
+
+        #### InfluxDB Cloud
+
+
+        - Doesn''t allow you to manage user passwords through the API.
+
+        Use the InfluxDB Cloud user interface (UI) to update a password.
+
+
+        #### Related guides
+
+
+        - InfluxDB Cloud - Change your password
+
+        - InfluxDB OSS - Change your password'
       operationId: PutUsersIDPassword
       parameters:
       - $ref: '#/components/parameters/TraceSpan'
@@ -502,6 +622,48 @@ paths:
         source: "curl -c ./cookie-file.tmp --request POST \\\n   \"http://localhost:8086/api/v2/signin\" \\\n  --user \"${INFLUX_USER_NAME}:${INFLUX_USER_PASSWORD}\"\n\ncurl -b ./cookie-file.tmp --request PUT \\\n   \"http://localhost:8086/api/v2/users/USER_ID/password\" \\\n  --header 'Content-type: application/json' \\\n  --data-binary @- << EOF\n    {\"password\": \"NEW_USER_PASSWORD\"}\nEOF\n"
 components:
   schemas:
+    User:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        org_id:
+          type: string
+        role:
+          enum:
+          - owner
+          - member
+          type: string
+        status:
+          default: active
+          description: If inactive the user is inactive.
+          enum:
+          - active
+          - inactive
+          type: string
+      required:
+      - name
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
     UserResponse:
       properties:
         id:
@@ -531,61 +693,6 @@ components:
             An inactive user can''t read or write resources.
 
             '
-          enum:
-          - active
-          - inactive
-          type: string
-      required:
-      - name
-    Users:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/UserResponse'
-          type: array
-      type: object
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    User:
-      properties:
-        id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        org_id:
-          type: string
-        role:
-          enum:
-          - owner
-          - member
-          type: string
-        status:
-          default: active
-          description: If inactive the user is inactive.
           enum:
           - active
           - inactive
@@ -634,7 +741,65 @@ components:
           type: string
       required:
       - password
+    Users:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/UserResponse'
+          type: array
+      type: object
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
   responses:
+    BadRequestError:
+      content:
+        application/json:
+          examples:
+            orgProvidedNotFound:
+              summary: The org or orgID passed doesn't own the token passed in the header
+              value:
+                code: invalid
+                message: 'failed to decode request body: organization not found'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Bad request.
+
+        The response body contains detail about the error.
+
+
+        #### InfluxDB OSS
+
+
+        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
+
+        '
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     GeneralServerError:
       content:
         application/json:
@@ -663,28 +828,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
-    BadRequestError:
-      content:
-        application/json:
-          examples:
-            orgProvidedNotFound:
-              summary: The org or orgID passed doesn't own the token passed in the header
-              value:
-                code: invalid
-                message: 'failed to decode request body: organization not found'
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Bad request.
-
-        The response body contains detail about the error.
-
-
-        #### InfluxDB OSS
-
-
-        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
-
-        '
     AuthorizationError:
       content:
         application/json:
@@ -709,29 +852,6 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
-  parameters:
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"
