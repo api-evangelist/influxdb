@@ -68,11 +68,6 @@ components:
       - unsupported media type
       readOnly: true
       type: string
-    FluxResponse:
-      description: Rendered flux that backs the check or notification.
-      properties:
-        flux:
-          type: string
     Error:
       properties:
         code:
@@ -109,6 +104,11 @@ components:
           type: string
       required:
       - code
+    FluxResponse:
+      description: Rendered flux that backs the check or notification.
+      properties:
+        flux:
+          type: string
   parameters:
     TraceSpan:
       description: OpenTracing span context

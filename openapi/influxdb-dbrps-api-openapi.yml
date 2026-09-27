@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Complete InfluxDB Cloud DBR Ps API
+  title: Complete InfluxDB Cloud DBRPs API
   description: 'The InfluxDB 1.x data model includes databases
 
     and retention policies.'
@@ -481,159 +481,6 @@ paths:
         source: "curl --request PATCH \\\n   \"http://localhost:8086/api/v2/dbrp/DBRP_ID\" \\\n  --header 'Content-type: application/json' \\\n  --header \"Authorization: Token INFLUX_API_TOKEN\" \\\n  --data-binary @- << EOF\n    {\n      \"default\": true,\n      \"retention_policy\": \"example_retention_policy_name\"\n    }\nEOF\n"
 components:
   schemas:
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    DBRPCreate:
-      properties:
-        bucketID:
-          description: 'A bucket ID.
-
-            Identifies the bucket used as the target for the translation.
-
-            '
-          type: string
-        database:
-          description: 'A database name.
-
-            Identifies the InfluxDB v1 database.
-
-            '
-          type: string
-        default:
-          description: 'Set to `true` to use this DBRP mapping as the default retention policy
-
-            for the database (specified by the `database` property''s value).
-
-            '
-          type: boolean
-        org:
-          description: 'An organization name.
-
-            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
-
-            '
-          type: string
-        orgID:
-          description: 'An organization ID.
-
-            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
-
-            '
-          type: string
-        retention_policy:
-          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
-
-            Identifies the InfluxDB v1 retention policy mapping.
-
-            '
-          type: string
-      required:
-      - bucketID
-      - database
-      - retention_policy
-      type: object
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    DBRPUpdate:
-      properties:
-        default:
-          description: 'Set to `true` to use this DBRP mapping as the default retention policy
-
-            for the database (specified by the `database` property''s value).
-
-            To remove the default mapping, set to `false`.
-
-            '
-          type: boolean
-        retention_policy:
-          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
-
-            Identifies the InfluxDB v1 retention policy mapping.
-
-            '
-          type: string
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    DBRPs:
-      properties:
-        content:
-          items:
-            $ref: '#/components/schemas/DBRP'
-          type: array
-    DBRPGet:
-      properties:
-        content:
-          $ref: '#/components/schemas/DBRP'
-          required: true
-      type: object
     DBRP:
       properties:
         bucketID:
@@ -689,6 +536,159 @@ components:
       - database
       - retention_policy
       - default
+      type: object
+    DBRPGet:
+      properties:
+        content:
+          $ref: '#/components/schemas/DBRP'
+          required: true
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    DBRPCreate:
+      properties:
+        bucketID:
+          description: 'A bucket ID.
+
+            Identifies the bucket used as the target for the translation.
+
+            '
+          type: string
+        database:
+          description: 'A database name.
+
+            Identifies the InfluxDB v1 database.
+
+            '
+          type: string
+        default:
+          description: 'Set to `true` to use this DBRP mapping as the default retention policy
+
+            for the database (specified by the `database` property''s value).
+
+            '
+          type: boolean
+        org:
+          description: 'An organization name.
+
+            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
+
+            '
+          type: string
+        orgID:
+          description: 'An organization ID.
+
+            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
+
+            '
+          type: string
+        retention_policy:
+          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
+
+            Identifies the InfluxDB v1 retention policy mapping.
+
+            '
+          type: string
+      required:
+      - bucketID
+      - database
+      - retention_policy
+      type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    DBRPs:
+      properties:
+        content:
+          items:
+            $ref: '#/components/schemas/DBRP'
+          type: array
+    DBRPUpdate:
+      properties:
+        default:
+          description: 'Set to `true` to use this DBRP mapping as the default retention policy
+
+            for the database (specified by the `database` property''s value).
+
+            To remove the default mapping, set to `false`.
+
+            '
+          type: boolean
+        retention_policy:
+          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
+
+            Identifies the InfluxDB v1 retention policy mapping.
+
+            '
+          type: string
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
       type: object
   parameters:
     TraceSpan:

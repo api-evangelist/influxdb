@@ -440,6 +440,10 @@ paths:
       - Telegrafs
 components:
   schemas:
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -459,6 +463,24 @@ components:
       - unsupported media type
       readOnly: true
       type: string
+    TelegrafRequest:
+      properties:
+        config:
+          type: string
+        description:
+          type: string
+        metadata:
+          properties:
+            buckets:
+              items:
+                type: string
+              type: array
+          type: object
+        name:
+          type: string
+        orgID:
+          type: string
+      type: object
     UserResponse:
       properties:
         id:
@@ -517,36 +539,16 @@ components:
             description: this is a description
           type: object
       type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    Telegrafs:
-      properties:
-        configurations:
-          items:
-            $ref: '#/components/schemas/Telegraf'
-          type: array
-      type: object
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
+    ResourceOwner:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: owner
+            enum:
+            - owner
+            type: string
+        type: object
     ResourceMembers:
       properties:
         links:
@@ -559,21 +561,6 @@ components:
           items:
             $ref: '#/components/schemas/ResourceMember'
           type: array
-      type: object
-    AddResourceMemberRequestBody:
-      properties:
-        id:
-          description: 'The ID of the user to add to the resource.
-
-            '
-          type: string
-        name:
-          description: 'The name of the user to add to the resource.
-
-            '
-          type: string
-      required:
-      - id
       type: object
     Error:
       properties:
@@ -611,40 +598,19 @@ components:
           type: string
       required:
       - code
-    LabelResponse:
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
       properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    ResourceOwner:
-      allOf:
-      - $ref: '#/components/schemas/UserResponse'
-      - properties:
-          role:
-            default: owner
-            enum:
-            - owner
-            type: string
-        type: object
-    TelegrafRequest:
-      properties:
-        config:
-          type: string
-        description:
-          type: string
-        metadata:
-          properties:
-            buckets:
-              items:
-                type: string
-              type: array
-          type: object
-        name:
-          type: string
-        orgID:
-          type: string
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
       type: object
     ResourceMember:
       allOf:
@@ -656,6 +622,20 @@ components:
             - member
             type: string
         type: object
+    Telegrafs:
+      properties:
+        configurations:
+          items:
+            $ref: '#/components/schemas/Telegraf'
+          type: array
+      type: object
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
     Telegraf:
       allOf:
       - $ref: '#/components/schemas/TelegrafRequest'
@@ -684,6 +664,44 @@ components:
             readOnly: true
             type: object
         type: object
+      type: object
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+    ResourceOwners:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+          type: array
       type: object
     TelegrafPluginRequest:
       properties:
@@ -718,38 +736,20 @@ components:
             type: object
           type: array
       type: object
-    LabelMapping:
-      description: A _label mapping_ contains a `label` ID to attach to a resource.
+    AddResourceMemberRequestBody:
       properties:
-        labelID:
-          description: 'A label ID.
+        id:
+          description: 'The ID of the user to add to the resource.
 
-            Specifies the label to attach.
+            '
+          type: string
+        name:
+          description: 'The name of the user to add to the resource.
 
             '
           type: string
       required:
-      - labelID
-      type: object
-    ResourceOwners:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/ResourceOwner'
-          type: array
-      type: object
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
+      - id
       type: object
   parameters:
     TraceSpan:

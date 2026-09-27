@@ -86,25 +86,6 @@ paths:
         source: "# The following example shows how to use cURL and the InfluxDB API\n# to do the following:\n# 1. Sign in a user with a username and password.\n# 2. Check that the user session exists for the user.\n# 3. Sign out the user to expire the session.\n# 4. Check that the session is no longer active.\n\n# 1. Send a request to `POST /api/v2/signin` to sign in the user.\n#    In your request, pass the following:\n#\n#      - `--user` option with basic authentication credentials.\n#      - `-c` option with a file path where cURL will write cookies.\n\n      curl --request POST \\\n        -c ./cookie-file.tmp \\\n        \"$INFLUX_URL/api/v2/signin\" \\\n        --user \"${INFLUX_USER_NAME}:${INFLUX_USER_PASSWORD}\"\n\n# 2. To check that a user session exists for the user in step 1,\n#    send a request to `GET /api/v2/me`.\n#    In your request, pass the `-b` option with the session cookie file path from step 1.\n\n      curl --request GET \\\n        -b ./cookie-file.tmp \\\n        \"$INFLUX_URL/api/v2/me\"\n\n#    InfluxDB responds with the `user` resource.\n\n# 3. Send a request to `POST /api/v2/signout` to expire the user session.\n#    In your request, pass the `-b` option with the session cookie file path from step 1.\n\n      curl --request POST \\\n        -b ./cookie-file.tmp \\\n        \"$INFLUX_URL/api/v2/signout\"\n\n#     If the user session is successfully expired, InfluxDB responds with\n      an HTTP `204` status code.\n\n# 4. To check that the user session is expired, call `GET /api/v2/me` again,\n#    passing the `-b` option with the cookie file path.\n\n      curl --request GET \\\n        -b ./cookie-file.tmp \\\n        \"$INFLUX_URL/api/v2/me\"\n\n#    If the user session is expired, InfluxDB responds with an HTTP `401` status code.\n"
 components:
   schemas:
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
     Error:
       properties:
         code:
@@ -141,6 +122,25 @@ components:
           type: string
       required:
       - code
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
   parameters:
     TraceSpan:
       description: OpenTracing span context

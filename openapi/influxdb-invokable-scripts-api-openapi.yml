@@ -718,21 +718,6 @@ components:
             $ref: '#/components/schemas/Script'
           type: array
       type: object
-    ScriptLanguage:
-      enum:
-      - flux
-      - sql
-      - influxql
-      type: string
-    ScriptUpdateRequest:
-      properties:
-        description:
-          description: A description of the script.
-          type: string
-        script:
-          description: The script to execute.
-          type: string
-      type: object
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -819,6 +804,23 @@ components:
           type: string
       required:
       - code
+    ScriptInvocationParams:
+      properties:
+        params:
+          additionalProperties: true
+          description: 'The script parameters.
+
+            `params` contains key-value pairs that map values to the **params.keys**
+
+            in a script.
+
+            When you invoke a script with `params`, InfluxDB passes the values as
+
+            invocation parameters to the script.
+
+            '
+          type: object
+      type: object
     ScriptCreateRequest:
       properties:
         description:
@@ -838,23 +840,29 @@ components:
       - language
       - description
       type: object
-    ScriptInvocationParams:
+    ScriptHTTPResponseData:
+      description: 'The response body contains the results of the executed script.
+
+        The response is user-defined and dynamic.
+
+        '
+      format: binary
+      type: string
+    ScriptUpdateRequest:
       properties:
-        params:
-          additionalProperties: true
-          description: 'The script parameters.
-
-            `params` contains key-value pairs that map values to the **params.keys**
-
-            in a script.
-
-            When you invoke a script with `params`, InfluxDB passes the values as
-
-            invocation parameters to the script.
-
-            '
-          type: object
+        description:
+          description: A description of the script.
+          type: string
+        script:
+          description: The script to execute.
+          type: string
       type: object
+    ScriptLanguage:
+      enum:
+      - flux
+      - sql
+      - influxql
+      type: string
     Params:
       properties:
         params:
@@ -874,37 +882,7 @@ components:
             '
           type: object
       type: object
-    ScriptHTTPResponseData:
-      description: 'The response body contains the results of the executed script.
-
-        The response is user-defined and dynamic.
-
-        '
-      format: binary
-      type: string
   responses:
-    BadRequestError:
-      content:
-        application/json:
-          examples:
-            orgProvidedNotFound:
-              summary: The org or orgID passed doesn't own the token passed in the header
-              value:
-                code: invalid
-                message: 'failed to decode request body: organization not found'
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Bad request.
-
-        The response body contains detail about the error.
-
-
-        #### InfluxDB OSS
-
-
-        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
-
-        '
     InternalServerError:
       content:
         application/json:
@@ -939,6 +917,28 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    BadRequestError:
+      content:
+        application/json:
+          examples:
+            orgProvidedNotFound:
+              summary: The org or orgID passed doesn't own the token passed in the header
+              value:
+                code: invalid
+                message: 'failed to decode request body: organization not found'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Bad request.
+
+        The response body contains detail about the error.
+
+
+        #### InfluxDB OSS
+
+
+        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
+
+        '
     ServerError:
       content:
         application/json:

@@ -1381,41 +1381,43 @@ paths:
         lang: Shell
         source: "curl -c ./cookie-file.tmp --request POST \\\n   \"http://localhost:8086/api/v2/signin\" \\\n  --user \"${INFLUX_USER_NAME}:${INFLUX_USER_PASSWORD}\"\n\ncurl -b ./cookie-file.tmp --request PUT \\\n   \"http://localhost:8086/api/v2/users/USER_ID/password\" \\\n  --header 'Content-type: application/json' \\\n  --data-binary @- << EOF\n    {\"password\": \"NEW_USER_PASSWORD\"}\nEOF\n"
 components:
-  examples:
-    AuthorizationWithUserPostRequest:
-      description: Creates an authorization scoped to a specific user.
-      summary: An authorization scoped to a user
-      value:
-        description: iot_user write to bucket
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: write
-          resource:
-            id: INFLUX_BUCKET_ID
-            type: buckets
-        userID: INFLUX_USER_ID
-    AuthorizationWithResourcePostRequest:
-      description: Creates an authorization for access to a specific resource.
-      summary: An authorization for a resource
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            id: INFLUX_BUCKET_ID
-            type: buckets
-    AuthorizationPostRequest:
-      description: Creates an authorization.
-      summary: An authorization for a resource type
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            type: buckets
   schemas:
+    SecretKeys:
+      properties:
+        secrets:
+          items:
+            type: string
+          type: array
+      type: object
+    Authorizations:
+      properties:
+        authorizations:
+          items:
+            $ref: '#/components/schemas/Authorization'
+          type: array
+        links:
+          $ref: '#/components/schemas/Links'
+          readOnly: true
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
     Authorization:
       allOf:
       - $ref: '#/components/schemas/AuthorizationUpdateRequest'
@@ -1508,25 +1510,6 @@ components:
       required:
       - orgID
       - permissions
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
     UserResponse:
       properties:
         id:
@@ -1562,18 +1545,54 @@ components:
           type: string
       required:
       - name
-    SecretKeys:
-      properties:
-        secrets:
-          items:
+    AuthorizationPostRequest:
+      allOf:
+      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
+      - properties:
+          orgID:
+            description: 'An organization ID.
+
+              Specifies the organization that owns the authorization.
+
+              '
             type: string
-          type: array
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
+          permissions:
+            description: 'A list of permissions for an authorization.
+
+              In the list, provide at least one `permission` object.
+
+
+              In a `permission`, the `resource.type` property grants access to all
+
+              resources of the specified type.
+
+              To grant access to only a specific resource, specify the
+
+              `resource.id` property.
+
+              '
+            items:
+              $ref: '#/components/schemas/Permission'
+            minItems: 1
+            type: array
+          userID:
+            description: 'A user ID.
+
+              Specifies the user that the authorization is scoped to.
+
+
+              When a user authenticates with username and password,
+
+              InfluxDB generates a _user session_ with all the permissions
+
+              specified by all the user''s authorizations.
+
+              '
+            type: string
+        type: object
+      required:
+      - orgID
+      - permissions
     Permission:
       properties:
         action:
@@ -1652,20 +1671,6 @@ components:
       required:
       - action
       - resource
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
     Organization:
       properties:
         createdAt:
@@ -1727,115 +1732,12 @@ components:
           type: string
       required:
       - name
-    AuthorizationUpdateRequest:
+    PasswordResetBody:
       properties:
-        description:
-          description: A description of the token.
-          type: string
-        status:
-          default: active
-          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
-          enum:
-          - active
-          - inactive
-          type: string
-    ResourceMembers:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/ResourceMember'
-          type: array
-      type: object
-    AuthorizationPostRequest:
-      allOf:
-      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
-      - properties:
-          orgID:
-            description: 'An organization ID.
-
-              Specifies the organization that owns the authorization.
-
-              '
-            type: string
-          permissions:
-            description: 'A list of permissions for an authorization.
-
-              In the list, provide at least one `permission` object.
-
-
-              In a `permission`, the `resource.type` property grants access to all
-
-              resources of the specified type.
-
-              To grant access to only a specific resource, specify the
-
-              `resource.id` property.
-
-              '
-            items:
-              $ref: '#/components/schemas/Permission'
-            minItems: 1
-            type: array
-          userID:
-            description: 'A user ID.
-
-              Specifies the user that the authorization is scoped to.
-
-
-              When a user authenticates with username and password,
-
-              InfluxDB generates a _user session_ with all the permissions
-
-              specified by all the user''s authorizations.
-
-              '
-            type: string
-        type: object
-      required:
-      - orgID
-      - permissions
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
+        password:
           type: string
       required:
-      - code
+      - password
     ResourceOwner:
       allOf:
       - $ref: '#/components/schemas/UserResponse'
@@ -1845,57 +1747,6 @@ components:
             enum:
             - owner
             type: string
-        type: object
-    PasswordResetBody:
-      properties:
-        password:
-          type: string
-      required:
-      - password
-    Organizations:
-      properties:
-        links:
-          $ref: '#/components/schemas/Links'
-        orgs:
-          items:
-            $ref: '#/components/schemas/Organization'
-          type: array
-      type: object
-    Users:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/UserResponse'
-          type: array
-      type: object
-    Authorizations:
-      properties:
-        authorizations:
-          items:
-            $ref: '#/components/schemas/Authorization'
-          type: array
-        links:
-          $ref: '#/components/schemas/Links'
-          readOnly: true
-      type: object
-    SecretKeysResponse:
-      allOf:
-      - $ref: '#/components/schemas/SecretKeys'
-      - properties:
-          links:
-            properties:
-              org:
-                type: string
-              self:
-                type: string
-            readOnly: true
-            type: object
         type: object
     Resource:
       properties:
@@ -1964,6 +1815,91 @@ components:
       required:
       - type
       type: object
+    ResourceMembers:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceMember'
+          type: array
+      type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    Users:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/UserResponse'
+          type: array
+      type: object
+    Organizations:
+      properties:
+        links:
+          $ref: '#/components/schemas/Links'
+        orgs:
+          items:
+            $ref: '#/components/schemas/Organization'
+          type: array
+      type: object
     ResourceMember:
       allOf:
       - $ref: '#/components/schemas/UserResponse'
@@ -1974,6 +1910,23 @@ components:
             - member
             type: string
         type: object
+    AuthorizationUpdateRequest:
+      properties:
+        description:
+          description: A description of the token.
+          type: string
+        status:
+          default: active
+          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
+          enum:
+          - active
+          - inactive
+          type: string
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
     ResourceOwners:
       properties:
         links:
@@ -1987,27 +1940,75 @@ components:
             $ref: '#/components/schemas/ResourceOwner'
           type: array
       type: object
+    SecretKeysResponse:
+      allOf:
+      - $ref: '#/components/schemas/SecretKeys'
+      - properties:
+          links:
+            properties:
+              org:
+                type: string
+              self:
+                type: string
+            readOnly: true
+            type: object
+        type: object
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
+    Descending:
+      in: query
+      name: descending
+      required: false
+      schema:
+        default: false
+        type: boolean
+    Offset:
+      description: 'The offset for pagination.
+
+        The number of records to skip.
+
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    Limit:
+      description: 'Limits the number of records returned. Default is `20`.
+
+        '
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 20
+        maximum: 100
+        minimum: 1
+        type: integer
   responses:
-    BadRequestError:
+    InternalServerError:
       content:
         application/json:
-          examples:
-            orgProvidedNotFound:
-              summary: The org or orgID passed doesn't own the token passed in the header
-              value:
-                code: invalid
-                message: 'failed to decode request body: organization not found'
           schema:
             $ref: '#/components/schemas/Error'
-      description: 'Bad request.
+      description: 'Internal server error.
 
-        The response body contains detail about the error.
-
-
-        #### InfluxDB OSS
-
-
-        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
+        The server encountered an unexpected situation.
 
         '
     ResourceNotFoundError:
@@ -2032,16 +2033,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
     GeneralServerError:
       content:
         application/json:
@@ -2072,53 +2063,62 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-  parameters:
-    Limit:
-      description: 'Limits the number of records returned. Default is `20`.
+    BadRequestError:
+      content:
+        application/json:
+          examples:
+            orgProvidedNotFound:
+              summary: The org or orgID passed doesn't own the token passed in the header
+              value:
+                code: invalid
+                message: 'failed to decode request body: organization not found'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Bad request.
+
+        The response body contains detail about the error.
+
+
+        #### InfluxDB OSS
+
+
+        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
 
         '
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 20
-        maximum: 100
-        minimum: 1
-        type: integer
-    Descending:
-      in: query
-      name: descending
-      required: false
-      schema:
-        default: false
-        type: boolean
-    Offset:
-      description: 'The offset for pagination.
-
-        The number of records to skip.
-
-
-        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
-
-        '
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
+  examples:
+    AuthorizationWithUserPostRequest:
+      description: Creates an authorization scoped to a specific user.
+      summary: An authorization scoped to a user
+      value:
+        description: iot_user write to bucket
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: write
+          resource:
+            id: INFLUX_BUCKET_ID
+            type: buckets
+        userID: INFLUX_USER_ID
+    AuthorizationWithResourcePostRequest:
+      description: Creates an authorization for access to a specific resource.
+      summary: An authorization for a resource
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            id: INFLUX_BUCKET_ID
+            type: buckets
+    AuthorizationPostRequest:
+      description: Creates an authorization.
+      summary: An authorization for a resource type
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            type: buckets
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"

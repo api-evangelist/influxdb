@@ -271,98 +271,64 @@ paths:
       - Legacy Authorizations
 components:
   schemas:
-    Permission:
+    LegacyAuthorizationPostRequest:
+      allOf:
+      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
+      - properties:
+          orgID:
+            description: The organization ID. Identifies the organization that the authorization is scoped to.
+            type: string
+          permissions:
+            description: 'The list of permissions that provide `read` and `write` access to organization resources.
+
+              An authorization must contain at least one permission.
+
+              '
+            items:
+              $ref: '#/components/schemas/Permission'
+            minItems: 1
+            type: array
+          token:
+            description: The name that you provide for the authorization.
+            type: string
+          userID:
+            description: The user ID. Identifies the user that the authorization is scoped to.
+            type: string
+        type: object
+      required:
+      - orgID
+      - permissions
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    AuthorizationUpdateRequest:
       properties:
-        action:
-          enum:
-          - read
-          - write
+        description:
+          description: A description of the token.
           type: string
-        resource:
-          $ref: '#/components/schemas/Resource'
-          properties:
-            id:
-              description: 'A resource ID.
-
-                Identifies a specific resource.
-
-                '
-              type: string
-            name:
-              description: 'The name of the resource.
-
-                _Note: not all resource types have a `name` property_.
-
-                '
-              type: string
-            org:
-              description: 'An organization name.
-
-                The organization that owns the resource.
-
-                '
-              type: string
-            orgID:
-              description: 'An organization ID.
-
-                Identifies the organization that owns the resource.
-
-                '
-              type: string
-            type:
-              description: 'A resource type.
-
-                Identifies the API resource''s type (or _kind_).
-
-                '
-              enum:
-              - authorizations
-              - buckets
-              - dashboards
-              - orgs
-              - tasks
-              - telegrafs
-              - users
-              - variables
-              - secrets
-              - labels
-              - views
-              - documents
-              - notificationRules
-              - notificationEndpoints
-              - checks
-              - dbrp
-              - annotations
-              - sources
-              - scrapers
-              - notebooks
-              - remotes
-              - replications
-              - instance
-              - flows
-              - functions
-              - subscriptions
-              type: string
-          required:
-          - type
-          type: object
-      required:
-      - action
-      - resource
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
+        status:
+          default: active
+          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
+          enum:
+          - active
+          - inactive
+          type: string
     Authorization:
       allOf:
       - $ref: '#/components/schemas/AuthorizationUpdateRequest'
@@ -455,100 +421,6 @@ components:
       required:
       - orgID
       - permissions
-    LegacyAuthorizationPostRequest:
-      allOf:
-      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
-      - properties:
-          orgID:
-            description: The organization ID. Identifies the organization that the authorization is scoped to.
-            type: string
-          permissions:
-            description: 'The list of permissions that provide `read` and `write` access to organization resources.
-
-              An authorization must contain at least one permission.
-
-              '
-            items:
-              $ref: '#/components/schemas/Permission'
-            minItems: 1
-            type: array
-          token:
-            description: The name that you provide for the authorization.
-            type: string
-          userID:
-            description: The user ID. Identifies the user that the authorization is scoped to.
-            type: string
-        type: object
-      required:
-      - orgID
-      - permissions
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    AuthorizationUpdateRequest:
-      properties:
-        description:
-          description: A description of the token.
-          type: string
-        status:
-          default: active
-          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
-          enum:
-          - active
-          - inactive
-          type: string
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
     Resource:
       properties:
         id:
@@ -616,11 +488,139 @@ components:
       required:
       - type
       type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
     Link:
       description: URI of resource.
       format: uri
       readOnly: true
       type: string
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    Permission:
+      properties:
+        action:
+          enum:
+          - read
+          - write
+          type: string
+        resource:
+          $ref: '#/components/schemas/Resource'
+          properties:
+            id:
+              description: 'A resource ID.
+
+                Identifies a specific resource.
+
+                '
+              type: string
+            name:
+              description: 'The name of the resource.
+
+                _Note: not all resource types have a `name` property_.
+
+                '
+              type: string
+            org:
+              description: 'An organization name.
+
+                The organization that owns the resource.
+
+                '
+              type: string
+            orgID:
+              description: 'An organization ID.
+
+                Identifies the organization that owns the resource.
+
+                '
+              type: string
+            type:
+              description: 'A resource type.
+
+                Identifies the API resource''s type (or _kind_).
+
+                '
+              enum:
+              - authorizations
+              - buckets
+              - dashboards
+              - orgs
+              - tasks
+              - telegrafs
+              - users
+              - variables
+              - secrets
+              - labels
+              - views
+              - documents
+              - notificationRules
+              - notificationEndpoints
+              - checks
+              - dbrp
+              - annotations
+              - sources
+              - scrapers
+              - notebooks
+              - remotes
+              - replications
+              - instance
+              - flows
+              - functions
+              - subscriptions
+              type: string
+          required:
+          - type
+          type: object
+      required:
+      - action
+      - resource
   parameters:
     TraceSpan:
       description: OpenTracing span context

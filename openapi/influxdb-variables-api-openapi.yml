@@ -266,25 +266,15 @@ paths:
       - Variables
 components:
   schemas:
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
     VariableProperties:
       oneOf:
       - $ref: '#/components/schemas/QueryVariableProperties'
       - $ref: '#/components/schemas/ConstantVariableProperties'
       - $ref: '#/components/schemas/MapVariableProperties'
-      type: object
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
       type: object
     ErrorCode:
       description: code is the machine-readable error code.
@@ -305,20 +295,6 @@ components:
       - unsupported media type
       readOnly: true
       type: string
-    MapVariableProperties:
-      properties:
-        type:
-          enum:
-          - map
-          type: string
-        values:
-          additionalProperties:
-            type: string
-          type: object
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
     QueryVariableProperties:
       properties:
         type:
@@ -332,35 +308,122 @@ components:
             query:
               type: string
           type: object
-    Label:
-      properties:
-        id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
-
-            To remove a property, send an update with an empty value (`""`) for the key.
-
-            '
-          example:
-            color: ffb3b3
-            description: this is a description
-          type: object
-      type: object
     LabelResponse:
       properties:
         label:
           $ref: '#/components/schemas/Label'
         links:
           $ref: '#/components/schemas/Links'
+      type: object
+    MapVariableProperties:
+      properties:
+        type:
+          enum:
+          - map
+          type: string
+        values:
+          additionalProperties:
+            type: string
+          type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+    Variables:
+      example:
+        variables:
+        - arguments:
+            type: constant
+            values:
+            - howdy
+            - hello
+            - hi
+            - yo
+            - oy
+          id: '1221432'
+          name: ':ok:'
+          selected:
+          - hello
+        - arguments:
+            type: map
+            values:
+              a: fdjaklfdjkldsfjlkjdsa
+              b: dfaksjfkljekfajekdljfas
+              c: fdjksajfdkfeawfeea
+          id: '1221432'
+          name: ':ok:'
+          selected:
+          - c
+        - arguments:
+            language: flux
+            query: 'from(bucket: "foo") |> showMeasurements()'
+            type: query
+          id: '1221432'
+          name: ':ok:'
+          selected:
+          - host
+      properties:
+        variables:
+          items:
+            $ref: '#/components/schemas/Variable'
+          type: array
       type: object
     Variable:
       properties:
@@ -407,98 +470,19 @@ components:
       - orgID
       - arguments
       type: object
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-    Variables:
-      example:
-        variables:
-        - arguments:
-            type: constant
-            values:
-            - howdy
-            - hello
-            - hi
-            - yo
-            - oy
-          id: '1221432'
-          name: ':ok:'
-          selected:
-          - hello
-        - arguments:
-            type: map
-            values:
-              a: fdjaklfdjkldsfjlkjdsa
-              b: dfaksjfkljekfajekdljfas
-              c: fdjksajfdkfeawfeea
-          id: '1221432'
-          name: ':ok:'
-          selected:
-          - c
-        - arguments:
-            language: flux
-            query: 'from(bucket: "foo") |> showMeasurements()'
-            type: query
-          id: '1221432'
-          name: ':ok:'
-          selected:
-          - host
-      properties:
-        variables:
-          items:
-            $ref: '#/components/schemas/Variable'
-          type: array
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    LabelMapping:
-      description: A _label mapping_ contains a `label` ID to attach to a resource.
-      properties:
-        labelID:
-          description: 'A label ID.
+    Links:
+      description: 'URI pointers for additional paged results.
 
-            Specifies the label to attach.
-
-            '
-          type: string
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
       required:
-      - labelID
+      - self
       type: object
     ConstantVariableProperties:
       properties:
@@ -510,12 +494,28 @@ components:
           items:
             type: string
           type: array
-    LabelsResponse:
+    Label:
       properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
       type: object
   parameters:
     TraceSpan:
