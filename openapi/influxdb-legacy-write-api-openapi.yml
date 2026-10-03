@@ -123,6 +123,21 @@ components:
       schema:
         type: string
   schemas:
+    LineProtocolLengthError:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          enum:
+          - invalid
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+      required:
+      - code
+      - message
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -142,6 +157,38 @@ components:
       - unsupported media type
       readOnly: true
       type: string
+    LineProtocolError:
+      properties:
+        code:
+          description: Code is the machine-readable error code.
+          enum:
+          - internal error
+          - not found
+          - conflict
+          - invalid
+          - empty value
+          - unavailable
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        line:
+          description: First line in the request body that contains malformed data.
+          format: int32
+          readOnly: true
+          type: integer
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
     Error:
       properties:
         code:
@@ -168,53 +215,6 @@ components:
           description: Stack of errors that occurred during processing of the request. Useful for debugging.
           readOnly: true
           type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-    LineProtocolLengthError:
-      properties:
-        code:
-          description: Code is the machine-readable error code.
-          enum:
-          - invalid
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-      required:
-      - code
-      - message
-    LineProtocolError:
-      properties:
-        code:
-          description: Code is the machine-readable error code.
-          enum:
-          - internal error
-          - not found
-          - conflict
-          - invalid
-          - empty value
-          - unavailable
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        line:
-          description: First line in the request body that contains malformed data.
-          format: int32
-          readOnly: true
-          type: integer
         message:
           description: Human-readable message.
           readOnly: true

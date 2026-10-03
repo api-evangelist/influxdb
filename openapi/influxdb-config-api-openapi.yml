@@ -68,10 +68,20 @@ paths:
       tags:
       - Config
 components:
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
   schemas:
-    Flags:
-      additionalProperties: true
-      type: object
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -127,19 +137,9 @@ components:
           type: string
       required:
       - code
-  parameters:
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
+    Flags:
+      additionalProperties: true
+      type: object
   responses:
     InternalServerError:
       content:

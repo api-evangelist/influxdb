@@ -49,6 +49,17 @@ components:
       schema:
         type: string
   schemas:
+    TelegrafPlugins:
+      properties:
+        os:
+          type: string
+        plugins:
+          items:
+            $ref: '#/components/schemas/TelegrafPlugin'
+          type: array
+        version:
+          type: string
+      type: object
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -104,17 +115,6 @@ components:
           type: string
       required:
       - code
-    TelegrafPlugins:
-      properties:
-        os:
-          type: string
-        plugins:
-          items:
-            $ref: '#/components/schemas/TelegrafPlugin'
-          type: array
-        version:
-          type: string
-      type: object
     TelegrafPlugin:
       properties:
         config:

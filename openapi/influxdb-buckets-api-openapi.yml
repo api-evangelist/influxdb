@@ -1440,96 +1440,61 @@ paths:
       - Buckets
 components:
   schemas:
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    Bucket:
+    RetentionRule:
       properties:
-        createdAt:
-          format: date-time
-          readOnly: true
-          type: string
-        description:
-          type: string
-        id:
-          readOnly: true
-          type: string
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          example:
-            labels: /api/v2/buckets/1/labels
-            members: /api/v2/buckets/1/members
-            org: /api/v2/orgs/2
-            owners: /api/v2/buckets/1/owners
-            self: /api/v2/buckets/1
-            write: /api/v2/write?org=2&bucket=1
-          properties:
-            labels:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve labels for this bucket.
-            members:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve members that can read this bucket.
-            org:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve parent organization for this bucket.
-            owners:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve owners that can read and write to this bucket.
-            self:
-              $ref: '#/components/schemas/Link'
-              description: The URL for this bucket.
-            write:
-              $ref: '#/components/schemas/Link'
-              description: The URL to write line protocol to this bucket.
-          readOnly: true
-          type: object
-        name:
-          type: string
-        orgID:
-          type: string
-        retentionRules:
-          $ref: '#/components/schemas/RetentionRules'
-        rp:
-          type: string
-        schemaType:
-          $ref: '#/components/schemas/SchemaType'
-          default: implicit
+        everySeconds:
+          default: 2592000
+          description: 'The duration in seconds for how long data will be kept in the database.
+
+            The default duration is 2592000 (30 days).
+
+            0 represents infinite retention.
+
+            '
+          example: 86400
+          format: int64
+          minimum: 0
+          type: integer
+        shardGroupDurationSeconds:
+          description: 'The shard group duration.
+
+            The duration or interval (in seconds) that each shard group covers.
+
+
+            #### InfluxDB Cloud
+
+
+            - Does not use `shardGroupDurationsSeconds`.
+
+
+            #### InfluxDB OSS
+
+
+            - Default value depends on the
+
+            [bucket retention period](https://docs.influxdata.com/influxdb/cloud/reference/internals/shards/#shard-group-duration).
+
+            '
+          format: int64
+          type: integer
         type:
-          default: user
+          default: expire
           enum:
-          - user
-          - system
-          readOnly: true
-          type: string
-        updatedAt:
-          format: date-time
-          readOnly: true
+          - expire
           type: string
       required:
-      - name
-      - retentionRules
+      - everySeconds
+      type: object
+    ResourceMember:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: member
+            enum:
+            - member
+            type: string
+        type: object
     PatchBucketRequest:
       description: 'An object that contains updated bucket properties to apply.
 
@@ -1548,41 +1513,6 @@ components:
         retentionRules:
           $ref: '#/components/schemas/PatchRetentionRules'
       type: object
-    UserResponse:
-      properties:
-        id:
-          description: 'The user ID.
-
-            '
-          readOnly: true
-          type: string
-        links:
-          example:
-            self: /api/v2/users/1
-          properties:
-            self:
-              format: uri
-              type: string
-          readOnly: true
-          type: object
-        name:
-          description: 'The user name.
-
-            '
-          type: string
-        status:
-          default: active
-          description: 'The status of a user.
-
-            An inactive user can''t read or write resources.
-
-            '
-          enum:
-          - active
-          - inactive
-          type: string
-      required:
-      - name
     PatchRetentionRule:
       properties:
         everySeconds:
@@ -1632,6 +1562,19 @@ components:
       required:
       - everySeconds
       type: object
+    ResourceOwners:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+          type: array
+      type: object
     Buckets:
       properties:
         buckets:
@@ -1642,28 +1585,19 @@ components:
           $ref: '#/components/schemas/Links'
           readOnly: true
       type: object
-    Label:
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
       properties:
-        id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
-
-            To remove a property, send an update with an empty value (`""`) for the key.
-
-            '
-          example:
-            color: ffb3b3
-            description: this is a description
-          type: object
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
       type: object
     ResourceOwner:
       allOf:
@@ -1675,11 +1609,116 @@ components:
             - owner
             type: string
         type: object
-    SchemaType:
+    RetentionRules:
+      description: 'Retention rules to expire or retain data.
+
+        The InfluxDB `/api/v2` API uses `RetentionRules` to configure the [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period).
+
+
+        #### InfluxDB Cloud
+
+
+        - `retentionRules` is required.
+
+
+        #### InfluxDB OSS
+
+
+        - `retentionRules` isn''t required.
+
+        '
+      items:
+        $ref: '#/components/schemas/RetentionRule'
+      type: array
+    ErrorCode:
+      description: code is the machine-readable error code.
       enum:
-      - implicit
-      - explicit
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
       type: string
+    UserResponse:
+      properties:
+        id:
+          description: 'The user ID.
+
+            '
+          readOnly: true
+          type: string
+        links:
+          example:
+            self: /api/v2/users/1
+          properties:
+            self:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        name:
+          description: 'The user name.
+
+            '
+          type: string
+        status:
+          default: active
+          description: 'The status of a user.
+
+            An inactive user can''t read or write resources.
+
+            '
+          enum:
+          - active
+          - inactive
+          type: string
+      required:
+      - name
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    AddResourceMemberRequestBody:
+      properties:
+        id:
+          description: 'The ID of the user to add to the resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the user to add to the resource.
+
+            '
+          type: string
+      required:
+      - id
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
     ResourceMembers:
       properties:
         links:
@@ -1693,42 +1732,6 @@ components:
             $ref: '#/components/schemas/ResourceMember'
           type: array
       type: object
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
     PostBucketRequest:
       properties:
         description:
@@ -1804,75 +1807,142 @@ components:
       items:
         $ref: '#/components/schemas/PatchRetentionRule'
       type: array
-    RetentionRule:
+    Error:
       properties:
-        everySeconds:
-          default: 2592000
-          description: 'The duration in seconds for how long data will be kept in the database.
-
-            The default duration is 2592000 (30 days).
-
-            0 represents infinite retention.
-
-            '
-          example: 86400
-          format: int64
-          minimum: 0
-          type: integer
-        shardGroupDurationSeconds:
-          description: 'The shard group duration.
-
-            The duration or interval (in seconds) that each shard group covers.
-
-
-            #### InfluxDB Cloud
-
-
-            - Does not use `shardGroupDurationsSeconds`.
-
-
-            #### InfluxDB OSS
-
-
-            - Default value depends on the
-
-            [bucket retention period](https://docs.influxdata.com/influxdb/cloud/reference/internals/shards/#shard-group-duration).
-
-            '
-          format: int64
-          type: integer
-        type:
-          default: expire
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
           enum:
-          - expire
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
           type: string
       required:
-      - everySeconds
-      type: object
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
+      - code
+    Bucket:
       properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: string
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          example:
+            labels: /api/v2/buckets/1/labels
+            members: /api/v2/buckets/1/members
+            org: /api/v2/orgs/2
+            owners: /api/v2/buckets/1/owners
+            self: /api/v2/buckets/1
+            write: /api/v2/write?org=2&bucket=1
+          properties:
+            labels:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve labels for this bucket.
+            members:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve members that can read this bucket.
+            org:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve parent organization for this bucket.
+            owners:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve owners that can read and write to this bucket.
+            self:
+              $ref: '#/components/schemas/Link'
+              description: The URL for this bucket.
+            write:
+              $ref: '#/components/schemas/Link'
+              description: The URL to write line protocol to this bucket.
+          readOnly: true
+          type: object
+        name:
+          type: string
+        orgID:
+          type: string
+        retentionRules:
+          $ref: '#/components/schemas/RetentionRules'
+        rp:
+          type: string
+        schemaType:
+          $ref: '#/components/schemas/SchemaType'
+          default: implicit
+        type:
+          default: user
+          enum:
+          - user
+          - system
+          readOnly: true
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
       required:
-      - self
-      type: object
-    ResourceMember:
-      allOf:
-      - $ref: '#/components/schemas/UserResponse'
-      - properties:
-          role:
-            default: member
-            enum:
-            - member
+      - name
+      - retentionRules
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
             type: string
-        type: object
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    SchemaType:
+      enum:
+      - implicit
+      - explicit
+      type: string
     LabelResponse:
       properties:
         label:
@@ -1880,149 +1950,11 @@ components:
         links:
           $ref: '#/components/schemas/Links'
       type: object
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    LabelMapping:
-      description: A _label mapping_ contains a `label` ID to attach to a resource.
-      properties:
-        labelID:
-          description: 'A label ID.
-
-            Specifies the label to attach.
-
-            '
-          type: string
-      required:
-      - labelID
-      type: object
-    ResourceOwners:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/ResourceOwner'
-          type: array
-      type: object
-    RetentionRules:
-      description: 'Retention rules to expire or retain data.
-
-        The InfluxDB `/api/v2` API uses `RetentionRules` to configure the [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period).
-
-
-        #### InfluxDB Cloud
-
-
-        - `retentionRules` is required.
-
-
-        #### InfluxDB OSS
-
-
-        - `retentionRules` isn''t required.
-
-        '
+    Labels:
       items:
-        $ref: '#/components/schemas/RetentionRule'
+        $ref: '#/components/schemas/Label'
       type: array
-    AddResourceMemberRequestBody:
-      properties:
-        id:
-          description: 'The ID of the user to add to the resource.
-
-            '
-          type: string
-        name:
-          description: 'The name of the user to add to the resource.
-
-            '
-          type: string
-      required:
-      - id
-      type: object
-  parameters:
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
-    Offset:
-      description: 'The offset for pagination.
-
-        The number of records to skip.
-
-
-        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
-
-        '
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
-    After:
-      description: 'A resource ID to seek from.
-
-        Returns records created after the specified record;
-
-        results don''t include the specified record.
-
-
-        Use `after` instead of the `offset` parameter.
-
-        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
-
-        '
-      in: query
-      name: after
-      required: false
-      schema:
-        type: string
-    Limit:
-      description: 'Limits the number of records returned. Default is `20`.
-
-        '
-      in: query
-      name: limit
-      required: false
-      schema:
-        default: 20
-        maximum: 100
-        minimum: 1
-        type: integer
   responses:
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
     ResourceNotFoundError:
       content:
         application/json:
@@ -2069,6 +2001,16 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     BadRequestError:
       content:
         application/json:
@@ -2091,6 +2033,64 @@ components:
         - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
 
         '
+  parameters:
+    Offset:
+      description: 'The offset for pagination.
+
+        The number of records to skip.
+
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
+    Limit:
+      description: 'Limits the number of records returned. Default is `20`.
+
+        '
+      in: query
+      name: limit
+      required: false
+      schema:
+        default: 20
+        maximum: 100
+        minimum: 1
+        type: integer
+    After:
+      description: 'A resource ID to seek from.
+
+        Returns records created after the specified record;
+
+        results don''t include the specified record.
+
+
+        Use `after` instead of the `offset` parameter.
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: after
+      required: false
+      schema:
+        type: string
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"
