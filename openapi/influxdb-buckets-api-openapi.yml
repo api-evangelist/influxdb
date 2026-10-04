@@ -1440,6 +1440,61 @@ paths:
       - Buckets
 components:
   schemas:
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    ResourceMember:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: member
+            enum:
+            - member
+            type: string
+        type: object
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    AddResourceMemberRequestBody:
+      properties:
+        id:
+          description: 'The ID of the user to add to the resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the user to add to the resource.
+
+            '
+          type: string
+      required:
+      - id
+      type: object
     RetentionRule:
       properties:
         everySeconds:
@@ -1485,34 +1540,16 @@ components:
       required:
       - everySeconds
       type: object
-    ResourceMember:
+    ResourceOwner:
       allOf:
       - $ref: '#/components/schemas/UserResponse'
       - properties:
           role:
-            default: member
+            default: owner
             enum:
-            - member
+            - owner
             type: string
         type: object
-    PatchBucketRequest:
-      description: 'An object that contains updated bucket properties to apply.
-
-        '
-      properties:
-        description:
-          description: 'A description of the bucket.
-
-            '
-          type: string
-        name:
-          description: 'The name of the bucket.
-
-            '
-          type: string
-        retentionRules:
-          $ref: '#/components/schemas/PatchRetentionRules'
-      type: object
     PatchRetentionRule:
       properties:
         everySeconds:
@@ -1562,7 +1599,25 @@ components:
       required:
       - everySeconds
       type: object
-    ResourceOwners:
+    PatchBucketRequest:
+      description: 'An object that contains updated bucket properties to apply.
+
+        '
+      properties:
+        description:
+          description: 'A description of the bucket.
+
+            '
+          type: string
+        name:
+          description: 'The name of the bucket.
+
+            '
+          type: string
+        retentionRules:
+          $ref: '#/components/schemas/PatchRetentionRules'
+      type: object
+    ResourceMembers:
       properties:
         links:
           properties:
@@ -1572,18 +1627,8 @@ components:
           type: object
         users:
           items:
-            $ref: '#/components/schemas/ResourceOwner'
+            $ref: '#/components/schemas/ResourceMember'
           type: array
-      type: object
-    Buckets:
-      properties:
-        buckets:
-          items:
-            $ref: '#/components/schemas/Bucket'
-          type: array
-        links:
-          $ref: '#/components/schemas/Links'
-          readOnly: true
       type: object
     Links:
       description: 'URI pointers for additional paged results.
@@ -1599,16 +1644,20 @@ components:
       required:
       - self
       type: object
-    ResourceOwner:
-      allOf:
-      - $ref: '#/components/schemas/UserResponse'
-      - properties:
-          role:
-            default: owner
-            enum:
-            - owner
-            type: string
-        type: object
+    PatchRetentionRules:
+      description: Updates to rules to expire or retain data. No rules means no updates.
+      items:
+        $ref: '#/components/schemas/PatchRetentionRule'
+      type: array
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
     RetentionRules:
       description: 'Retention rules to expire or retain data.
 
@@ -1630,25 +1679,6 @@ components:
       items:
         $ref: '#/components/schemas/RetentionRule'
       type: array
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
     UserResponse:
       properties:
         id:
@@ -1684,28 +1714,105 @@ components:
           type: string
       required:
       - name
-    LabelsResponse:
+    ResourceOwners:
       properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+          type: array
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    Bucket:
+      properties:
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: string
         labels:
           $ref: '#/components/schemas/Labels'
         links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    AddResourceMemberRequestBody:
-      properties:
-        id:
-          description: 'The ID of the user to add to the resource.
-
-            '
-          type: string
+          example:
+            labels: /api/v2/buckets/1/labels
+            members: /api/v2/buckets/1/members
+            org: /api/v2/orgs/2
+            owners: /api/v2/buckets/1/owners
+            self: /api/v2/buckets/1
+            write: /api/v2/write?org=2&bucket=1
+          properties:
+            labels:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve labels for this bucket.
+            members:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve members that can read this bucket.
+            org:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve parent organization for this bucket.
+            owners:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve owners that can read and write to this bucket.
+            self:
+              $ref: '#/components/schemas/Link'
+              description: The URL for this bucket.
+            write:
+              $ref: '#/components/schemas/Link'
+              description: The URL to write line protocol to this bucket.
+          readOnly: true
+          type: object
         name:
-          description: 'The name of the user to add to the resource.
-
-            '
+          type: string
+        orgID:
+          type: string
+        retentionRules:
+          $ref: '#/components/schemas/RetentionRules'
+        rp:
+          type: string
+        schemaType:
+          $ref: '#/components/schemas/SchemaType'
+          default: implicit
+        type:
+          default: user
+          enum:
+          - user
+          - system
+          readOnly: true
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
           type: string
       required:
-      - id
-      type: object
+      - name
+      - retentionRules
     LabelMapping:
       description: A _label mapping_ contains a `label` ID to attach to a resource.
       properties:
@@ -1719,18 +1826,27 @@ components:
       required:
       - labelID
       type: object
-    ResourceMembers:
+    Buckets:
       properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
+        buckets:
           items:
-            $ref: '#/components/schemas/ResourceMember'
+            $ref: '#/components/schemas/Bucket'
           type: array
+        links:
+          $ref: '#/components/schemas/Links'
+          readOnly: true
+      type: object
+    SchemaType:
+      enum:
+      - implicit
+      - explicit
+      type: string
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
       type: object
     PostBucketRequest:
       properties:
@@ -1802,11 +1918,6 @@ components:
       required:
       - orgID
       - name
-    PatchRetentionRules:
-      description: Updates to rules to expire or retain data. No rules means no updates.
-      items:
-        $ref: '#/components/schemas/PatchRetentionRule'
-      type: array
     Error:
       properties:
         code:
@@ -1843,118 +1954,17 @@ components:
           type: string
       required:
       - code
-    Bucket:
-      properties:
-        createdAt:
-          format: date-time
-          readOnly: true
-          type: string
-        description:
-          type: string
-        id:
-          readOnly: true
-          type: string
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          example:
-            labels: /api/v2/buckets/1/labels
-            members: /api/v2/buckets/1/members
-            org: /api/v2/orgs/2
-            owners: /api/v2/buckets/1/owners
-            self: /api/v2/buckets/1
-            write: /api/v2/write?org=2&bucket=1
-          properties:
-            labels:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve labels for this bucket.
-            members:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve members that can read this bucket.
-            org:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve parent organization for this bucket.
-            owners:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve owners that can read and write to this bucket.
-            self:
-              $ref: '#/components/schemas/Link'
-              description: The URL for this bucket.
-            write:
-              $ref: '#/components/schemas/Link'
-              description: The URL to write line protocol to this bucket.
-          readOnly: true
-          type: object
-        name:
-          type: string
-        orgID:
-          type: string
-        retentionRules:
-          $ref: '#/components/schemas/RetentionRules'
-        rp:
-          type: string
-        schemaType:
-          $ref: '#/components/schemas/SchemaType'
-          default: implicit
-        type:
-          default: user
-          enum:
-          - user
-          - system
-          readOnly: true
-          type: string
-        updatedAt:
-          format: date-time
-          readOnly: true
-          type: string
-      required:
-      - name
-      - retentionRules
-    Label:
-      properties:
-        id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
-
-            To remove a property, send an update with an empty value (`""`) for the key.
-
-            '
-          example:
-            color: ffb3b3
-            description: this is a description
-          type: object
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    SchemaType:
-      enum:
-      - implicit
-      - explicit
-      type: string
-    LabelResponse:
-      properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
   responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     ResourceNotFoundError:
       content:
         application/json:
@@ -2001,16 +2011,6 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
     BadRequestError:
       content:
         application/json:
@@ -2034,6 +2034,24 @@ components:
 
         '
   parameters:
+    After:
+      description: 'A resource ID to seek from.
+
+        Returns records created after the specified record;
+
+        results don''t include the specified record.
+
+
+        Use `after` instead of the `offset` parameter.
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: after
+      required: false
+      schema:
+        type: string
     Offset:
       description: 'The offset for pagination.
 
@@ -2061,24 +2079,6 @@ components:
         maximum: 100
         minimum: 1
         type: integer
-    After:
-      description: 'A resource ID to seek from.
-
-        Returns records created after the specified record;
-
-        results don''t include the specified record.
-
-
-        Use `after` instead of the `offset` parameter.
-
-        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
-
-        '
-      in: query
-      name: after
-      required: false
-      schema:
-        type: string
     TraceSpan:
       description: OpenTracing span context
       example:

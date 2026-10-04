@@ -1573,26 +1573,6 @@ paths:
         source: "curl --request GET \"INFLUX_URL/api/v2/query/suggestions/sum/\" \\\n  --header \"Accept: application/json\" \\\n  --header \"Authorization: Token INFLUX_API_TOKEN\"\n"
 components:
   schemas:
-    PropertyKey:
-      oneOf:
-      - $ref: '#/components/schemas/Identifier'
-      - $ref: '#/components/schemas/StringLiteral'
-    AnalyzeQueryResponse:
-      properties:
-        errors:
-          items:
-            properties:
-              character:
-                type: integer
-              column:
-                type: integer
-              line:
-                type: integer
-              message:
-                type: string
-            type: object
-          type: array
-      type: object
     ConditionalExpression:
       description: Selects one of two expressions, `Alternate` or `Consequent`, depending on a third boolean expression, `Test`
       properties:
@@ -1602,112 +1582,6 @@ components:
           $ref: '#/components/schemas/Expression'
         test:
           $ref: '#/components/schemas/Expression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    NodeType:
-      description: Type of AST node
-      type: string
-    StringLiteral:
-      description: Expressions begin and end with double quote marks
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          type: string
-      type: object
-    BooleanLiteral:
-      description: Represents boolean values
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          type: boolean
-      type: object
-    BadStatement:
-      description: A placeholder for statements for which no correct statement nodes can be created
-      properties:
-        text:
-          description: Raw source text
-          type: string
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    FluxSuggestions:
-      properties:
-        funcs:
-          items:
-            $ref: '#/components/schemas/FluxSuggestion'
-          type: array
-      type: object
-    IntegerLiteral:
-      description: Represents integer numbers
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          type: string
-      type: object
-    PipeExpression:
-      description: Call expression with pipe argument
-      properties:
-        argument:
-          $ref: '#/components/schemas/Expression'
-        call:
-          $ref: '#/components/schemas/CallExpression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    PackageClause:
-      description: Defines a package identifier
-      properties:
-        name:
-          $ref: '#/components/schemas/Identifier'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    Property:
-      description: The value associated with a key
-      properties:
-        key:
-          $ref: '#/components/schemas/PropertyKey'
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          $ref: '#/components/schemas/Expression'
-      type: object
-    Expression:
-      oneOf:
-      - $ref: '#/components/schemas/ArrayExpression'
-      - $ref: '#/components/schemas/DictExpression'
-      - $ref: '#/components/schemas/FunctionExpression'
-      - $ref: '#/components/schemas/BinaryExpression'
-      - $ref: '#/components/schemas/CallExpression'
-      - $ref: '#/components/schemas/ConditionalExpression'
-      - $ref: '#/components/schemas/LogicalExpression'
-      - $ref: '#/components/schemas/MemberExpression'
-      - $ref: '#/components/schemas/IndexExpression'
-      - $ref: '#/components/schemas/ObjectExpression'
-      - $ref: '#/components/schemas/ParenExpression'
-      - $ref: '#/components/schemas/PipeExpression'
-      - $ref: '#/components/schemas/UnaryExpression'
-      - $ref: '#/components/schemas/BooleanLiteral'
-      - $ref: '#/components/schemas/DateTimeLiteral'
-      - $ref: '#/components/schemas/DurationLiteral'
-      - $ref: '#/components/schemas/FloatLiteral'
-      - $ref: '#/components/schemas/IntegerLiteral'
-      - $ref: '#/components/schemas/PipeLiteral'
-      - $ref: '#/components/schemas/RegexpLiteral'
-      - $ref: '#/components/schemas/StringLiteral'
-      - $ref: '#/components/schemas/UnsignedIntegerLiteral'
-      - $ref: '#/components/schemas/Identifier'
-    OptionStatement:
-      description: A single variable declaration
-      properties:
-        assignment:
-          oneOf:
-          - $ref: '#/components/schemas/VariableAssignment'
-          - $ref: '#/components/schemas/MemberAssignment'
         type:
           $ref: '#/components/schemas/NodeType'
       type: object
@@ -1723,24 +1597,27 @@ components:
         type:
           $ref: '#/components/schemas/NodeType'
       type: object
-    Block:
-      description: A set of statements
+    PipeLiteral:
+      description: Represents a specialized literal value, indicating the left hand value of a pipe expression
       properties:
-        body:
-          description: Block body
-          items:
-            $ref: '#/components/schemas/Statement'
-          type: array
         type:
           $ref: '#/components/schemas/NodeType'
       type: object
-    ExpressionStatement:
-      description: May consist of an expression that doesn't return a value and is executed solely for its side-effects
+    IntegerLiteral:
+      description: Represents integer numbers
       properties:
-        expression:
-          $ref: '#/components/schemas/Expression'
         type:
           $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
+      type: object
+    UnsignedIntegerLiteral:
+      description: Represents integer numbers
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
       type: object
     File:
       description: Represents a source from a single file
@@ -1763,359 +1640,11 @@ components:
         type:
           $ref: '#/components/schemas/NodeType'
       type: object
-    MemberExpression:
-      description: Represents accessing a property of an object
-      properties:
-        object:
-          $ref: '#/components/schemas/Expression'
-        property:
-          $ref: '#/components/schemas/PropertyKey'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    UnaryExpression:
-      description: Uses operators to act on a single operand in an expression
-      properties:
-        argument:
-          $ref: '#/components/schemas/Expression'
-        operator:
-          type: string
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    Query:
-      description: Query InfluxDB with the Flux language
-      properties:
-        dialect:
-          $ref: '#/components/schemas/Dialect'
-        extern:
-          $ref: '#/components/schemas/File'
-        now:
-          description: 'Specifies the time that should be reported as `now` in the query.
-
-            Default is the server `now` time.
-
-            '
-          format: date-time
-          type: string
-        params:
-          additionalProperties: true
-          description: "Key-value pairs passed as parameters during query execution.\n\nTo use parameters in your query, pass a _`query`_ with `params` references (in dot notation)--for example:\n\n```json\n  query: \"from(bucket: params.mybucket)\\\n              |> range(start: params.rangeStart) |> limit(n:1)\"\n```\n\nand pass _`params`_ with the key-value pairs--for example:\n\n```json\n  params: {\n    \"mybucket\": \"environment\",\n    \"rangeStart\": \"-30d\"\n  }\n```\n\nDuring query execution, InfluxDB passes _`params`_ to your script and substitutes the values.\n\n#### Limitations\n\n- If you use _`params`_, you can't use _`extern`_.\n"
-          type: object
-        query:
-          description: The query script to execute.
-          type: string
-        type:
-          description: The type of query. Must be "flux".
-          enum:
-          - flux
-          type: string
-      required:
-      - query
-      type: object
-    IndexExpression:
-      description: Represents indexing into an array
-      properties:
-        array:
-          $ref: '#/components/schemas/Expression'
-        index:
-          $ref: '#/components/schemas/Expression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    BuiltinStatement:
-      description: Declares a builtin identifier and its type
-      properties:
-        id:
-          $ref: '#/components/schemas/Identifier'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    MemberAssignment:
-      description: Object property assignment
-      properties:
-        init:
-          $ref: '#/components/schemas/Expression'
-        member:
-          $ref: '#/components/schemas/MemberExpression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    DictItem:
-      description: A key-value pair in a dictionary.
-      properties:
-        key:
-          $ref: '#/components/schemas/Expression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-        val:
-          $ref: '#/components/schemas/Expression'
-      type: object
-    FloatLiteral:
-      description: Represents floating point numbers according to the double representations defined by the IEEE-754-1985
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          type: number
-      type: object
-    TestStatement:
-      description: Declares a Flux test case
-      properties:
-        assignment:
-          $ref: '#/components/schemas/VariableAssignment'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    Package:
-      description: Represents a complete package source tree.
-      properties:
-        files:
-          description: Package files
-          items:
-            $ref: '#/components/schemas/File'
-          type: array
-        package:
-          description: Package name
-          type: string
-        path:
-          description: Package import path
-          type: string
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    ImportDeclaration:
-      description: Declares a package import
-      properties:
-        as:
-          $ref: '#/components/schemas/Identifier'
-        path:
-          $ref: '#/components/schemas/StringLiteral'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    Duration:
-      description: A pair consisting of length of time and the unit of time measured. It is the atomic unit from which all duration literals are composed.
-      properties:
-        magnitude:
-          type: integer
-        type:
-          $ref: '#/components/schemas/NodeType'
-        unit:
-          type: string
-      type: object
     Identifier:
       description: A valid Flux identifier
       properties:
         name:
           type: string
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    DurationLiteral:
-      description: Represents the elapsed time between two instants as an int64 nanosecond count with syntax of golang's time.Duration
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        values:
-          description: Duration values
-          items:
-            $ref: '#/components/schemas/Duration'
-          type: array
-      type: object
-    ArrayExpression:
-      description: Used to create and directly specify the elements of an array object
-      properties:
-        elements:
-          description: Elements of the array
-          items:
-            $ref: '#/components/schemas/Expression'
-          type: array
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    DictExpression:
-      description: Used to create and directly specify the elements of a dictionary
-      properties:
-        elements:
-          description: Elements of the dictionary
-          items:
-            $ref: '#/components/schemas/DictItem'
-          type: array
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    ASTResponse:
-      description: Contains the AST for the supplied Flux query
-      properties:
-        ast:
-          $ref: '#/components/schemas/Package'
-      type: object
-    DateTimeLiteral:
-      description: Represents an instant in time with nanosecond precision in [RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp).
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          format: date-time
-          type: string
-      type: object
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-    RegexpLiteral:
-      description: Expressions begin and end with `/` and are regular expressions with syntax accepted by RE2
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          type: string
-      type: object
-    UnsignedIntegerLiteral:
-      description: Represents integer numbers
-      properties:
-        type:
-          $ref: '#/components/schemas/NodeType'
-        value:
-          type: string
-      type: object
-    LogicalExpression:
-      description: Represents the rule conditions that collectively evaluate to either true or false
-      properties:
-        left:
-          $ref: '#/components/schemas/Expression'
-        operator:
-          type: string
-        right:
-          $ref: '#/components/schemas/Expression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    VariableAssignment:
-      description: Represents the declaration of a variable
-      properties:
-        id:
-          $ref: '#/components/schemas/Identifier'
-        init:
-          $ref: '#/components/schemas/Expression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    FluxSuggestion:
-      properties:
-        name:
-          type: string
-        params:
-          additionalProperties:
-            type: string
-          type: object
-      type: object
-    ObjectExpression:
-      description: Allows the declaration of an anonymous object within a declaration
-      properties:
-        properties:
-          description: Object properties
-          items:
-            $ref: '#/components/schemas/Property'
-          type: array
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    ReturnStatement:
-      description: Defines an expression to return
-      properties:
-        argument:
-          $ref: '#/components/schemas/Expression'
-        type:
-          $ref: '#/components/schemas/NodeType'
-      type: object
-    Node:
-      oneOf:
-      - $ref: '#/components/schemas/Expression'
-      - $ref: '#/components/schemas/Block'
-    LanguageRequest:
-      description: Flux query to be analyzed.
-      properties:
-        query:
-          description: 'The Flux query script to be analyzed.
-
-            '
-          type: string
-      required:
-      - query
-      type: object
-    Statement:
-      oneOf:
-      - $ref: '#/components/schemas/BadStatement'
-      - $ref: '#/components/schemas/VariableAssignment'
-      - $ref: '#/components/schemas/MemberAssignment'
-      - $ref: '#/components/schemas/ExpressionStatement'
-      - $ref: '#/components/schemas/ReturnStatement'
-      - $ref: '#/components/schemas/OptionStatement'
-      - $ref: '#/components/schemas/BuiltinStatement'
-      - $ref: '#/components/schemas/TestStatement'
-    CallExpression:
-      description: Represents a function call
-      properties:
-        arguments:
-          description: Function arguments
-          items:
-            $ref: '#/components/schemas/Expression'
-          type: array
-        callee:
-          $ref: '#/components/schemas/Expression'
         type:
           $ref: '#/components/schemas/NodeType'
       type: object
@@ -2198,10 +1727,329 @@ components:
           description: If true, the results contain a header row.
           type: boolean
       type: object
+    FluxSuggestion:
+      properties:
+        name:
+          type: string
+        params:
+          additionalProperties:
+            type: string
+          type: object
+      type: object
+    LogicalExpression:
+      description: Represents the rule conditions that collectively evaluate to either true or false
+      properties:
+        left:
+          $ref: '#/components/schemas/Expression'
+        operator:
+          type: string
+        right:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ImportDeclaration:
+      description: Declares a package import
+      properties:
+        as:
+          $ref: '#/components/schemas/Identifier'
+        path:
+          $ref: '#/components/schemas/StringLiteral'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    BuiltinStatement:
+      description: Declares a builtin identifier and its type
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ExpressionStatement:
+      description: May consist of an expression that doesn't return a value and is executed solely for its side-effects
+      properties:
+        expression:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    BooleanLiteral:
+      description: Represents boolean values
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: boolean
+      type: object
+    AnalyzeQueryResponse:
+      properties:
+        errors:
+          items:
+            properties:
+              character:
+                type: integer
+              column:
+                type: integer
+              line:
+                type: integer
+              message:
+                type: string
+            type: object
+          type: array
+      type: object
+    DurationLiteral:
+      description: Represents the elapsed time between two instants as an int64 nanosecond count with syntax of golang's time.Duration
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        values:
+          description: Duration values
+          items:
+            $ref: '#/components/schemas/Duration'
+          type: array
+      type: object
+    Block:
+      description: A set of statements
+      properties:
+        body:
+          description: Block body
+          items:
+            $ref: '#/components/schemas/Statement'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    VariableAssignment:
+      description: Represents the declaration of a variable
+      properties:
+        id:
+          $ref: '#/components/schemas/Identifier'
+        init:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    MemberExpression:
+      description: Represents accessing a property of an object
+      properties:
+        object:
+          $ref: '#/components/schemas/Expression'
+        property:
+          $ref: '#/components/schemas/PropertyKey'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
     ParenExpression:
       description: Represents an expression wrapped in parenthesis
       properties:
         expression:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ArrayExpression:
+      description: Used to create and directly specify the elements of an array object
+      properties:
+        elements:
+          description: Elements of the array
+          items:
+            $ref: '#/components/schemas/Expression'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Statement:
+      oneOf:
+      - $ref: '#/components/schemas/BadStatement'
+      - $ref: '#/components/schemas/VariableAssignment'
+      - $ref: '#/components/schemas/MemberAssignment'
+      - $ref: '#/components/schemas/ExpressionStatement'
+      - $ref: '#/components/schemas/ReturnStatement'
+      - $ref: '#/components/schemas/OptionStatement'
+      - $ref: '#/components/schemas/BuiltinStatement'
+      - $ref: '#/components/schemas/TestStatement'
+    TestStatement:
+      description: Declares a Flux test case
+      properties:
+        assignment:
+          $ref: '#/components/schemas/VariableAssignment'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    DateTimeLiteral:
+      description: Represents an instant in time with nanosecond precision in [RFC3339Nano date/time format](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#rfc3339nano-timestamp).
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          format: date-time
+          type: string
+      type: object
+    UnaryExpression:
+      description: Uses operators to act on a single operand in an expression
+      properties:
+        argument:
+          $ref: '#/components/schemas/Expression'
+        operator:
+          type: string
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    DictItem:
+      description: A key-value pair in a dictionary.
+      properties:
+        key:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+        val:
+          $ref: '#/components/schemas/Expression'
+      type: object
+    ObjectExpression:
+      description: Allows the declaration of an anonymous object within a declaration
+      properties:
+        properties:
+          description: Object properties
+          items:
+            $ref: '#/components/schemas/Property'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    NodeType:
+      description: Type of AST node
+      type: string
+    Node:
+      oneOf:
+      - $ref: '#/components/schemas/Expression'
+      - $ref: '#/components/schemas/Block'
+    PipeExpression:
+      description: Call expression with pipe argument
+      properties:
+        argument:
+          $ref: '#/components/schemas/Expression'
+        call:
+          $ref: '#/components/schemas/CallExpression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    ASTResponse:
+      description: Contains the AST for the supplied Flux query
+      properties:
+        ast:
+          $ref: '#/components/schemas/Package'
+      type: object
+    StringLiteral:
+      description: Expressions begin and end with double quote marks
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
+      type: object
+    OptionStatement:
+      description: A single variable declaration
+      properties:
+        assignment:
+          oneOf:
+          - $ref: '#/components/schemas/VariableAssignment'
+          - $ref: '#/components/schemas/MemberAssignment'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Package:
+      description: Represents a complete package source tree.
+      properties:
+        files:
+          description: Package files
+          items:
+            $ref: '#/components/schemas/File'
+          type: array
+        package:
+          description: Package name
+          type: string
+        path:
+          description: Package import path
+          type: string
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Query:
+      description: Query InfluxDB with the Flux language
+      properties:
+        dialect:
+          $ref: '#/components/schemas/Dialect'
+        extern:
+          $ref: '#/components/schemas/File'
+        now:
+          description: 'Specifies the time that should be reported as `now` in the query.
+
+            Default is the server `now` time.
+
+            '
+          format: date-time
+          type: string
+        params:
+          additionalProperties: true
+          description: "Key-value pairs passed as parameters during query execution.\n\nTo use parameters in your query, pass a _`query`_ with `params` references (in dot notation)--for example:\n\n```json\n  query: \"from(bucket: params.mybucket)\\\n              |> range(start: params.rangeStart) |> limit(n:1)\"\n```\n\nand pass _`params`_ with the key-value pairs--for example:\n\n```json\n  params: {\n    \"mybucket\": \"environment\",\n    \"rangeStart\": \"-30d\"\n  }\n```\n\nDuring query execution, InfluxDB passes _`params`_ to your script and substitutes the values.\n\n#### Limitations\n\n- If you use _`params`_, you can't use _`extern`_.\n"
+          type: object
+        query:
+          description: The query script to execute.
+          type: string
+        type:
+          description: The type of query. Must be "flux".
+          enum:
+          - flux
+          type: string
+      required:
+      - query
+      type: object
+    FloatLiteral:
+      description: Represents floating point numbers according to the double representations defined by the IEEE-754-1985
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: number
+      type: object
+    DictExpression:
+      description: Used to create and directly specify the elements of a dictionary
+      properties:
+        elements:
+          description: Elements of the dictionary
+          items:
+            $ref: '#/components/schemas/DictItem'
+          type: array
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    BadStatement:
+      description: A placeholder for statements for which no correct statement nodes can be created
+      properties:
+        text:
+          description: Raw source text
+          type: string
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    RegexpLiteral:
+      description: Expressions begin and end with `/` and are regular expressions with syntax accepted by RE2
+      properties:
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          type: string
+      type: object
+    CallExpression:
+      description: Represents a function call
+      properties:
+        arguments:
+          description: Function arguments
+          items:
+            $ref: '#/components/schemas/Expression'
+          type: array
+        callee:
           $ref: '#/components/schemas/Expression'
         type:
           $ref: '#/components/schemas/NodeType'
@@ -2219,13 +2067,175 @@ components:
         type:
           $ref: '#/components/schemas/NodeType'
       type: object
-    PipeLiteral:
-      description: Represents a specialized literal value, indicating the left hand value of a pipe expression
+    MemberAssignment:
+      description: Object property assignment
       properties:
+        init:
+          $ref: '#/components/schemas/Expression'
+        member:
+          $ref: '#/components/schemas/MemberExpression'
         type:
           $ref: '#/components/schemas/NodeType'
       type: object
+    Property:
+      description: The value associated with a key
+      properties:
+        key:
+          $ref: '#/components/schemas/PropertyKey'
+        type:
+          $ref: '#/components/schemas/NodeType'
+        value:
+          $ref: '#/components/schemas/Expression'
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    IndexExpression:
+      description: Represents indexing into an array
+      properties:
+        array:
+          $ref: '#/components/schemas/Expression'
+        index:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Duration:
+      description: A pair consisting of length of time and the unit of time measured. It is the atomic unit from which all duration literals are composed.
+      properties:
+        magnitude:
+          type: integer
+        type:
+          $ref: '#/components/schemas/NodeType'
+        unit:
+          type: string
+      type: object
+    PackageClause:
+      description: Defines a package identifier
+      properties:
+        name:
+          $ref: '#/components/schemas/Identifier'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    Expression:
+      oneOf:
+      - $ref: '#/components/schemas/ArrayExpression'
+      - $ref: '#/components/schemas/DictExpression'
+      - $ref: '#/components/schemas/FunctionExpression'
+      - $ref: '#/components/schemas/BinaryExpression'
+      - $ref: '#/components/schemas/CallExpression'
+      - $ref: '#/components/schemas/ConditionalExpression'
+      - $ref: '#/components/schemas/LogicalExpression'
+      - $ref: '#/components/schemas/MemberExpression'
+      - $ref: '#/components/schemas/IndexExpression'
+      - $ref: '#/components/schemas/ObjectExpression'
+      - $ref: '#/components/schemas/ParenExpression'
+      - $ref: '#/components/schemas/PipeExpression'
+      - $ref: '#/components/schemas/UnaryExpression'
+      - $ref: '#/components/schemas/BooleanLiteral'
+      - $ref: '#/components/schemas/DateTimeLiteral'
+      - $ref: '#/components/schemas/DurationLiteral'
+      - $ref: '#/components/schemas/FloatLiteral'
+      - $ref: '#/components/schemas/IntegerLiteral'
+      - $ref: '#/components/schemas/PipeLiteral'
+      - $ref: '#/components/schemas/RegexpLiteral'
+      - $ref: '#/components/schemas/StringLiteral'
+      - $ref: '#/components/schemas/UnsignedIntegerLiteral'
+      - $ref: '#/components/schemas/Identifier'
+    FluxSuggestions:
+      properties:
+        funcs:
+          items:
+            $ref: '#/components/schemas/FluxSuggestion'
+          type: array
+      type: object
+    LanguageRequest:
+      description: Flux query to be analyzed.
+      properties:
+        query:
+          description: 'The Flux query script to be analyzed.
+
+            '
+          type: string
+      required:
+      - query
+      type: object
+    ReturnStatement:
+      description: Defines an expression to return
+      properties:
+        argument:
+          $ref: '#/components/schemas/Expression'
+        type:
+          $ref: '#/components/schemas/NodeType'
+      type: object
+    PropertyKey:
+      oneOf:
+      - $ref: '#/components/schemas/Identifier'
+      - $ref: '#/components/schemas/StringLiteral'
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
   responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     ResourceNotFoundError:
       content:
         application/json:
@@ -2278,16 +2288,6 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Non 2XX error response from server.
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
   parameters:
     TraceSpan:
       description: OpenTracing span context

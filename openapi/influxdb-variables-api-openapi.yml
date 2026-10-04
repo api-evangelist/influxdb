@@ -265,13 +265,6 @@ paths:
       tags:
       - Variables
 components:
-  responses:
-    GeneralServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Non 2XX error response from server.
   schemas:
     Variables:
       example:
@@ -312,6 +305,16 @@ components:
             $ref: '#/components/schemas/Variable'
           type: array
       type: object
+    MapVariableProperties:
+      properties:
+        type:
+          enum:
+          - map
+          type: string
+        values:
+          additionalProperties:
+            type: string
+          type: object
     Label:
       properties:
         id:
@@ -335,11 +338,6 @@ components:
             description: this is a description
           type: object
       type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -359,33 +357,19 @@ components:
       - unsupported media type
       readOnly: true
       type: string
-    MapVariableProperties:
+    QueryVariableProperties:
       properties:
         type:
           enum:
-          - map
+          - query
           type: string
         values:
-          additionalProperties:
-            type: string
+          properties:
+            language:
+              type: string
+            query:
+              type: string
           type: object
-    ConstantVariableProperties:
-      properties:
-        type:
-          enum:
-          - constant
-          type: string
-        values:
-          items:
-            type: string
-          type: array
-    LabelResponse:
-      properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
     Links:
       description: 'URI pointers for additional paged results.
 
@@ -400,10 +384,55 @@ components:
       required:
       - self
       type: object
+    VariableProperties:
+      oneOf:
+      - $ref: '#/components/schemas/QueryVariableProperties'
+      - $ref: '#/components/schemas/ConstantVariableProperties'
+      - $ref: '#/components/schemas/MapVariableProperties'
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
     LabelsResponse:
       properties:
         labels:
           $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    ConstantVariableProperties:
+      properties:
+        type:
+          enum:
+          - constant
+          type: string
+        values:
+          items:
+            type: string
+          type: array
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
         links:
           $ref: '#/components/schemas/Links'
       type: object
@@ -488,42 +517,13 @@ components:
           type: string
       required:
       - code
-    LabelMapping:
-      description: A _label mapping_ contains a `label` ID to attach to a resource.
-      properties:
-        labelID:
-          description: 'A label ID.
-
-            Specifies the label to attach.
-
-            '
-          type: string
-      required:
-      - labelID
-      type: object
-    QueryVariableProperties:
-      properties:
-        type:
-          enum:
-          - query
-          type: string
-        values:
-          properties:
-            language:
-              type: string
-            query:
-              type: string
-          type: object
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
-    VariableProperties:
-      oneOf:
-      - $ref: '#/components/schemas/QueryVariableProperties'
-      - $ref: '#/components/schemas/ConstantVariableProperties'
-      - $ref: '#/components/schemas/MapVariableProperties'
-      type: object
+  responses:
+    GeneralServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Non 2XX error response from server.
   parameters:
     TraceSpan:
       description: OpenTracing span context

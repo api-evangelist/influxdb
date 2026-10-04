@@ -1382,6 +1382,27 @@ paths:
         source: "curl -c ./cookie-file.tmp --request POST \\\n   \"http://localhost:8086/api/v2/signin\" \\\n  --user \"${INFLUX_USER_NAME}:${INFLUX_USER_PASSWORD}\"\n\ncurl -b ./cookie-file.tmp --request PUT \\\n   \"http://localhost:8086/api/v2/users/USER_ID/password\" \\\n  --header 'Content-type: application/json' \\\n  --data-binary @- << EOF\n    {\"password\": \"NEW_USER_PASSWORD\"}\nEOF\n"
 components:
   examples:
+    AuthorizationWithResourcePostRequest:
+      description: Creates an authorization for access to a specific resource.
+      summary: An authorization for a resource
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            id: INFLUX_BUCKET_ID
+            type: buckets
+    AuthorizationPostRequest:
+      description: Creates an authorization.
+      summary: An authorization for a resource type
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            type: buckets
     AuthorizationWithUserPostRequest:
       description: Creates an authorization scoped to a specific user.
       summary: An authorization scoped to a user
@@ -1394,75 +1415,7 @@ components:
             id: INFLUX_BUCKET_ID
             type: buckets
         userID: INFLUX_USER_ID
-    AuthorizationPostRequest:
-      description: Creates an authorization.
-      summary: An authorization for a resource type
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            type: buckets
-    AuthorizationWithResourcePostRequest:
-      description: Creates an authorization for access to a specific resource.
-      summary: An authorization for a resource
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            id: INFLUX_BUCKET_ID
-            type: buckets
   schemas:
-    ResourceMember:
-      allOf:
-      - $ref: '#/components/schemas/UserResponse'
-      - properties:
-          role:
-            default: member
-            enum:
-            - member
-            type: string
-        type: object
-    ResourceOwners:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/ResourceOwner'
-          type: array
-      type: object
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    ResourceOwner:
-      allOf:
-      - $ref: '#/components/schemas/UserResponse'
-      - properties:
-          role:
-            default: owner
-            enum:
-            - owner
-            type: string
-        type: object
     Permission:
       properties:
         action:
@@ -1541,127 +1494,6 @@ components:
       required:
       - action
       - resource
-    PasswordResetBody:
-      properties:
-        password:
-          type: string
-      required:
-      - password
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    Organization:
-      properties:
-        createdAt:
-          format: date-time
-          readOnly: true
-          type: string
-        defaultStorageType:
-          description: Discloses whether the organization uses TSM or IOx.
-          enum:
-          - tsm
-          - iox
-          type: string
-        description:
-          type: string
-        id:
-          readOnly: true
-          type: string
-        links:
-          example:
-            buckets: /api/v2/buckets?org=myorg
-            dashboards: /api/v2/dashboards?org=myorg
-            labels: /api/v2/orgs/1/labels
-            members: /api/v2/orgs/1/members
-            owners: /api/v2/orgs/1/owners
-            secrets: /api/v2/orgs/1/secrets
-            self: /api/v2/orgs/1
-            tasks: /api/v2/tasks?org=myorg
-          properties:
-            buckets:
-              $ref: '#/components/schemas/Link'
-            dashboards:
-              $ref: '#/components/schemas/Link'
-            labels:
-              $ref: '#/components/schemas/Link'
-            members:
-              $ref: '#/components/schemas/Link'
-            owners:
-              $ref: '#/components/schemas/Link'
-            secrets:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-            tasks:
-              $ref: '#/components/schemas/Link'
-          readOnly: true
-          type: object
-        name:
-          type: string
-        status:
-          default: active
-          description: If inactive, the organization is inactive.
-          enum:
-          - active
-          - inactive
-          type: string
-        updatedAt:
-          format: date-time
-          readOnly: true
-          type: string
-      required:
-      - name
-    UserResponse:
-      properties:
-        id:
-          description: 'The user ID.
-
-            '
-          readOnly: true
-          type: string
-        links:
-          example:
-            self: /api/v2/users/1
-          properties:
-            self:
-              format: uri
-              type: string
-          readOnly: true
-          type: object
-        name:
-          description: 'The user name.
-
-            '
-          type: string
-        status:
-          default: active
-          description: 'The status of a user.
-
-            An inactive user can''t read or write resources.
-
-            '
-          enum:
-          - active
-          - inactive
-          type: string
-      required:
-      - name
     Authorizations:
       properties:
         authorizations:
@@ -1672,76 +1504,90 @@ components:
           $ref: '#/components/schemas/Links'
           readOnly: true
       type: object
-    Organizations:
+    Resource:
       properties:
-        links:
-          $ref: '#/components/schemas/Links'
-        orgs:
-          items:
-            $ref: '#/components/schemas/Organization'
-          type: array
+        id:
+          description: 'A resource ID.
+
+            Identifies a specific resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the resource.
+
+            _Note: not all resource types have a `name` property_.
+
+            '
+          type: string
+        org:
+          description: 'An organization name.
+
+            The organization that owns the resource.
+
+            '
+          type: string
+        orgID:
+          description: 'An organization ID.
+
+            Identifies the organization that owns the resource.
+
+            '
+          type: string
+        type:
+          description: 'A resource type.
+
+            Identifies the API resource''s type (or _kind_).
+
+            '
+          enum:
+          - authorizations
+          - buckets
+          - dashboards
+          - orgs
+          - tasks
+          - telegrafs
+          - users
+          - variables
+          - secrets
+          - labels
+          - views
+          - documents
+          - notificationRules
+          - notificationEndpoints
+          - checks
+          - dbrp
+          - annotations
+          - sources
+          - scrapers
+          - notebooks
+          - remotes
+          - replications
+          - instance
+          - flows
+          - functions
+          - subscriptions
+          type: string
+      required:
+      - type
       type: object
-    ResourceMembers:
-      properties:
-        links:
-          properties:
-            self:
-              format: uri
-              type: string
-          type: object
-        users:
-          items:
-            $ref: '#/components/schemas/ResourceMember'
-          type: array
-      type: object
-    AuthorizationPostRequest:
+    ResourceMember:
       allOf:
-      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
+      - $ref: '#/components/schemas/UserResponse'
       - properties:
-          orgID:
-            description: 'An organization ID.
-
-              Specifies the organization that owns the authorization.
-
-              '
-            type: string
-          permissions:
-            description: 'A list of permissions for an authorization.
-
-              In the list, provide at least one `permission` object.
-
-
-              In a `permission`, the `resource.type` property grants access to all
-
-              resources of the specified type.
-
-              To grant access to only a specific resource, specify the
-
-              `resource.id` property.
-
-              '
-            items:
-              $ref: '#/components/schemas/Permission'
-            minItems: 1
-            type: array
-          userID:
-            description: 'A user ID.
-
-              Specifies the user that the authorization is scoped to.
-
-
-              When a user authenticates with username and password,
-
-              InfluxDB generates a _user session_ with all the permissions
-
-              specified by all the user''s authorizations.
-
-              '
+          role:
+            default: member
+            enum:
+            - member
             type: string
         type: object
-      required:
-      - orgID
-      - permissions
+    SecretKeys:
+      properties:
+        secrets:
+          items:
+            type: string
+          type: array
+      type: object
     AuthorizationUpdateRequest:
       properties:
         description:
@@ -1754,42 +1600,42 @@ components:
           - active
           - inactive
           type: string
-    Error:
+    ResourceOwner:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: owner
+            enum:
+            - owner
+            type: string
+        type: object
+    Users:
       properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/UserResponse'
+          type: array
+      type: object
+    SecretKeysResponse:
+      allOf:
+      - $ref: '#/components/schemas/SecretKeys'
+      - properties:
+          links:
+            properties:
+              org:
+                type: string
+              self:
+                type: string
+            readOnly: true
+            type: object
+        type: object
     Authorization:
       allOf:
       - $ref: '#/components/schemas/AuthorizationUpdateRequest'
@@ -1882,32 +1728,68 @@ components:
       required:
       - orgID
       - permissions
-    SecretKeys:
+    Organization:
       properties:
-        secrets:
-          items:
-            type: string
-          type: array
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    SecretKeysResponse:
-      allOf:
-      - $ref: '#/components/schemas/SecretKeys'
-      - properties:
-          links:
-            properties:
-              org:
-                type: string
-              self:
-                type: string
-            readOnly: true
-            type: object
-        type: object
-    Users:
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        defaultStorageType:
+          description: Discloses whether the organization uses TSM or IOx.
+          enum:
+          - tsm
+          - iox
+          type: string
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: string
+        links:
+          example:
+            buckets: /api/v2/buckets?org=myorg
+            dashboards: /api/v2/dashboards?org=myorg
+            labels: /api/v2/orgs/1/labels
+            members: /api/v2/orgs/1/members
+            owners: /api/v2/orgs/1/owners
+            secrets: /api/v2/orgs/1/secrets
+            self: /api/v2/orgs/1
+            tasks: /api/v2/tasks?org=myorg
+          properties:
+            buckets:
+              $ref: '#/components/schemas/Link'
+            dashboards:
+              $ref: '#/components/schemas/Link'
+            labels:
+              $ref: '#/components/schemas/Link'
+            members:
+              $ref: '#/components/schemas/Link'
+            owners:
+              $ref: '#/components/schemas/Link'
+            secrets:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+            tasks:
+              $ref: '#/components/schemas/Link'
+          readOnly: true
+          type: object
+        name:
+          type: string
+        status:
+          default: active
+          description: If inactive, the organization is inactive.
+          enum:
+          - active
+          - inactive
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - name
+    ResourceMembers:
       properties:
         links:
           properties:
@@ -1917,77 +1799,205 @@ components:
           type: object
         users:
           items:
-            $ref: '#/components/schemas/UserResponse'
+            $ref: '#/components/schemas/ResourceMember'
           type: array
       type: object
-    Resource:
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    Organizations:
+      properties:
+        links:
+          $ref: '#/components/schemas/Links'
+        orgs:
+          items:
+            $ref: '#/components/schemas/Organization'
+          type: array
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    UserResponse:
       properties:
         id:
-          description: 'A resource ID.
-
-            Identifies a specific resource.
+          description: 'The user ID.
 
             '
+          readOnly: true
           type: string
+        links:
+          example:
+            self: /api/v2/users/1
+          properties:
+            self:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
         name:
-          description: 'The name of the resource.
-
-            _Note: not all resource types have a `name` property_.
+          description: 'The user name.
 
             '
           type: string
-        org:
-          description: 'An organization name.
+        status:
+          default: active
+          description: 'The status of a user.
 
-            The organization that owns the resource.
-
-            '
-          type: string
-        orgID:
-          description: 'An organization ID.
-
-            Identifies the organization that owns the resource.
-
-            '
-          type: string
-        type:
-          description: 'A resource type.
-
-            Identifies the API resource''s type (or _kind_).
+            An inactive user can''t read or write resources.
 
             '
           enum:
-          - authorizations
-          - buckets
-          - dashboards
-          - orgs
-          - tasks
-          - telegrafs
-          - users
-          - variables
-          - secrets
-          - labels
-          - views
-          - documents
-          - notificationRules
-          - notificationEndpoints
-          - checks
-          - dbrp
-          - annotations
-          - sources
-          - scrapers
-          - notebooks
-          - remotes
-          - replications
-          - instance
-          - flows
-          - functions
-          - subscriptions
+          - active
+          - inactive
           type: string
       required:
-      - type
+      - name
+    ResourceOwners:
+      properties:
+        links:
+          properties:
+            self:
+              format: uri
+              type: string
+          type: object
+        users:
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+          type: array
       type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    PasswordResetBody:
+      properties:
+        password:
+          type: string
+      required:
+      - password
+    AuthorizationPostRequest:
+      allOf:
+      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
+      - properties:
+          orgID:
+            description: 'An organization ID.
+
+              Specifies the organization that owns the authorization.
+
+              '
+            type: string
+          permissions:
+            description: 'A list of permissions for an authorization.
+
+              In the list, provide at least one `permission` object.
+
+
+              In a `permission`, the `resource.type` property grants access to all
+
+              resources of the specified type.
+
+              To grant access to only a specific resource, specify the
+
+              `resource.id` property.
+
+              '
+            items:
+              $ref: '#/components/schemas/Permission'
+            minItems: 1
+            type: array
+          userID:
+            description: 'A user ID.
+
+              Specifies the user that the authorization is scoped to.
+
+
+              When a user authenticates with username and password,
+
+              InfluxDB generates a _user session_ with all the permissions
+
+              specified by all the user''s authorizations.
+
+              '
+            type: string
+        type: object
+      required:
+      - orgID
+      - permissions
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
   responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     ResourceNotFoundError:
       content:
         application/json:
@@ -2034,22 +2044,6 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    GeneralServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Non 2XX error response from server.
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
     BadRequestError:
       content:
         application/json:
@@ -2072,14 +2066,13 @@ components:
         - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
 
         '
+    GeneralServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Non 2XX error response from server.
   parameters:
-    Descending:
-      in: query
-      name: descending
-      required: false
-      schema:
-        default: false
-        type: boolean
     Offset:
       description: 'The offset for pagination.
 
@@ -2095,6 +2088,13 @@ components:
       schema:
         minimum: 0
         type: integer
+    Descending:
+      in: query
+      name: descending
+      required: false
+      schema:
+        default: false
+        type: boolean
     Limit:
       description: 'Limits the number of records returned. Default is `20`.
 

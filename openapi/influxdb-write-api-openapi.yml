@@ -290,44 +290,6 @@ paths:
       - Write
 components:
   responses:
-    GeneralServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: Non 2XX error response from server.
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
-    ResourceNotFoundError:
-      content:
-        application/json:
-          examples:
-            bucket-not-found:
-              summary: Bucket name not found
-              value:
-                code: not found
-                message: bucket "air_sensor" not found
-            org-not-found:
-              summary: Organization name not found
-              value:
-                code: not found
-                message: organization name "my-org" not found
-            orgID-not-found:
-              summary: Organization ID not found
-              value:
-                code: not found
-                message: organization not found
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
     AuthorizationError:
       content:
         application/json:
@@ -352,14 +314,45 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    ResourceNotFoundError:
+      content:
+        application/json:
+          examples:
+            bucket-not-found:
+              summary: Bucket name not found
+              value:
+                code: not found
+                message: bucket "air_sensor" not found
+            org-not-found:
+              summary: Organization name not found
+              value:
+                code: not found
+                message: organization name "my-org" not found
+            orgID-not-found:
+              summary: Organization ID not found
+              value:
+                code: not found
+                message: organization not found
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
+    GeneralServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Non 2XX error response from server.
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
   schemas:
-    WritePrecision:
-      enum:
-      - ms
-      - s
-      - us
-      - ns
-      type: string
     LineProtocolLengthError:
       properties:
         code:
@@ -426,6 +419,13 @@ components:
           type: string
       required:
       - code
+    WritePrecision:
+      enum:
+      - ms
+      - s
+      - us
+      - ns
+      type: string
     Error:
       properties:
         code:

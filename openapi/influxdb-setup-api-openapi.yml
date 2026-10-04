@@ -75,83 +75,51 @@ paths:
       - Setup
 components:
   schemas:
-    RetentionRule:
+    Label:
       properties:
-        everySeconds:
-          default: 2592000
-          description: 'The duration in seconds for how long data will be kept in the database.
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
 
-            The default duration is 2592000 (30 days).
-
-            0 represents infinite retention.
-
-            '
-          example: 86400
-          format: int64
-          minimum: 0
-          type: integer
-        shardGroupDurationSeconds:
-          description: 'The shard group duration.
-
-            The duration or interval (in seconds) that each shard group covers.
-
-
-            #### InfluxDB Cloud
-
-
-            - Does not use `shardGroupDurationsSeconds`.
-
-
-            #### InfluxDB OSS
-
-
-            - Default value depends on the
-
-            [bucket retention period](https://docs.influxdata.com/influxdb/cloud/reference/internals/shards/#shard-group-duration).
+            To remove a property, send an update with an empty value (`""`) for the key.
 
             '
-          format: int64
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    OnboardingRequest:
+      properties:
+        bucket:
+          type: string
+        limit:
+          $ref: '#/components/schemas/Limit'
+        org:
+          type: string
+        password:
+          type: string
+        retentionPeriodHrs:
+          deprecated: true
           type: integer
-        type:
-          default: expire
-          enum:
-          - expire
+        retentionPeriodSeconds:
+          type: integer
+        username:
           type: string
       required:
-      - everySeconds
+      - username
+      - org
+      - bucket
       type: object
-    OnboardingResponse:
-      properties:
-        auth:
-          $ref: '#/components/schemas/Authorization'
-        bucket:
-          $ref: '#/components/schemas/Bucket'
-        org:
-          $ref: '#/components/schemas/Organization'
-        user:
-          $ref: '#/components/schemas/UserResponse'
-      type: object
-    RetentionRules:
-      description: 'Retention rules to expire or retain data.
-
-        The InfluxDB `/api/v2` API uses `RetentionRules` to configure the [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period).
-
-
-        #### InfluxDB Cloud
-
-
-        - `retentionRules` is required.
-
-
-        #### InfluxDB OSS
-
-
-        - `retentionRules` isn''t required.
-
-        '
-      items:
-        $ref: '#/components/schemas/RetentionRule'
-      type: array
     Permission:
       properties:
         action:
@@ -230,393 +198,84 @@ components:
       required:
       - action
       - resource
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    Organization:
+    OnboardingResponse:
       properties:
-        createdAt:
-          format: date-time
-          readOnly: true
-          type: string
-        defaultStorageType:
-          description: Discloses whether the organization uses TSM or IOx.
-          enum:
-          - tsm
-          - iox
-          type: string
-        description:
-          type: string
-        id:
-          readOnly: true
-          type: string
-        links:
-          example:
-            buckets: /api/v2/buckets?org=myorg
-            dashboards: /api/v2/dashboards?org=myorg
-            labels: /api/v2/orgs/1/labels
-            members: /api/v2/orgs/1/members
-            owners: /api/v2/orgs/1/owners
-            secrets: /api/v2/orgs/1/secrets
-            self: /api/v2/orgs/1
-            tasks: /api/v2/tasks?org=myorg
-          properties:
-            buckets:
-              $ref: '#/components/schemas/Link'
-            dashboards:
-              $ref: '#/components/schemas/Link'
-            labels:
-              $ref: '#/components/schemas/Link'
-            members:
-              $ref: '#/components/schemas/Link'
-            owners:
-              $ref: '#/components/schemas/Link'
-            secrets:
-              $ref: '#/components/schemas/Link'
-            self:
-              $ref: '#/components/schemas/Link'
-            tasks:
-              $ref: '#/components/schemas/Link'
-          readOnly: true
-          type: object
-        name:
-          type: string
-        status:
-          default: active
-          description: If inactive, the organization is inactive.
-          enum:
-          - active
-          - inactive
-          type: string
-        updatedAt:
-          format: date-time
-          readOnly: true
-          type: string
-      required:
-      - name
-    UserResponse:
-      properties:
-        id:
-          description: 'The user ID.
-
-            '
-          readOnly: true
-          type: string
-        links:
-          example:
-            self: /api/v2/users/1
-          properties:
-            self:
-              format: uri
-              type: string
-          readOnly: true
-          type: object
-        name:
-          description: 'The user name.
-
-            '
-          type: string
-        status:
-          default: active
-          description: 'The status of a user.
-
-            An inactive user can''t read or write resources.
-
-            '
-          enum:
-          - active
-          - inactive
-          type: string
-      required:
-      - name
-    IsOnboarding:
-      properties:
-        allowed:
-          description: 'If `true`, the InfluxDB instance hasn''t had initial setup;
-
-            `false` otherwise.
-
-            '
-          type: boolean
-      type: object
-    OnboardingRequest:
-      properties:
+        auth:
+          $ref: '#/components/schemas/Authorization'
         bucket:
-          type: string
-        limit:
-          $ref: '#/components/schemas/Limit'
+          $ref: '#/components/schemas/Bucket'
         org:
-          type: string
-        password:
-          type: string
-        retentionPeriodHrs:
-          deprecated: true
-          type: integer
-        retentionPeriodSeconds:
-          type: integer
-        username:
-          type: string
-      required:
-      - username
-      - org
-      - bucket
+          $ref: '#/components/schemas/Organization'
+        user:
+          $ref: '#/components/schemas/UserResponse'
       type: object
-    AuthorizationUpdateRequest:
-      properties:
-        description:
-          description: A description of the token.
-          type: string
-        status:
-          default: active
-          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
-          enum:
-          - active
-          - inactive
-          type: string
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-    Bucket:
-      properties:
-        createdAt:
-          format: date-time
-          readOnly: true
-          type: string
-        description:
-          type: string
-        id:
-          readOnly: true
-          type: string
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          example:
-            labels: /api/v2/buckets/1/labels
-            members: /api/v2/buckets/1/members
-            org: /api/v2/orgs/2
-            owners: /api/v2/buckets/1/owners
-            self: /api/v2/buckets/1
-            write: /api/v2/write?org=2&bucket=1
-          properties:
-            labels:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve labels for this bucket.
-            members:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve members that can read this bucket.
-            org:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve parent organization for this bucket.
-            owners:
-              $ref: '#/components/schemas/Link'
-              description: The URL to retrieve owners that can read and write to this bucket.
-            self:
-              $ref: '#/components/schemas/Link'
-              description: The URL for this bucket.
-            write:
-              $ref: '#/components/schemas/Link'
-              description: The URL to write line protocol to this bucket.
-          readOnly: true
-          type: object
-        name:
-          type: string
-        orgID:
-          type: string
-        retentionRules:
-          $ref: '#/components/schemas/RetentionRules'
-        rp:
-          type: string
-        schemaType:
-          $ref: '#/components/schemas/SchemaType'
-          default: implicit
-        type:
-          default: user
-          enum:
-          - user
-          - system
-          readOnly: true
-          type: string
-        updatedAt:
-          format: date-time
-          readOnly: true
-          type: string
-      required:
-      - name
-      - retentionRules
-    Authorization:
-      allOf:
-      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
-      - properties:
-          createdAt:
-            format: date-time
-            readOnly: true
-            type: string
-          id:
-            description: The authorization ID.
-            readOnly: true
-            type: string
-          links:
-            example:
-              self: /api/v2/authorizations/1
-              user: /api/v2/users/12
-            properties:
-              self:
-                $ref: '#/components/schemas/Link'
-                readOnly: true
-              user:
-                $ref: '#/components/schemas/Link'
-                readOnly: true
-            readOnly: true
-            type: object
-          org:
-            description: 'The organization name.
-
-              Specifies the [organization]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#organization)
-
-              that the token is scoped to.
-
-              '
-            readOnly: true
-            type: string
-          orgID:
-            description: 'The organization ID.
-
-              Specifies the [organization]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#organization) that the authorization is scoped to.
-
-              '
-            type: string
-          permissions:
-            description: 'The list of permissions.
-
-              An authorization must have at least one permission.
-
-              '
-            items:
-              $ref: '#/components/schemas/Permission'
-            minItems: 1
-            type: array
-          token:
-            description: 'The API token.
-
-              The token value is unique to the authorization.
-
-              [API tokens]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#token) are
-
-              used to authenticate and authorize InfluxDB API requests and `influx`
-
-              CLI commands--after receiving the request, InfluxDB checks that the
-
-              token is valid and that the `permissions` allow the requested action(s).
-
-              '
-            readOnly: true
-            type: string
-          updatedAt:
-            format: date-time
-            readOnly: true
-            type: string
-          user:
-            description: 'The user name.
-
-              Specifies the [user]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#user) that owns the authorization.
-
-              If the authorization is _scoped_ to a user, the user;
-
-              otherwise, the creator of the authorization.
-
-              '
-            readOnly: true
-            type: string
-          userID:
-            description: The user ID. Specifies the [user]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#user) that owns the authorization. If _scoped_, the user that the authorization is scoped to; otherwise, the creator of the authorization.
-            readOnly: true
-            type: string
-        type: object
-      required:
-      - orgID
-      - permissions
-    Label:
+    Resource:
       properties:
         id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
+          description: 'A resource ID.
 
-            To remove a property, send an update with an empty value (`""`) for the key.
+            Identifies a specific resource.
 
             '
-          example:
-            color: ffb3b3
-            description: this is a description
-          type: object
+          type: string
+        name:
+          description: 'The name of the resource.
+
+            _Note: not all resource types have a `name` property_.
+
+            '
+          type: string
+        org:
+          description: 'An organization name.
+
+            The organization that owns the resource.
+
+            '
+          type: string
+        orgID:
+          description: 'An organization ID.
+
+            Identifies the organization that owns the resource.
+
+            '
+          type: string
+        type:
+          description: 'A resource type.
+
+            Identifies the API resource''s type (or _kind_).
+
+            '
+          enum:
+          - authorizations
+          - buckets
+          - dashboards
+          - orgs
+          - tasks
+          - telegrafs
+          - users
+          - variables
+          - secrets
+          - labels
+          - views
+          - documents
+          - notificationRules
+          - notificationEndpoints
+          - checks
+          - dbrp
+          - annotations
+          - sources
+          - scrapers
+          - notebooks
+          - remotes
+          - replications
+          - instance
+          - flows
+          - functions
+          - subscriptions
+          type: string
+      required:
+      - type
       type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    SchemaType:
-      enum:
-      - implicit
-      - explicit
-      type: string
     Limit:
       description: These are org limits similar to those configured in/by quartz.
       properties:
@@ -751,77 +410,418 @@ components:
       - notificationRule
       - notificationEndpoint
       type: object
-    Resource:
+    AuthorizationUpdateRequest:
       properties:
-        id:
-          description: 'A resource ID.
-
-            Identifies a specific resource.
-
-            '
+        description:
+          description: A description of the token.
           type: string
-        name:
-          description: 'The name of the resource.
-
-            _Note: not all resource types have a `name` property_.
-
-            '
-          type: string
-        org:
-          description: 'An organization name.
-
-            The organization that owns the resource.
-
-            '
-          type: string
-        orgID:
-          description: 'An organization ID.
-
-            Identifies the organization that owns the resource.
-
-            '
-          type: string
-        type:
-          description: 'A resource type.
-
-            Identifies the API resource''s type (or _kind_).
-
-            '
+        status:
+          default: active
+          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
           enum:
-          - authorizations
-          - buckets
-          - dashboards
-          - orgs
-          - tasks
-          - telegrafs
-          - users
-          - variables
-          - secrets
-          - labels
-          - views
-          - documents
-          - notificationRules
-          - notificationEndpoints
-          - checks
-          - dbrp
-          - annotations
-          - sources
-          - scrapers
-          - notebooks
-          - remotes
-          - replications
-          - instance
-          - flows
-          - functions
-          - subscriptions
+          - active
+          - inactive
+          type: string
+    RetentionRule:
+      properties:
+        everySeconds:
+          default: 2592000
+          description: 'The duration in seconds for how long data will be kept in the database.
+
+            The default duration is 2592000 (30 days).
+
+            0 represents infinite retention.
+
+            '
+          example: 86400
+          format: int64
+          minimum: 0
+          type: integer
+        shardGroupDurationSeconds:
+          description: 'The shard group duration.
+
+            The duration or interval (in seconds) that each shard group covers.
+
+
+            #### InfluxDB Cloud
+
+
+            - Does not use `shardGroupDurationsSeconds`.
+
+
+            #### InfluxDB OSS
+
+
+            - Default value depends on the
+
+            [bucket retention period](https://docs.influxdata.com/influxdb/cloud/reference/internals/shards/#shard-group-duration).
+
+            '
+          format: int64
+          type: integer
+        type:
+          default: expire
+          enum:
+          - expire
           type: string
       required:
-      - type
+      - everySeconds
       type: object
+    Authorization:
+      allOf:
+      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
+      - properties:
+          createdAt:
+            format: date-time
+            readOnly: true
+            type: string
+          id:
+            description: The authorization ID.
+            readOnly: true
+            type: string
+          links:
+            example:
+              self: /api/v2/authorizations/1
+              user: /api/v2/users/12
+            properties:
+              self:
+                $ref: '#/components/schemas/Link'
+                readOnly: true
+              user:
+                $ref: '#/components/schemas/Link'
+                readOnly: true
+            readOnly: true
+            type: object
+          org:
+            description: 'The organization name.
+
+              Specifies the [organization]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#organization)
+
+              that the token is scoped to.
+
+              '
+            readOnly: true
+            type: string
+          orgID:
+            description: 'The organization ID.
+
+              Specifies the [organization]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#organization) that the authorization is scoped to.
+
+              '
+            type: string
+          permissions:
+            description: 'The list of permissions.
+
+              An authorization must have at least one permission.
+
+              '
+            items:
+              $ref: '#/components/schemas/Permission'
+            minItems: 1
+            type: array
+          token:
+            description: 'The API token.
+
+              The token value is unique to the authorization.
+
+              [API tokens]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#token) are
+
+              used to authenticate and authorize InfluxDB API requests and `influx`
+
+              CLI commands--after receiving the request, InfluxDB checks that the
+
+              token is valid and that the `permissions` allow the requested action(s).
+
+              '
+            readOnly: true
+            type: string
+          updatedAt:
+            format: date-time
+            readOnly: true
+            type: string
+          user:
+            description: 'The user name.
+
+              Specifies the [user]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#user) that owns the authorization.
+
+              If the authorization is _scoped_ to a user, the user;
+
+              otherwise, the creator of the authorization.
+
+              '
+            readOnly: true
+            type: string
+          userID:
+            description: The user ID. Specifies the [user]({{% INFLUXDB_DOCS_URL %}}/reference/glossary/#user) that owns the authorization. If _scoped_, the user that the authorization is scoped to; otherwise, the creator of the authorization.
+            readOnly: true
+            type: string
+        type: object
+      required:
+      - orgID
+      - permissions
+    Organization:
+      properties:
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        defaultStorageType:
+          description: Discloses whether the organization uses TSM or IOx.
+          enum:
+          - tsm
+          - iox
+          type: string
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: string
+        links:
+          example:
+            buckets: /api/v2/buckets?org=myorg
+            dashboards: /api/v2/dashboards?org=myorg
+            labels: /api/v2/orgs/1/labels
+            members: /api/v2/orgs/1/members
+            owners: /api/v2/orgs/1/owners
+            secrets: /api/v2/orgs/1/secrets
+            self: /api/v2/orgs/1
+            tasks: /api/v2/tasks?org=myorg
+          properties:
+            buckets:
+              $ref: '#/components/schemas/Link'
+            dashboards:
+              $ref: '#/components/schemas/Link'
+            labels:
+              $ref: '#/components/schemas/Link'
+            members:
+              $ref: '#/components/schemas/Link'
+            owners:
+              $ref: '#/components/schemas/Link'
+            secrets:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+            tasks:
+              $ref: '#/components/schemas/Link'
+          readOnly: true
+          type: object
+        name:
+          type: string
+        status:
+          default: active
+          description: If inactive, the organization is inactive.
+          enum:
+          - active
+          - inactive
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - name
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
     Labels:
       items:
         $ref: '#/components/schemas/Label'
       type: array
+    IsOnboarding:
+      properties:
+        allowed:
+          description: 'If `true`, the InfluxDB instance hasn''t had initial setup;
+
+            `false` otherwise.
+
+            '
+          type: boolean
+      type: object
+    RetentionRules:
+      description: 'Retention rules to expire or retain data.
+
+        The InfluxDB `/api/v2` API uses `RetentionRules` to configure the [retention period](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#retention-period).
+
+
+        #### InfluxDB Cloud
+
+
+        - `retentionRules` is required.
+
+
+        #### InfluxDB OSS
+
+
+        - `retentionRules` isn''t required.
+
+        '
+      items:
+        $ref: '#/components/schemas/RetentionRule'
+      type: array
+    UserResponse:
+      properties:
+        id:
+          description: 'The user ID.
+
+            '
+          readOnly: true
+          type: string
+        links:
+          example:
+            self: /api/v2/users/1
+          properties:
+            self:
+              format: uri
+              type: string
+          readOnly: true
+          type: object
+        name:
+          description: 'The user name.
+
+            '
+          type: string
+        status:
+          default: active
+          description: 'The status of a user.
+
+            An inactive user can''t read or write resources.
+
+            '
+          enum:
+          - active
+          - inactive
+          type: string
+      required:
+      - name
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    Bucket:
+      properties:
+        createdAt:
+          format: date-time
+          readOnly: true
+          type: string
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: string
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          example:
+            labels: /api/v2/buckets/1/labels
+            members: /api/v2/buckets/1/members
+            org: /api/v2/orgs/2
+            owners: /api/v2/buckets/1/owners
+            self: /api/v2/buckets/1
+            write: /api/v2/write?org=2&bucket=1
+          properties:
+            labels:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve labels for this bucket.
+            members:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve members that can read this bucket.
+            org:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve parent organization for this bucket.
+            owners:
+              $ref: '#/components/schemas/Link'
+              description: The URL to retrieve owners that can read and write to this bucket.
+            self:
+              $ref: '#/components/schemas/Link'
+              description: The URL for this bucket.
+            write:
+              $ref: '#/components/schemas/Link'
+              description: The URL to write line protocol to this bucket.
+          readOnly: true
+          type: object
+        name:
+          type: string
+        orgID:
+          type: string
+        retentionRules:
+          $ref: '#/components/schemas/RetentionRules'
+        rp:
+          type: string
+        schemaType:
+          $ref: '#/components/schemas/SchemaType'
+          default: implicit
+        type:
+          default: user
+          enum:
+          - user
+          - system
+          readOnly: true
+          type: string
+        updatedAt:
+          format: date-time
+          readOnly: true
+          type: string
+      required:
+      - name
+      - retentionRules
+    SchemaType:
+      enum:
+      - implicit
+      - explicit
+      type: string
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
   responses:
     GeneralServerError:
       content:

@@ -304,232 +304,20 @@ paths:
       - Notification Rules
 components:
   schemas:
-    PagerDutyNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/PagerDutyNotificationRuleBase'
-    PostNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
+    SlackNotificationRuleBase:
       properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    NotificationRuleUpdate:
-      properties:
-        description:
+        channel:
           type: string
-        name:
-          type: string
-        status:
-          enum:
-          - active
-          - inactive
-          type: string
-      type: object
-    SMTPNotificationRuleBase:
-      properties:
-        bodyTemplate:
-          type: string
-        subjectTemplate:
-          type: string
-        to:
-          type: string
-        type:
-          enum:
-          - smtp
-          type: string
-      required:
-      - type
-      - subjectTemplate
-      - to
-      type: object
-    NotificationRules:
-      properties:
-        links:
-          $ref: '#/components/schemas/Links'
-        notificationRules:
-          items:
-            $ref: '#/components/schemas/NotificationRule'
-          type: array
-    TaskStatusType:
-      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
-
-        '
-      enum:
-      - active
-      - inactive
-      type: string
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    StatusRule:
-      properties:
-        count:
-          type: integer
-        currentLevel:
-          $ref: '#/components/schemas/RuleStatusLevel'
-        period:
-          type: string
-        previousLevel:
-          $ref: '#/components/schemas/RuleStatusLevel'
-      type: object
-    NotificationRuleDiscriminator:
-      discriminator:
-        mapping:
-          http: '#/components/schemas/HTTPNotificationRule'
-          pagerduty: '#/components/schemas/PagerDutyNotificationRule'
-          slack: '#/components/schemas/SlackNotificationRule'
-          smtp: '#/components/schemas/SMTPNotificationRule'
-          telegram: '#/components/schemas/TelegramNotificationRule'
-        propertyName: type
-      oneOf:
-      - $ref: '#/components/schemas/SlackNotificationRule'
-      - $ref: '#/components/schemas/SMTPNotificationRule'
-      - $ref: '#/components/schemas/PagerDutyNotificationRule'
-      - $ref: '#/components/schemas/HTTPNotificationRule'
-      - $ref: '#/components/schemas/TelegramNotificationRule'
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    LabelMapping:
-      description: A _label mapping_ contains a `label` ID to attach to a resource.
-      properties:
-        labelID:
-          description: 'A label ID.
-
-            Specifies the label to attach.
-
-            '
-          type: string
-      required:
-      - labelID
-      type: object
-    TelegramNotificationRuleBase:
-      properties:
-        disableWebPagePreview:
-          description: Disables preview of web links in the sent messages when "true". Defaults to "false".
-          type: boolean
-        messageTemplate:
-          description: The message template as a flux interpolated string.
-          type: string
-        parseMode:
-          description: Parse mode of the message text per https://core.telegram.org/bots/api#formatting-options. Defaults to "MarkdownV2".
-          enum:
-          - MarkdownV2
-          - HTML
-          - Markdown
-          type: string
-        type:
-          description: The discriminator between other types of notification rules is "telegram".
-          enum:
-          - telegram
-          type: string
-      required:
-      - type
-      - messageTemplate
-      - channel
-      type: object
-    TelegramNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/TelegramNotificationRuleBase'
-    HTTPNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/HTTPNotificationRuleBase'
-    PagerDutyNotificationRuleBase:
-      properties:
         messageTemplate:
           type: string
         type:
           enum:
-          - pagerduty
+          - slack
           type: string
       required:
       - type
       - messageTemplate
       type: object
-    SlackNotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleBase'
-      - $ref: '#/components/schemas/SlackNotificationRuleBase'
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
-    RuleStatusLevel:
-      description: The state to record if check matches a criteria.
-      enum:
-      - UNKNOWN
-      - OK
-      - INFO
-      - CRIT
-      - WARN
-      - ANY
-      type: string
     Label:
       properties:
         id:
@@ -553,32 +341,6 @@ components:
             description: this is a description
           type: object
       type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    HTTPNotificationRuleBase:
-      properties:
-        type:
-          enum:
-          - http
-          type: string
-        url:
-          type: string
-      required:
-      - type
-      type: object
-    LabelResponse:
-      properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    NotificationRule:
-      allOf:
-      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
     TagRule:
       properties:
         key:
@@ -593,20 +355,53 @@ components:
         value:
           type: string
       type: object
-    SlackNotificationRuleBase:
+    HTTPNotificationRuleBase:
       properties:
-        channel:
-          type: string
-        messageTemplate:
-          type: string
         type:
           enum:
-          - slack
+          - http
+          type: string
+        url:
           type: string
       required:
       - type
-      - messageTemplate
       type: object
+    NotificationRuleDiscriminator:
+      discriminator:
+        mapping:
+          http: '#/components/schemas/HTTPNotificationRule'
+          pagerduty: '#/components/schemas/PagerDutyNotificationRule'
+          slack: '#/components/schemas/SlackNotificationRule'
+          smtp: '#/components/schemas/SMTPNotificationRule'
+          telegram: '#/components/schemas/TelegramNotificationRule'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/SlackNotificationRule'
+      - $ref: '#/components/schemas/SMTPNotificationRule'
+      - $ref: '#/components/schemas/PagerDutyNotificationRule'
+      - $ref: '#/components/schemas/HTTPNotificationRule'
+      - $ref: '#/components/schemas/TelegramNotificationRule'
+    NotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    NotificationRules:
+      properties:
+        links:
+          $ref: '#/components/schemas/Links'
+        notificationRules:
+          items:
+            $ref: '#/components/schemas/NotificationRule'
+          type: array
+    PostNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleDiscriminator'
     NotificationRuleBase:
       properties:
         createdAt:
@@ -716,14 +511,219 @@ components:
       - statusRules
       - endpointID
       type: object
+    SMTPNotificationRuleBase:
+      properties:
+        bodyTemplate:
+          type: string
+        subjectTemplate:
+          type: string
+        to:
+          type: string
+        type:
+          enum:
+          - smtp
+          type: string
+      required:
+      - type
+      - subjectTemplate
+      - to
+      type: object
+    NotificationRuleUpdate:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        status:
+          enum:
+          - active
+          - inactive
+          type: string
+      type: object
+    SlackNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/SlackNotificationRuleBase'
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    StatusRule:
+      properties:
+        count:
+          type: integer
+        currentLevel:
+          $ref: '#/components/schemas/RuleStatusLevel'
+        period:
+          type: string
+        previousLevel:
+          $ref: '#/components/schemas/RuleStatusLevel'
+      type: object
     Labels:
       items:
         $ref: '#/components/schemas/Label'
       type: array
+    TelegramNotificationRuleBase:
+      properties:
+        disableWebPagePreview:
+          description: Disables preview of web links in the sent messages when "true". Defaults to "false".
+          type: boolean
+        messageTemplate:
+          description: The message template as a flux interpolated string.
+          type: string
+        parseMode:
+          description: Parse mode of the message text per https://core.telegram.org/bots/api#formatting-options. Defaults to "MarkdownV2".
+          enum:
+          - MarkdownV2
+          - HTML
+          - Markdown
+          type: string
+        type:
+          description: The discriminator between other types of notification rules is "telegram".
+          enum:
+          - telegram
+          type: string
+      required:
+      - type
+      - messageTemplate
+      - channel
+      type: object
+    RuleStatusLevel:
+      description: The state to record if check matches a criteria.
+      enum:
+      - UNKNOWN
+      - OK
+      - INFO
+      - CRIT
+      - WARN
+      - ANY
+      type: string
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    TaskStatusType:
+      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
+
+        '
+      enum:
+      - active
+      - inactive
+      type: string
+    PagerDutyNotificationRuleBase:
+      properties:
+        messageTemplate:
+          type: string
+        type:
+          enum:
+          - pagerduty
+          type: string
+      required:
+      - type
+      - messageTemplate
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
     SMTPNotificationRule:
       allOf:
       - $ref: '#/components/schemas/NotificationRuleBase'
       - $ref: '#/components/schemas/SMTPNotificationRuleBase'
+    HTTPNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/HTTPNotificationRuleBase'
+    TelegramNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/TelegramNotificationRuleBase'
+    PagerDutyNotificationRule:
+      allOf:
+      - $ref: '#/components/schemas/NotificationRuleBase'
+      - $ref: '#/components/schemas/PagerDutyNotificationRuleBase'
   parameters:
     Offset:
       description: 'The offset for pagination.

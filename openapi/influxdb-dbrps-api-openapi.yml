@@ -480,88 +480,64 @@ paths:
         lang: Shell
         source: "curl --request PATCH \\\n   \"http://localhost:8086/api/v2/dbrp/DBRP_ID\" \\\n  --header 'Content-type: application/json' \\\n  --header \"Authorization: Token INFLUX_API_TOKEN\" \\\n  --data-binary @- << EOF\n    {\n      \"default\": true,\n      \"retention_policy\": \"example_retention_policy_name\"\n    }\nEOF\n"
 components:
-  parameters:
-    TraceSpan:
-      description: OpenTracing span context
-      example:
-        baggage:
-          key: value
-        span_id: '1'
-        trace_id: '1'
-      in: header
-      name: Zap-Trace-Span
-      required: false
-      schema:
-        type: string
-  schemas:
-    DBRPUpdate:
-      properties:
-        default:
-          description: 'Set to `true` to use this DBRP mapping as the default retention policy
+  responses:
+    AuthorizationError:
+      content:
+        application/json:
+          examples:
+            tokenNotAuthorized:
+              summary: Token is not authorized to access a resource
+              value:
+                code: unauthorized
+                message: unauthorized access
+          schema:
+            properties:
+              code:
+                description: 'The HTTP status code description. Default is `unauthorized`.
 
-            for the database (specified by the `database` property''s value).
+                  '
+                enum:
+                - unauthorized
+                readOnly: true
+                type: string
+              message:
+                description: A human-readable message that may contain detail about the error.
+                readOnly: true
+                type: string
+      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    ResourceNotFoundError:
+      content:
+        application/json:
+          examples:
+            bucket-not-found:
+              summary: Bucket name not found
+              value:
+                code: not found
+                message: bucket "air_sensor" not found
+            org-not-found:
+              summary: Organization name not found
+              value:
+                code: not found
+                message: organization name "my-org" not found
+            orgID-not-found:
+              summary: Organization ID not found
+              value:
+                code: not found
+                message: organization not found
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
 
-            To remove the default mapping, set to `false`.
-
-            '
-          type: boolean
-        retention_policy:
-          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
-
-            Identifies the InfluxDB v1 retention policy mapping.
-
-            '
-          type: string
-    DBRPGet:
-      properties:
-        content:
-          $ref: '#/components/schemas/DBRP'
-          required: true
-      type: object
-    DBRPs:
-      properties:
-        content:
-          items:
-            $ref: '#/components/schemas/DBRP'
-          type: array
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    Links:
-      description: 'URI pointers for additional paged results.
+        The server encountered an unexpected situation.
 
         '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
+  schemas:
     DBRP:
       properties:
         bucketID:
@@ -618,42 +594,68 @@ components:
       - retention_policy
       - default
       type: object
-    Error:
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
       properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
       required:
-      - code
+      - self
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    DBRPUpdate:
+      properties:
+        default:
+          description: 'Set to `true` to use this DBRP mapping as the default retention policy
+
+            for the database (specified by the `database` property''s value).
+
+            To remove the default mapping, set to `false`.
+
+            '
+          type: boolean
+        retention_policy:
+          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
+
+            Identifies the InfluxDB v1 retention policy mapping.
+
+            '
+          type: string
+    DBRPs:
+      properties:
+        content:
+          items:
+            $ref: '#/components/schemas/DBRP'
+          type: array
     DBRPCreate:
       properties:
         bucketID:
@@ -703,63 +705,61 @@ components:
       - database
       - retention_policy
       type: object
-  responses:
-    ResourceNotFoundError:
-      content:
-        application/json:
-          examples:
-            bucket-not-found:
-              summary: Bucket name not found
-              value:
-                code: not found
-                message: bucket "air_sensor" not found
-            org-not-found:
-              summary: Organization name not found
-              value:
-                code: not found
-                message: organization name "my-org" not found
-            orgID-not-found:
-              summary: Organization ID not found
-              value:
-                code: not found
-                message: organization not found
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
-    AuthorizationError:
-      content:
-        application/json:
-          examples:
-            tokenNotAuthorized:
-              summary: Token is not authorized to access a resource
-              value:
-                code: unauthorized
-                message: unauthorized access
-          schema:
-            properties:
-              code:
-                description: 'The HTTP status code description. Default is `unauthorized`.
-
-                  '
-                enum:
-                - unauthorized
-                readOnly: true
-                type: string
-              message:
-                description: A human-readable message that may contain detail about the error.
-                readOnly: true
-                type: string
-      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    DBRPGet:
+      properties:
+        content:
+          $ref: '#/components/schemas/DBRP'
+          required: true
+      type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
+  parameters:
+    TraceSpan:
+      description: OpenTracing span context
+      example:
+        baggage:
+          key: value
+        span_id: '1'
+        trace_id: '1'
+      in: header
+      name: Zap-Trace-Span
+      required: false
+      schema:
+        type: string
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"

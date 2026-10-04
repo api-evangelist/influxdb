@@ -440,6 +440,29 @@ paths:
       - Telegrafs
 components:
   schemas:
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
     Telegraf:
       allOf:
       - $ref: '#/components/schemas/TelegrafRequest'
@@ -479,7 +502,39 @@ components:
             - member
             type: string
         type: object
-    ResourceOwners:
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    AddResourceMemberRequestBody:
+      properties:
+        id:
+          description: 'The ID of the user to add to the resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the user to add to the resource.
+
+            '
+          type: string
+      required:
+      - id
+      type: object
+    ResourceOwner:
+      allOf:
+      - $ref: '#/components/schemas/UserResponse'
+      - properties:
+          role:
+            default: owner
+            enum:
+            - owner
+            type: string
+        type: object
+    ResourceMembers:
       properties:
         links:
           properties:
@@ -489,7 +544,7 @@ components:
           type: object
         users:
           items:
-            $ref: '#/components/schemas/ResourceOwner'
+            $ref: '#/components/schemas/ResourceMember'
           type: array
       type: object
     Links:
@@ -506,42 +561,15 @@ components:
       required:
       - self
       type: object
-    Telegrafs:
-      properties:
-        configurations:
-          items:
-            $ref: '#/components/schemas/Telegraf'
-          type: array
-      type: object
-    ResourceOwner:
-      allOf:
-      - $ref: '#/components/schemas/UserResponse'
-      - properties:
-          role:
-            default: owner
-            enum:
-            - owner
-            type: string
-        type: object
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
+    Link:
+      description: URI of resource.
+      format: uri
       readOnly: true
       type: string
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
     UserResponse:
       properties:
         id:
@@ -577,14 +605,7 @@ components:
           type: string
       required:
       - name
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    ResourceMembers:
+    ResourceOwners:
       properties:
         links:
           properties:
@@ -594,23 +615,52 @@ components:
           type: object
         users:
           items:
-            $ref: '#/components/schemas/ResourceMember'
+            $ref: '#/components/schemas/ResourceOwner'
           type: array
       type: object
-    AddResourceMemberRequestBody:
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    TelegrafRequest:
       properties:
-        id:
-          description: 'The ID of the user to add to the resource.
-
-            '
+        config:
           type: string
+        description:
+          type: string
+        metadata:
+          properties:
+            buckets:
+              items:
+                type: string
+              type: array
+          type: object
         name:
-          description: 'The name of the user to add to the resource.
-
-            '
           type: string
-      required:
-      - id
+        orgID:
+          type: string
+      type: object
+    Telegrafs:
+      properties:
+        configurations:
+          items:
+            $ref: '#/components/schemas/Telegraf'
+          type: array
       type: object
     LabelMapping:
       description: A _label mapping_ contains a `label` ID to attach to a resource.
@@ -624,6 +674,13 @@ components:
           type: string
       required:
       - labelID
+      type: object
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
       type: object
     TelegrafPluginRequest:
       properties:
@@ -657,24 +714,6 @@ components:
                 type: string
             type: object
           type: array
-      type: object
-    TelegrafRequest:
-      properties:
-        config:
-          type: string
-        description:
-          type: string
-        metadata:
-          properties:
-            buckets:
-              items:
-                type: string
-              type: array
-          type: object
-        name:
-          type: string
-        orgID:
-          type: string
       type: object
     Error:
       properties:
@@ -712,45 +751,6 @@ components:
           type: string
       required:
       - code
-    Label:
-      properties:
-        id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
-
-            To remove a property, send an update with an empty value (`""`) for the key.
-
-            '
-          example:
-            color: ffb3b3
-            description: this is a description
-          type: object
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    LabelResponse:
-      properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
   parameters:
     TraceSpan:
       description: OpenTracing span context
