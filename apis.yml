@@ -41,7 +41,7 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/influxdb.png
 url: https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/apis.yml
 created: '2024-09-25'
-modified: '2026-05-30'
+modified: '2026-10-06'
 specificationVersion: '0.23'
 position: Consuming
 access: 3rd-Party
@@ -1297,6 +1297,10 @@ apis:
   - type: Source
     url: https://github.com/influxdata/openapi
 common:
+  - url: https://www.influxdata.com/blog/
+    type: Blog
+  - url: https://www.influxdata.com/blog/feed/
+    type: BlogRSS
   - type: Plans
     url: plans/influxdb-plans-pricing.yml
   - type: CapabilityMap
