@@ -75,3 +75,79 @@ rate_limit_statements:
 - InfluxDB Cloud Serverless also has a free tier with limited data ingestion rates and 30-day retention.
   Paid plans unlock higher rate limits, unlimited data retention, and enterprise features.
 - Multi-tenant · Service quotas apply · No HA
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  - subscription
+  units:
+  - data
+  plans:
+  - name: InfluxDB 3 Enterprise
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Amazon Timestream for InfluxDB
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Cloud Dedicated
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Cloud Serverless - Data In
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - data
+    periods:
+    - other
+  - name: Cloud Serverless - Query Count
+    access: other
+    model: subscription
+    model_how: derived
+    units:
+    - other
+    periods:
+    - other
+  - name: Cloud Serverless - Storage
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - data
+    periods:
+    - other
+  - name: Cloud Serverless - Data Out
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - data
+    periods:
+    - other
+  - name: InfluxDB 3 Core (OSS)
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods:
+    - none
+  - name: Telegraf Enterprise
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - year
