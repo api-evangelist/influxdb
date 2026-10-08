@@ -1297,6 +1297,10 @@ apis:
   - type: Source
     url: https://github.com/influxdata/openapi
 common:
+  - type: RateLimits
+    url: rate-limits/influxdb-rate-limits.yml
+  - type: FinOps
+    url: finops/influxdb-finops.yml
   - url: https://www.influxdata.com/blog/
     type: Blog
   - url: https://www.influxdata.com/blog/feed/
