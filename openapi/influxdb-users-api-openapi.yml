@@ -622,6 +622,38 @@ paths:
         source: "curl -c ./cookie-file.tmp --request POST \\\n   \"http://localhost:8086/api/v2/signin\" \\\n  --user \"${INFLUX_USER_NAME}:${INFLUX_USER_PASSWORD}\"\n\ncurl -b ./cookie-file.tmp --request PUT \\\n   \"http://localhost:8086/api/v2/users/USER_ID/password\" \\\n  --header 'Content-type: application/json' \\\n  --data-binary @- << EOF\n    {\"password\": \"NEW_USER_PASSWORD\"}\nEOF\n"
 components:
   responses:
+    BadRequestError:
+      content:
+        application/json:
+          examples:
+            orgProvidedNotFound:
+              summary: The org or orgID passed doesn't own the token passed in the header
+              value:
+                code: invalid
+                message: 'failed to decode request body: organization not found'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Bad request.
+
+        The response body contains detail about the error.
+
+
+        #### InfluxDB OSS
+
+
+        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
+
+        '
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     AuthorizationError:
       content:
         application/json:
@@ -668,44 +700,12 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
-    BadRequestError:
-      content:
-        application/json:
-          examples:
-            orgProvidedNotFound:
-              summary: The org or orgID passed doesn't own the token passed in the header
-              value:
-                code: invalid
-                message: 'failed to decode request body: organization not found'
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Bad request.
-
-        The response body contains detail about the error.
-
-
-        #### InfluxDB OSS
-
-
-        - Returns this error if an incorrect value is passed in the `org` parameter or `orgID` parameter.
-
-        '
     GeneralServerError:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Non 2XX error response from server.
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
   schemas:
     UserResponse:
       properties:
@@ -742,31 +742,6 @@ components:
           type: string
       required:
       - name
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    PasswordResetBody:
-      properties:
-        password:
-          type: string
-      required:
-      - password
     User:
       properties:
         id:
@@ -790,6 +765,12 @@ components:
           type: string
       required:
       - name
+    PasswordResetBody:
+      properties:
+        password:
+          type: string
+      required:
+      - password
     Users:
       properties:
         links:
@@ -803,6 +784,25 @@ components:
             $ref: '#/components/schemas/UserResponse'
           type: array
       type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
     Error:
       properties:
         code:

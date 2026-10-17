@@ -172,31 +172,6 @@ paths:
       - Legacy Query
 components:
   schemas:
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    InfluxqlCsvResponse:
-      description: CSV Response to InfluxQL Query
-      example: 'name,tags,time,test_field,test_tag test_measurement,,1603740794286107366,1,tag_value test_measurement,,1603740870053205649,2,tag_value test_measurement,,1603741221085428881,3,tag_value
-
-        '
-      type: string
     InfluxqlJsonResponse:
       description: 'The JSON response for an InfluxQL query.
 
@@ -280,6 +255,31 @@ components:
             - series
           type: array
       type: object
+    InfluxqlCsvResponse:
+      description: CSV Response to InfluxQL Query
+      example: 'name,tags,time,test_field,test_tag test_measurement,,1603740794286107366,1,tag_value test_measurement,,1603740870053205649,2,tag_value test_measurement,,1603741221085428881,3,tag_value
+
+        '
+      type: string
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
     Error:
       properties:
         code:

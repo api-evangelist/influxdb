@@ -68,42 +68,10 @@ paths:
       tags:
       - Config
 components:
-  responses:
-    AuthorizationError:
-      content:
-        application/json:
-          examples:
-            tokenNotAuthorized:
-              summary: Token is not authorized to access a resource
-              value:
-                code: unauthorized
-                message: unauthorized access
-          schema:
-            properties:
-              code:
-                description: 'The HTTP status code description. Default is `unauthorized`.
-
-                  '
-                enum:
-                - unauthorized
-                readOnly: true
-                type: string
-              message:
-                description: A human-readable message that may contain detail about the error.
-                readOnly: true
-                type: string
-      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
   schemas:
+    Flags:
+      additionalProperties: true
+      type: object
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -123,9 +91,6 @@ components:
       - unsupported media type
       readOnly: true
       type: string
-    Flags:
-      additionalProperties: true
-      type: object
     Error:
       properties:
         code:
@@ -162,6 +127,41 @@ components:
           type: string
       required:
       - code
+  responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
+    AuthorizationError:
+      content:
+        application/json:
+          examples:
+            tokenNotAuthorized:
+              summary: Token is not authorized to access a resource
+              value:
+                code: unauthorized
+                message: unauthorized access
+          schema:
+            properties:
+              code:
+                description: 'The HTTP status code description. Default is `unauthorized`.
+
+                  '
+                enum:
+                - unauthorized
+                readOnly: true
+                type: string
+              message:
+                description: A human-readable message that may contain detail about the error.
+                readOnly: true
+                type: string
+      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
   parameters:
     TraceSpan:
       description: OpenTracing span context

@@ -381,112 +381,53 @@ paths:
       tags:
       - Authorizations (API tokens)
 components:
+  examples:
+    AuthorizationWithUserPostRequest:
+      description: Creates an authorization scoped to a specific user.
+      summary: An authorization scoped to a user
+      value:
+        description: iot_user write to bucket
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: write
+          resource:
+            id: INFLUX_BUCKET_ID
+            type: buckets
+        userID: INFLUX_USER_ID
+    AuthorizationWithResourcePostRequest:
+      description: Creates an authorization for access to a specific resource.
+      summary: An authorization for a resource
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            id: INFLUX_BUCKET_ID
+            type: buckets
+    AuthorizationPostRequest:
+      description: Creates an authorization.
+      summary: An authorization for a resource type
+      value:
+        description: iot_users read buckets
+        orgID: INFLUX_ORG_ID
+        permissions:
+        - action: read
+          resource:
+            type: buckets
   schemas:
-    Resource:
+    AuthorizationUpdateRequest:
       properties:
-        id:
-          description: 'A resource ID.
-
-            Identifies a specific resource.
-
-            '
+        description:
+          description: A description of the token.
           type: string
-        name:
-          description: 'The name of the resource.
-
-            _Note: not all resource types have a `name` property_.
-
-            '
-          type: string
-        org:
-          description: 'An organization name.
-
-            The organization that owns the resource.
-
-            '
-          type: string
-        orgID:
-          description: 'An organization ID.
-
-            Identifies the organization that owns the resource.
-
-            '
-          type: string
-        type:
-          description: 'A resource type.
-
-            Identifies the API resource''s type (or _kind_).
-
-            '
+        status:
+          default: active
+          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
           enum:
-          - authorizations
-          - buckets
-          - dashboards
-          - orgs
-          - tasks
-          - telegrafs
-          - users
-          - variables
-          - secrets
-          - labels
-          - views
-          - documents
-          - notificationRules
-          - notificationEndpoints
-          - checks
-          - dbrp
-          - annotations
-          - sources
-          - scrapers
-          - notebooks
-          - remotes
-          - replications
-          - instance
-          - flows
-          - functions
-          - subscriptions
+          - active
+          - inactive
           type: string
-      required:
-      - type
-      type: object
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
     Permission:
       properties:
         action:
@@ -565,111 +506,19 @@ components:
       required:
       - action
       - resource
-    AuthorizationUpdateRequest:
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
       properties:
-        description:
-          description: A description of the token.
-          type: string
-        status:
-          default: active
-          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
-          enum:
-          - active
-          - inactive
-          type: string
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
       required:
-      - code
-    AuthorizationPostRequest:
-      allOf:
-      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
-      - properties:
-          orgID:
-            description: 'An organization ID.
-
-              Specifies the organization that owns the authorization.
-
-              '
-            type: string
-          permissions:
-            description: 'A list of permissions for an authorization.
-
-              In the list, provide at least one `permission` object.
-
-
-              In a `permission`, the `resource.type` property grants access to all
-
-              resources of the specified type.
-
-              To grant access to only a specific resource, specify the
-
-              `resource.id` property.
-
-              '
-            items:
-              $ref: '#/components/schemas/Permission'
-            minItems: 1
-            type: array
-          userID:
-            description: 'A user ID.
-
-              Specifies the user that the authorization is scoped to.
-
-
-              When a user authenticates with username and password,
-
-              InfluxDB generates a _user session_ with all the permissions
-
-              specified by all the user''s authorizations.
-
-              '
-            type: string
-        type: object
-      required:
-      - orgID
-      - permissions
-    Authorizations:
-      properties:
-        authorizations:
-          items:
-            $ref: '#/components/schemas/Authorization'
-          type: array
-        links:
-          $ref: '#/components/schemas/Links'
-          readOnly: true
+      - self
       type: object
     Authorization:
       allOf:
@@ -763,7 +612,202 @@ components:
       required:
       - orgID
       - permissions
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    Resource:
+      properties:
+        id:
+          description: 'A resource ID.
+
+            Identifies a specific resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the resource.
+
+            _Note: not all resource types have a `name` property_.
+
+            '
+          type: string
+        org:
+          description: 'An organization name.
+
+            The organization that owns the resource.
+
+            '
+          type: string
+        orgID:
+          description: 'An organization ID.
+
+            Identifies the organization that owns the resource.
+
+            '
+          type: string
+        type:
+          description: 'A resource type.
+
+            Identifies the API resource''s type (or _kind_).
+
+            '
+          enum:
+          - authorizations
+          - buckets
+          - dashboards
+          - orgs
+          - tasks
+          - telegrafs
+          - users
+          - variables
+          - secrets
+          - labels
+          - views
+          - documents
+          - notificationRules
+          - notificationEndpoints
+          - checks
+          - dbrp
+          - annotations
+          - sources
+          - scrapers
+          - notebooks
+          - remotes
+          - replications
+          - instance
+          - flows
+          - functions
+          - subscriptions
+          type: string
+      required:
+      - type
+      type: object
+    AuthorizationPostRequest:
+      allOf:
+      - $ref: '#/components/schemas/AuthorizationUpdateRequest'
+      - properties:
+          orgID:
+            description: 'An organization ID.
+
+              Specifies the organization that owns the authorization.
+
+              '
+            type: string
+          permissions:
+            description: 'A list of permissions for an authorization.
+
+              In the list, provide at least one `permission` object.
+
+
+              In a `permission`, the `resource.type` property grants access to all
+
+              resources of the specified type.
+
+              To grant access to only a specific resource, specify the
+
+              `resource.id` property.
+
+              '
+            items:
+              $ref: '#/components/schemas/Permission'
+            minItems: 1
+            type: array
+          userID:
+            description: 'A user ID.
+
+              Specifies the user that the authorization is scoped to.
+
+
+              When a user authenticates with username and password,
+
+              InfluxDB generates a _user session_ with all the permissions
+
+              specified by all the user''s authorizations.
+
+              '
+            type: string
+        type: object
+      required:
+      - orgID
+      - permissions
+    Authorizations:
+      properties:
+        authorizations:
+          items:
+            $ref: '#/components/schemas/Authorization'
+          type: array
+        links:
+          $ref: '#/components/schemas/Links'
+          readOnly: true
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
   responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     AuthorizationError:
       content:
         application/json:
@@ -788,56 +832,12 @@ components:
                 readOnly: true
                 type: string
       description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
     GeneralServerError:
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
       description: Non 2XX error response from server.
-  examples:
-    AuthorizationWithResourcePostRequest:
-      description: Creates an authorization for access to a specific resource.
-      summary: An authorization for a resource
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            id: INFLUX_BUCKET_ID
-            type: buckets
-    AuthorizationWithUserPostRequest:
-      description: Creates an authorization scoped to a specific user.
-      summary: An authorization scoped to a user
-      value:
-        description: iot_user write to bucket
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: write
-          resource:
-            id: INFLUX_BUCKET_ID
-            type: buckets
-        userID: INFLUX_USER_ID
-    AuthorizationPostRequest:
-      description: Creates an authorization.
-      summary: An authorization for a resource type
-      value:
-        description: iot_users read buckets
-        orgID: INFLUX_ORG_ID
-        permissions:
-        - action: read
-          resource:
-            type: buckets
   parameters:
     TraceSpan:
       description: OpenTracing span context

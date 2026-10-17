@@ -29,6 +29,11 @@ paths:
       - Maps
 components:
   schemas:
+    Token:
+      properties:
+        token:
+          type: string
+      type: object
     ErrorCode:
       description: code is the machine-readable error code.
       enum:
@@ -48,11 +53,6 @@ components:
       - unsupported media type
       readOnly: true
       type: string
-    Token:
-      properties:
-        token:
-          type: string
-      type: object
     Error:
       properties:
         code:

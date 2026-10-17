@@ -211,6 +211,16 @@ paths:
         source: "curl --request POST INFLUX_URL/api/v2/delete?org=INFLUX_ORG&bucket=INFLUX_BUCKET \\\n  --header 'Authorization: Token INFLUX_API_TOKEN' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n    \"start\": \"2020-03-01T00:00:00Z\",\n    \"stop\": \"2020-11-14T00:00:00Z\",\n    \"predicate\": \"tag1=\\\"value1\\\" and (tag2=\\\"value2\\\" and tag3!=\\\"value3\\\")\"\n  }'\n"
 components:
   responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
     AuthorizationError:
       content:
         application/json:
@@ -263,36 +273,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
       description: Non 2XX error response from server.
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
   schemas:
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
     DeletePredicateRequest:
       description: The delete predicate request.
       properties:
@@ -322,6 +303,25 @@ components:
       - start
       - stop
       type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
     Error:
       properties:
         code:

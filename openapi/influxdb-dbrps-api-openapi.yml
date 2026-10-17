@@ -480,64 +480,56 @@ paths:
         lang: Shell
         source: "curl --request PATCH \\\n   \"http://localhost:8086/api/v2/dbrp/DBRP_ID\" \\\n  --header 'Content-type: application/json' \\\n  --header \"Authorization: Token INFLUX_API_TOKEN\" \\\n  --data-binary @- << EOF\n    {\n      \"default\": true,\n      \"retention_policy\": \"example_retention_policy_name\"\n    }\nEOF\n"
 components:
-  responses:
-    AuthorizationError:
-      content:
-        application/json:
-          examples:
-            tokenNotAuthorized:
-              summary: Token is not authorized to access a resource
-              value:
-                code: unauthorized
-                message: unauthorized access
-          schema:
-            properties:
-              code:
-                description: 'The HTTP status code description. Default is `unauthorized`.
-
-                  '
-                enum:
-                - unauthorized
-                readOnly: true
-                type: string
-              message:
-                description: A human-readable message that may contain detail about the error.
-                readOnly: true
-                type: string
-      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
-    ResourceNotFoundError:
-      content:
-        application/json:
-          examples:
-            bucket-not-found:
-              summary: Bucket name not found
-              value:
-                code: not found
-                message: bucket "air_sensor" not found
-            org-not-found:
-              summary: Organization name not found
-              value:
-                code: not found
-                message: organization name "my-org" not found
-            orgID-not-found:
-              summary: Organization ID not found
-              value:
-                code: not found
-                message: organization not found
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
-    InternalServerError:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-      description: 'Internal server error.
-
-        The server encountered an unexpected situation.
-
-        '
   schemas:
+    DBRPCreate:
+      properties:
+        bucketID:
+          description: 'A bucket ID.
+
+            Identifies the bucket used as the target for the translation.
+
+            '
+          type: string
+        database:
+          description: 'A database name.
+
+            Identifies the InfluxDB v1 database.
+
+            '
+          type: string
+        default:
+          description: 'Set to `true` to use this DBRP mapping as the default retention policy
+
+            for the database (specified by the `database` property''s value).
+
+            '
+          type: boolean
+        org:
+          description: 'An organization name.
+
+            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
+
+            '
+          type: string
+        orgID:
+          description: 'An organization ID.
+
+            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
+
+            '
+          type: string
+        retention_policy:
+          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
+
+            Identifies the InfluxDB v1 retention policy mapping.
+
+            '
+          type: string
+      required:
+      - bucketID
+      - database
+      - retention_policy
+      type: object
     DBRP:
       properties:
         bucketID:
@@ -594,25 +586,6 @@ components:
       - retention_policy
       - default
       type: object
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
     Links:
       description: 'URI pointers for additional paged results.
 
@@ -632,6 +605,12 @@ components:
       format: uri
       readOnly: true
       type: string
+    DBRPGet:
+      properties:
+        content:
+          $ref: '#/components/schemas/DBRP'
+          required: true
+      type: object
     DBRPUpdate:
       properties:
         default:
@@ -656,61 +635,25 @@ components:
           items:
             $ref: '#/components/schemas/DBRP'
           type: array
-    DBRPCreate:
-      properties:
-        bucketID:
-          description: 'A bucket ID.
-
-            Identifies the bucket used as the target for the translation.
-
-            '
-          type: string
-        database:
-          description: 'A database name.
-
-            Identifies the InfluxDB v1 database.
-
-            '
-          type: string
-        default:
-          description: 'Set to `true` to use this DBRP mapping as the default retention policy
-
-            for the database (specified by the `database` property''s value).
-
-            '
-          type: boolean
-        org:
-          description: 'An organization name.
-
-            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
-
-            '
-          type: string
-        orgID:
-          description: 'An organization ID.
-
-            Identifies the [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization) that owns the mapping.
-
-            '
-          type: string
-        retention_policy:
-          description: 'A [retention policy](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#retention-policy-rp) name.
-
-            Identifies the InfluxDB v1 retention policy mapping.
-
-            '
-          type: string
-      required:
-      - bucketID
-      - database
-      - retention_policy
-      type: object
-    DBRPGet:
-      properties:
-        content:
-          $ref: '#/components/schemas/DBRP'
-          required: true
-      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
     Error:
       properties:
         code:
@@ -747,6 +690,63 @@ components:
           type: string
       required:
       - code
+  responses:
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: 'Internal server error.
+
+        The server encountered an unexpected situation.
+
+        '
+    AuthorizationError:
+      content:
+        application/json:
+          examples:
+            tokenNotAuthorized:
+              summary: Token is not authorized to access a resource
+              value:
+                code: unauthorized
+                message: unauthorized access
+          schema:
+            properties:
+              code:
+                description: 'The HTTP status code description. Default is `unauthorized`.
+
+                  '
+                enum:
+                - unauthorized
+                readOnly: true
+                type: string
+              message:
+                description: A human-readable message that may contain detail about the error.
+                readOnly: true
+                type: string
+      description: "Unauthorized. The error may indicate one of the following:\n\n  * The `Authorization: Token` header is missing or malformed.\n  * The API token value is missing from the header.\n  * The token doesn't have sufficient permissions to write to this organization and bucket.\n"
+    ResourceNotFoundError:
+      content:
+        application/json:
+          examples:
+            bucket-not-found:
+              summary: Bucket name not found
+              value:
+                code: not found
+                message: bucket "air_sensor" not found
+            org-not-found:
+              summary: Organization name not found
+              value:
+                code: not found
+                message: organization name "my-org" not found
+            orgID-not-found:
+              summary: Organization ID not found
+              value:
+                code: not found
+                message: organization not found
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: "Not found.\nA requested resource was not found.\nThe response body contains the requested resource type and the name value\n(if you passed it)--for example:\n\n- `\"organization name \\\"my-org\\\" not found\"`\n- `\"organization not found\"`: indicates you passed an ID that did not match\n   an organization.\n"
   parameters:
     TraceSpan:
       description: OpenTracing span context

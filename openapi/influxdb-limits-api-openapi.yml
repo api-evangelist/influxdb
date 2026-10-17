@@ -39,25 +39,6 @@ paths:
       - Limits
 components:
   schemas:
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
     Links:
       description: 'URI pointers for additional paged results.
 
@@ -72,6 +53,11 @@ components:
       required:
       - self
       type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
     Limit:
       description: These are org limits similar to those configured in/by quartz.
       properties:
@@ -206,9 +192,23 @@ components:
       - notificationRule
       - notificationEndpoint
       type: object
-    Link:
-      description: URI of resource.
-      format: uri
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
       readOnly: true
       type: string
     Error:

@@ -331,61 +331,37 @@ paths:
       - Checks
 components:
   schemas:
-    BuilderConfig:
-      properties:
-        aggregateWindow:
-          properties:
-            fillValues:
-              type: boolean
-            period:
-              type: string
-          type: object
-        buckets:
-          items:
-            type: string
-          type: array
-        functions:
-          items:
-            $ref: '#/components/schemas/BuilderFunctionsType'
-          type: array
-        tags:
-          items:
-            $ref: '#/components/schemas/BuilderTagsType'
-          type: array
-      type: object
-    Label:
-      properties:
-        id:
-          readOnly: true
-          type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
-
-            To remove a property, send an update with an empty value (`""`) for the key.
-
-            '
-          example:
-            color: ffb3b3
-            description: this is a description
-          type: object
-      type: object
-    BuilderAggregateFunctionType:
-      enum:
-      - filter
-      - group
-      type: string
     QueryEditMode:
       enum:
       - builder
       - advanced
       type: string
+    BuilderTagsType:
+      properties:
+        aggregateFunctionType:
+          $ref: '#/components/schemas/BuilderAggregateFunctionType'
+        key:
+          type: string
+        values:
+          items:
+            type: string
+          type: array
+      type: object
+    BuilderFunctionsType:
+      properties:
+        name:
+          type: string
+      type: object
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    PostCheck:
+      allOf:
+      - $ref: '#/components/schemas/CheckDiscriminator'
     DeadmanCheck:
       allOf:
       - $ref: '#/components/schemas/CheckBase'
@@ -427,6 +403,9 @@ components:
         required:
         - type
         type: object
+    Check:
+      allOf:
+      - $ref: '#/components/schemas/CheckDiscriminator'
     Threshold:
       discriminator:
         mapping:
@@ -438,6 +417,120 @@ components:
       - $ref: '#/components/schemas/GreaterThreshold'
       - $ref: '#/components/schemas/LesserThreshold'
       - $ref: '#/components/schemas/RangeThreshold'
+    CustomCheck:
+      allOf:
+      - $ref: '#/components/schemas/CheckBase'
+      - properties:
+          type:
+            enum:
+            - custom
+            type: string
+        required:
+        - type
+        type: object
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    BuilderAggregateFunctionType:
+      enum:
+      - filter
+      - group
+      type: string
+    DashboardQuery:
+      properties:
+        builderConfig:
+          $ref: '#/components/schemas/BuilderConfig'
+        editMode:
+          $ref: '#/components/schemas/QueryEditMode'
+        name:
+          type: string
+        text:
+          description: The text of the Flux query.
+          type: string
+      type: object
+    LesserThreshold:
+      allOf:
+      - $ref: '#/components/schemas/ThresholdBase'
+      - properties:
+          type:
+            enum:
+            - lesser
+            type: string
+          value:
+            format: float
+            type: number
+        required:
+        - type
+        - value
+        type: object
+    CheckPatch:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        status:
+          enum:
+          - active
+          - inactive
+          type: string
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    CheckDiscriminator:
+      discriminator:
+        mapping:
+          custom: '#/components/schemas/CustomCheck'
+          deadman: '#/components/schemas/DeadmanCheck'
+          threshold: '#/components/schemas/ThresholdCheck'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/DeadmanCheck'
+      - $ref: '#/components/schemas/ThresholdCheck'
+      - $ref: '#/components/schemas/CustomCheck'
+    TaskStatusType:
+      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
+
+        '
+      enum:
+      - active
+      - inactive
+      type: string
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
     ThresholdCheck:
       allOf:
       - $ref: '#/components/schemas/CheckBase'
@@ -472,6 +565,42 @@ components:
         required:
         - type
         type: object
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
     CheckBase:
       properties:
         createdAt:
@@ -550,6 +679,14 @@ components:
       - name
       - orgID
       - query
+    Checks:
+      properties:
+        checks:
+          items:
+            $ref: '#/components/schemas/Check'
+          type: array
+        links:
+          $ref: '#/components/schemas/Links'
     GreaterThreshold:
       allOf:
       - $ref: '#/components/schemas/ThresholdBase'
@@ -565,23 +702,6 @@ components:
         - type
         - value
         type: object
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    Check:
-      allOf:
-      - $ref: '#/components/schemas/CheckDiscriminator'
-    ThresholdBase:
-      properties:
-        allValues:
-          description: If true, only alert if all values meet threshold.
-          type: boolean
-        level:
-          $ref: '#/components/schemas/CheckStatusLevel'
     RangeThreshold:
       allOf:
       - $ref: '#/components/schemas/ThresholdBase'
@@ -604,110 +724,6 @@ components:
         - max
         - within
         type: object
-    DashboardQuery:
-      properties:
-        builderConfig:
-          $ref: '#/components/schemas/BuilderConfig'
-        editMode:
-          $ref: '#/components/schemas/QueryEditMode'
-        name:
-          type: string
-        text:
-          description: The text of the Flux query.
-          type: string
-      type: object
-    LesserThreshold:
-      allOf:
-      - $ref: '#/components/schemas/ThresholdBase'
-      - properties:
-          type:
-            enum:
-            - lesser
-            type: string
-          value:
-            format: float
-            type: number
-        required:
-        - type
-        - value
-        type: object
-    CustomCheck:
-      allOf:
-      - $ref: '#/components/schemas/CheckBase'
-      - properties:
-          type:
-            enum:
-            - custom
-            type: string
-        required:
-        - type
-        type: object
-    PostCheck:
-      allOf:
-      - $ref: '#/components/schemas/CheckDiscriminator'
-    BuilderFunctionsType:
-      properties:
-        name:
-          type: string
-      type: object
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    CheckDiscriminator:
-      discriminator:
-        mapping:
-          custom: '#/components/schemas/CustomCheck'
-          deadman: '#/components/schemas/DeadmanCheck'
-          threshold: '#/components/schemas/ThresholdCheck'
-        propertyName: type
-      oneOf:
-      - $ref: '#/components/schemas/DeadmanCheck'
-      - $ref: '#/components/schemas/ThresholdCheck'
-      - $ref: '#/components/schemas/CustomCheck'
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    BuilderTagsType:
-      properties:
-        aggregateFunctionType:
-          $ref: '#/components/schemas/BuilderAggregateFunctionType'
-        key:
-          type: string
-        values:
-          items:
-            type: string
-          type: array
-      type: object
-    FluxResponse:
-      description: Rendered flux that backs the check or notification.
-      properties:
-        flux:
-          type: string
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
-    Checks:
-      properties:
-        checks:
-          items:
-            $ref: '#/components/schemas/Check'
-          type: array
-        links:
-          $ref: '#/components/schemas/Links'
     CheckStatusLevel:
       description: The state to record if check matches a criteria.
       enum:
@@ -716,33 +732,6 @@ components:
       - INFO
       - CRIT
       - WARN
-      type: string
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    TaskStatusType:
-      description: '`inactive` cancels scheduled runs and prevents manual runs of the task.
-
-        '
-      enum:
-      - active
-      - inactive
       type: string
     LabelMapping:
       description: A _label mapping_ contains a `label` ID to attach to a resource.
@@ -757,77 +746,73 @@ components:
       required:
       - labelID
       type: object
-    LabelResponse:
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    FluxResponse:
+      description: Rendered flux that backs the check or notification.
       properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    CheckPatch:
+        flux:
+          type: string
+    Label:
       properties:
-        description:
+        id:
+          readOnly: true
           type: string
         name:
           type: string
-        status:
-          enum:
-          - active
-          - inactive
+        orgID:
+          readOnly: true
           type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
       type: object
-    Error:
+    BuilderConfig:
       properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
-      required:
-      - code
+        aggregateWindow:
+          properties:
+            fillValues:
+              type: boolean
+            period:
+              type: string
+          type: object
+        buckets:
+          items:
+            type: string
+          type: array
+        functions:
+          items:
+            $ref: '#/components/schemas/BuilderFunctionsType'
+          type: array
+        tags:
+          items:
+            $ref: '#/components/schemas/BuilderTagsType'
+          type: array
+      type: object
+    ThresholdBase:
+      properties:
+        allValues:
+          description: If true, only alert if all values meet threshold.
+          type: boolean
+        level:
+          $ref: '#/components/schemas/CheckStatusLevel'
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
   parameters:
-    Offset:
-      description: 'The offset for pagination.
-
-        The number of records to skip.
-
-
-        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
-
-        '
-      in: query
-      name: offset
-      required: false
-      schema:
-        minimum: 0
-        type: integer
     Limit:
       description: 'Limits the number of records returned. Default is `20`.
 
@@ -852,6 +837,21 @@ components:
       required: false
       schema:
         type: string
+    Offset:
+      description: 'The offset for pagination.
+
+        The number of records to skip.
+
+
+        For more information about pagination parameters, see [Pagination](https://docs.influxdata.com/influxdb/cloud/api/#tag/Pagination).
+
+        '
+      in: query
+      name: offset
+      required: false
+      schema:
+        minimum: 0
+        type: integer
   securitySchemes:
     BasicAuthentication:
       description: "### Basic authentication scheme\n\nUse the HTTP Basic authentication scheme for InfluxDB `/api/v2` API operations that support it:\n\n### Syntax\n\n`Authorization: Basic BASE64_ENCODED_CREDENTIALS`\n\nTo construct the `BASE64_ENCODED_CREDENTIALS`, combine the username and\nthe password with a colon (`USERNAME:PASSWORD`), and then encode the\nresulting string in [base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64).\nMany HTTP clients encode the credentials for you before sending the\nrequest.\n\n_**Warning**: Base64-encoding can easily be reversed to obtain the original\nusername and password. It is used to keep the data intact and does not provide\nsecurity. You should always use HTTPS when authenticating or sending a request with\nsensitive information._\n\n### Examples\n\nIn the examples, replace the following:\n\n- **`EMAIL_ADDRESS`**: InfluxDB Cloud username (the email address the user signed up with)\n- **`PASSWORD`**: InfluxDB Cloud [API token](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#token)\n- **`INFLUX_URL`**: your InfluxDB Cloud URL\n\n#### Encode credentials with cURL\n\nThe following example shows how to use cURL to send an API request that uses Basic authentication.\nWith the `--user` option, cURL encodes the credentials and passes them\nin the `Authorization: Basic` header.\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --user \"EMAIL_ADDRESS\":\"PASSWORD\"\n```\n\n#### Encode credentials with Flux\n\nThe Flux [`http.basicAuth()` function](https://docs.influxdata.com/flux/v0.x/stdlib/http/basicauth/) returns a Base64-encoded\nbasic authentication header using a specified username and password combination.\n\n#### Encode credentials with JavaScript\n\nThe following example shows how to use the JavaScript `btoa()` function\nto create a Base64-encoded string:\n\n```js\nbtoa('EMAIL_ADDRESS:PASSWORD')\n```\n\nThe output is the following:\n\n```js\n'VVNFUk5BTUU6UEFTU1dPUkQ='\n```\n\nOnce you have the Base64-encoded credentials, you can pass them in the\n`Authorization` header--for example:\n\n```sh\ncurl --get \"INFLUX_URL/api/v2/signin\"\n    --header \"Authorization: Basic VVNFUk5BTUU6UEFTU1dPUkQ=\"\n```\n\nTo learn more about HTTP authentication, see\n[Mozilla Developer Network (MDN) Web Docs, HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)._\n"

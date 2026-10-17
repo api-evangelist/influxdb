@@ -271,73 +271,6 @@ paths:
       - Legacy Authorizations
 components:
   schemas:
-    Resource:
-      properties:
-        id:
-          description: 'A resource ID.
-
-            Identifies a specific resource.
-
-            '
-          type: string
-        name:
-          description: 'The name of the resource.
-
-            _Note: not all resource types have a `name` property_.
-
-            '
-          type: string
-        org:
-          description: 'An organization name.
-
-            The organization that owns the resource.
-
-            '
-          type: string
-        orgID:
-          description: 'An organization ID.
-
-            Identifies the organization that owns the resource.
-
-            '
-          type: string
-        type:
-          description: 'A resource type.
-
-            Identifies the API resource''s type (or _kind_).
-
-            '
-          enum:
-          - authorizations
-          - buckets
-          - dashboards
-          - orgs
-          - tasks
-          - telegrafs
-          - users
-          - variables
-          - secrets
-          - labels
-          - views
-          - documents
-          - notificationRules
-          - notificationEndpoints
-          - checks
-          - dbrp
-          - annotations
-          - sources
-          - scrapers
-          - notebooks
-          - remotes
-          - replications
-          - instance
-          - flows
-          - functions
-          - subscriptions
-          type: string
-      required:
-      - type
-      type: object
     LegacyAuthorizationPostRequest:
       allOf:
       - $ref: '#/components/schemas/AuthorizationUpdateRequest'
@@ -365,44 +298,18 @@ components:
       required:
       - orgID
       - permissions
-    ErrorCode:
-      description: code is the machine-readable error code.
-      enum:
-      - internal error
-      - not implemented
-      - not found
-      - conflict
-      - invalid
-      - unprocessable entity
-      - empty value
-      - unavailable
-      - forbidden
-      - too many requests
-      - unauthorized
-      - method not allowed
-      - request too large
-      - unsupported media type
-      readOnly: true
-      type: string
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
+    AuthorizationUpdateRequest:
       properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
+        description:
+          description: A description of the token.
+          type: string
+        status:
+          default: active
+          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
+          enum:
+          - active
+          - inactive
+          type: string
     Permission:
       properties:
         action:
@@ -481,54 +388,20 @@ components:
       required:
       - action
       - resource
-    AuthorizationUpdateRequest:
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
       properties:
-        description:
-          description: A description of the token.
-          type: string
-        status:
-          default: active
-          description: Status of the token. If `inactive`, InfluxDB rejects requests that use the token.
-          enum:
-          - active
-          - inactive
-          type: string
-    Error:
-      properties:
-        code:
-          $ref: '#/components/schemas/ErrorCode'
-          description: code is the machine-readable error code.
-          enum:
-          - internal error
-          - not implemented
-          - not found
-          - conflict
-          - invalid
-          - unprocessable entity
-          - empty value
-          - unavailable
-          - forbidden
-          - too many requests
-          - unauthorized
-          - method not allowed
-          - request too large
-          - unsupported media type
-          readOnly: true
-          type: string
-        err:
-          description: Stack of errors that occurred during processing of the request. Useful for debugging.
-          readOnly: true
-          type: string
-        message:
-          description: Human-readable message.
-          readOnly: true
-          type: string
-        op:
-          description: Describes the logical code operation when the error occurred. Useful for debugging.
-          readOnly: true
-          type: string
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
       required:
-      - code
+      - self
+      type: object
     Authorization:
       allOf:
       - $ref: '#/components/schemas/AuthorizationUpdateRequest'
@@ -621,6 +494,133 @@ components:
       required:
       - orgID
       - permissions
+    Resource:
+      properties:
+        id:
+          description: 'A resource ID.
+
+            Identifies a specific resource.
+
+            '
+          type: string
+        name:
+          description: 'The name of the resource.
+
+            _Note: not all resource types have a `name` property_.
+
+            '
+          type: string
+        org:
+          description: 'An organization name.
+
+            The organization that owns the resource.
+
+            '
+          type: string
+        orgID:
+          description: 'An organization ID.
+
+            Identifies the organization that owns the resource.
+
+            '
+          type: string
+        type:
+          description: 'A resource type.
+
+            Identifies the API resource''s type (or _kind_).
+
+            '
+          enum:
+          - authorizations
+          - buckets
+          - dashboards
+          - orgs
+          - tasks
+          - telegrafs
+          - users
+          - variables
+          - secrets
+          - labels
+          - views
+          - documents
+          - notificationRules
+          - notificationEndpoints
+          - checks
+          - dbrp
+          - annotations
+          - sources
+          - scrapers
+          - notebooks
+          - remotes
+          - replications
+          - instance
+          - flows
+          - functions
+          - subscriptions
+          type: string
+      required:
+      - type
+      type: object
+    ErrorCode:
+      description: code is the machine-readable error code.
+      enum:
+      - internal error
+      - not implemented
+      - not found
+      - conflict
+      - invalid
+      - unprocessable entity
+      - empty value
+      - unavailable
+      - forbidden
+      - too many requests
+      - unauthorized
+      - method not allowed
+      - request too large
+      - unsupported media type
+      readOnly: true
+      type: string
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+          description: code is the machine-readable error code.
+          enum:
+          - internal error
+          - not implemented
+          - not found
+          - conflict
+          - invalid
+          - unprocessable entity
+          - empty value
+          - unavailable
+          - forbidden
+          - too many requests
+          - unauthorized
+          - method not allowed
+          - request too large
+          - unsupported media type
+          readOnly: true
+          type: string
+        err:
+          description: Stack of errors that occurred during processing of the request. Useful for debugging.
+          readOnly: true
+          type: string
+        message:
+          description: Human-readable message.
+          readOnly: true
+          type: string
+        op:
+          description: Describes the logical code operation when the error occurred. Useful for debugging.
+          readOnly: true
+          type: string
+      required:
+      - code
   responses:
     ServerError:
       content:

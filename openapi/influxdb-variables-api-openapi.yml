@@ -266,6 +266,88 @@ paths:
       - Variables
 components:
   schemas:
+    Labels:
+      items:
+        $ref: '#/components/schemas/Label'
+      type: array
+    ConstantVariableProperties:
+      properties:
+        type:
+          enum:
+          - constant
+          type: string
+        values:
+          items:
+            type: string
+          type: array
+    Label:
+      properties:
+        id:
+          readOnly: true
+          type: string
+        name:
+          type: string
+        orgID:
+          readOnly: true
+          type: string
+        properties:
+          additionalProperties:
+            type: string
+          description: 'Key-value pairs associated with this label.
+
+            To remove a property, send an update with an empty value (`""`) for the key.
+
+            '
+          example:
+            color: ffb3b3
+            description: this is a description
+          type: object
+      type: object
+    LabelResponse:
+      properties:
+        label:
+          $ref: '#/components/schemas/Label'
+        links:
+          $ref: '#/components/schemas/Links'
+      type: object
+    VariableProperties:
+      oneOf:
+      - $ref: '#/components/schemas/QueryVariableProperties'
+      - $ref: '#/components/schemas/ConstantVariableProperties'
+      - $ref: '#/components/schemas/MapVariableProperties'
+      type: object
+    Links:
+      description: 'URI pointers for additional paged results.
+
+        '
+      properties:
+        next:
+          $ref: '#/components/schemas/Link'
+        prev:
+          $ref: '#/components/schemas/Link'
+        self:
+          $ref: '#/components/schemas/Link'
+      required:
+      - self
+      type: object
+    LabelMapping:
+      description: A _label mapping_ contains a `label` ID to attach to a resource.
+      properties:
+        labelID:
+          description: 'A label ID.
+
+            Specifies the label to attach.
+
+            '
+          type: string
+      required:
+      - labelID
+      type: object
+    Link:
+      description: URI of resource.
+      format: uri
+      readOnly: true
+      type: string
     Variables:
       example:
         variables:
@@ -315,28 +397,25 @@ components:
           additionalProperties:
             type: string
           type: object
-    Label:
+    QueryVariableProperties:
       properties:
-        id:
-          readOnly: true
+        type:
+          enum:
+          - query
           type: string
-        name:
-          type: string
-        orgID:
-          readOnly: true
-          type: string
-        properties:
-          additionalProperties:
-            type: string
-          description: 'Key-value pairs associated with this label.
-
-            To remove a property, send an update with an empty value (`""`) for the key.
-
-            '
-          example:
-            color: ffb3b3
-            description: this is a description
+        values:
+          properties:
+            language:
+              type: string
+            query:
+              type: string
           type: object
+    LabelsResponse:
+      properties:
+        labels:
+          $ref: '#/components/schemas/Labels'
+        links:
+          $ref: '#/components/schemas/Links'
       type: object
     ErrorCode:
       description: code is the machine-readable error code.
@@ -357,85 +436,6 @@ components:
       - unsupported media type
       readOnly: true
       type: string
-    QueryVariableProperties:
-      properties:
-        type:
-          enum:
-          - query
-          type: string
-        values:
-          properties:
-            language:
-              type: string
-            query:
-              type: string
-          type: object
-    Links:
-      description: 'URI pointers for additional paged results.
-
-        '
-      properties:
-        next:
-          $ref: '#/components/schemas/Link'
-        prev:
-          $ref: '#/components/schemas/Link'
-        self:
-          $ref: '#/components/schemas/Link'
-      required:
-      - self
-      type: object
-    VariableProperties:
-      oneOf:
-      - $ref: '#/components/schemas/QueryVariableProperties'
-      - $ref: '#/components/schemas/ConstantVariableProperties'
-      - $ref: '#/components/schemas/MapVariableProperties'
-      type: object
-    Link:
-      description: URI of resource.
-      format: uri
-      readOnly: true
-      type: string
-    LabelsResponse:
-      properties:
-        labels:
-          $ref: '#/components/schemas/Labels'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
-    LabelMapping:
-      description: A _label mapping_ contains a `label` ID to attach to a resource.
-      properties:
-        labelID:
-          description: 'A label ID.
-
-            Specifies the label to attach.
-
-            '
-          type: string
-      required:
-      - labelID
-      type: object
-    Labels:
-      items:
-        $ref: '#/components/schemas/Label'
-      type: array
-    ConstantVariableProperties:
-      properties:
-        type:
-          enum:
-          - constant
-          type: string
-        values:
-          items:
-            type: string
-          type: array
-    LabelResponse:
-      properties:
-        label:
-          $ref: '#/components/schemas/Label'
-        links:
-          $ref: '#/components/schemas/Links'
-      type: object
     Variable:
       properties:
         arguments:
