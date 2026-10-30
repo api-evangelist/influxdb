@@ -1,4 +1,4 @@
-# InfluxDB (influxdb)
+# InfluxDB
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -66,73 +66,184 @@
 
 InfluxData is the company building InfluxDB, the open source time series database used by more than a million developers around the world. Their mission is to help developers build intelligent, real-time systems with their time series data, with offerings spanning open source InfluxDB Core and Enterprise, InfluxDB Cloud Serverless and Dedicated, and Telegraf for data collection.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/apis.yml)
+**Areas:** Database · Time Series · Real-Time · Analytics
 
-## Scope
+## InfluxDB on APIs.io
 
-- **Position:** Consuming
-- **Access:** 3rd-Party
+Everything profiled for InfluxDB is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/influxdb/](https://apis.io/providers/influxdb/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (40)
 
-- Database
-- Time Series
-- Real-Time
-- Analytics
+- [InfluxDB Authorizations (API tokens) API](https://apis.io/apis/influxdb/influxdb-authorizations-api-tokens-api/) — Create and manage authorizations (API tokens). An _authorization_ contains a list of `read` and `write` permissions for organization resources and provides…
+- [InfluxDB Bucket Schemas API](https://apis.io/apis/influxdb/influxdb-bucket-schemas-api/) — The Bucket Schemas API from InfluxDB — 2 operation(s) for bucket schemas.
+- [InfluxDB Buckets API](https://apis.io/apis/influxdb/influxdb-buckets-api/) — Store your data in InfluxDB [buckets](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket). A bucket is a named location where time series…
+- [InfluxDB Cells API](https://apis.io/apis/influxdb/influxdb-cells-api/) — The Cells API from InfluxDB — 3 operation(s) for cells.
+- [InfluxDB Checks API](https://apis.io/apis/influxdb/influxdb-checks-api/) — The Checks API from InfluxDB — 5 operation(s) for checks.
+- [InfluxDB Config API](https://apis.io/apis/influxdb/influxdb-config-api/) — The Config API from InfluxDB — 1 operation(s) for config.
+- [InfluxDB Dashboards API](https://apis.io/apis/influxdb/influxdb-dashboards-api/) — The Dashboards API from InfluxDB — 11 operation(s) for dashboards.
+- [InfluxDB Data I/O endpoints API](https://apis.io/apis/influxdb/influxdb-data-i-o-endpoints-api/) — The Data I/O endpoints API from InfluxDB — 9 operation(s) for data i/o endpoints.
+- [InfluxDB DBRPs API](https://apis.io/apis/influxdb/influxdb-dbrps-api/) — The InfluxDB 1.x data model includes [databases](https://docs.influxdata.com/influxdb/v1.8/concepts/glossary/#database) and [retention…
+- [InfluxDB Delete API](https://apis.io/apis/influxdb/influxdb-delete-api/) — Delete data from an InfluxDB bucket.
+- [InfluxDB Invokable Scripts API](https://apis.io/apis/influxdb/influxdb-invokable-scripts-api/) — Store, manage, and execute scripts in InfluxDB. A script stores your custom Flux script and provides an invokable endpoint that accepts runtime parameters.…
+- [InfluxDB Labels API](https://apis.io/apis/influxdb/influxdb-labels-api/) — The Labels API from InfluxDB — 2 operation(s) for labels.
+- [InfluxDB Legacy Authorizations API](https://apis.io/apis/influxdb/influxdb-legacy-authorizations-api/) — The Legacy Authorizations API from InfluxDB — 3 operation(s) for legacy authorizations.
+- [InfluxDB Legacy Query API](https://apis.io/apis/influxdb/influxdb-legacy-query-api/) — The Legacy Query API from InfluxDB — 1 operation(s) for legacy query.
+- [InfluxDB Legacy Write API](https://apis.io/apis/influxdb/influxdb-legacy-write-api/) — The Legacy Write API from InfluxDB — 1 operation(s) for legacy write.
+- [InfluxDB Limits API](https://apis.io/apis/influxdb/influxdb-limits-api/) — The Limits API from InfluxDB — 1 operation(s) for limits.
+- [InfluxDB Maps API](https://apis.io/apis/influxdb/influxdb-maps-api/) — The Maps API from InfluxDB — 1 operation(s) for maps.
+- [InfluxDB NotificationEndpoints API](https://apis.io/apis/influxdb/influxdb-notificationendpoints-api/) — The NotificationEndpoints API from InfluxDB — 4 operation(s) for notificationendpoints.
+- [InfluxDB Organizations API](https://apis.io/apis/influxdb/influxdb-organizations-api/) — Manage your [organization](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#organization). An organization is a workspace for a group of…
+- [InfluxDB Ping API](https://apis.io/apis/influxdb/influxdb-ping-api/) — The Ping API from InfluxDB — 1 operation(s) for ping.
+- [InfluxDB Query API](https://apis.io/apis/influxdb/influxdb-query-api/) — Retrieve data, analyze queries, and get query suggestions.
+- [InfluxDB Resources API](https://apis.io/apis/influxdb/influxdb-resources-api/) — The Resources API from InfluxDB — 1 operation(s) for resources.
+- [InfluxDB Routes API](https://apis.io/apis/influxdb/influxdb-routes-api/) — The Routes API from InfluxDB — 1 operation(s) for routes.
+- [InfluxDB Rules API](https://apis.io/apis/influxdb/influxdb-rules-api/) — The Rules API from InfluxDB — 1 operation(s) for rules.
+- [InfluxDB Secrets API](https://apis.io/apis/influxdb/influxdb-secrets-api/) — The Secrets API from InfluxDB — 3 operation(s) for secrets.
+- [InfluxDB Security and access endpoints API](https://apis.io/apis/influxdb/influxdb-security-and-access-endpoints-api/) — The Security and access endpoints API from InfluxDB — 15 operation(s) for security and access endpoints.
+- [InfluxDB Setup API](https://apis.io/apis/influxdb/influxdb-setup-api/) — The Setup API from InfluxDB — 2 operation(s) for setup.
+- [InfluxDB Signout API](https://apis.io/apis/influxdb/influxdb-signout-api/) — The Signout API from InfluxDB — 1 operation(s) for signout.
+- [InfluxDB System information endpoints API](https://apis.io/apis/influxdb/influxdb-system-information-endpoints-api/) — The System information endpoints API from InfluxDB — 3 operation(s) for system information endpoints.
+- [InfluxDB Tasks API](https://apis.io/apis/influxdb/influxdb-tasks-api/) — Process and analyze your data with [tasks](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#task) in the InfluxDB task engine. Use the…
+- [InfluxDB Telegraf Plugins API](https://apis.io/apis/influxdb/influxdb-telegraf-plugins-api/) — The Telegraf Plugins API from InfluxDB — 1 operation(s) for telegraf plugins.
+- [InfluxDB Telegrafs API](https://apis.io/apis/influxdb/influxdb-telegrafs-api/) — The Telegrafs API from InfluxDB — 8 operation(s) for telegrafs.
+- [InfluxDB Templates API](https://apis.io/apis/influxdb/influxdb-templates-api/) — Export and apply InfluxDB **templates**. Manage **stacks** of templated InfluxDB resources. InfluxDB templates are prepackaged configurations for resources.…
+- [InfluxDB Usage API](https://apis.io/apis/influxdb/influxdb-usage-api/) — The Usage API from InfluxDB — 1 operation(s) for usage.
+- [InfluxDB Users API](https://apis.io/apis/influxdb/influxdb-users-api/) — Retrieve specific users. InfluxDB Cloud lets you invite and collaborate with multiple users in your organization. To invite and remove users from your…
+- [InfluxDB Variables API](https://apis.io/apis/influxdb/influxdb-variables-api/) — The Variables API from InfluxDB — 4 operation(s) for variables.
+- [InfluxDB Views API](https://apis.io/apis/influxdb/influxdb-views-api/) — The Views API from InfluxDB — 1 operation(s) for views.
+- [InfluxDB Write API](https://apis.io/apis/influxdb/influxdb-write-api/) — Write time series data to [buckets](https://docs.influxdata.com/influxdb/cloud/reference/glossary/#bucket).
+- [InfluxDB Notification Rules API](https://apis.io/apis/influxdb/influxdb-notification-rules-api/) — The Notification Rules API from InfluxDB — 4 operation(s) for notification rules.
+- [InfluxDB Sign In API](https://apis.io/apis/influxdb/influxdb-sign-in-api/) — The Sign In API from InfluxDB — 1 operation(s) for sign in.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2024-09-25
-- **Modified:** 2026-05-30
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### Agentic access (1)
 
-### InfluxDB Cloud API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-InfluxDB Cloud v2 API for managing buckets, organizations, tasks, authorizations, dashboards, and writing and querying time series data. The API exposes the full surface of the InfluxDB Cloud platform including data ingestion, Flux query execution, task scheduling, alerting, and access control.
+- [Influxdb Agentic Access](https://apis.io/agentic-access/influxdb/influxdb-agentic-access/)
 
-- **Human URL:** [https://www.influxdata.com/](https://www.influxdata.com/)
-- **Base URL:** `https://cloud2.influxdata.com/api/v2`
+#### Collections (42)
 
-#### Tags
+Postman and Open Collection request collections.
 
-- Database
-- Time Series
-- Real-Time
-- Cloud
+- [Complete InfluxDB Cloud API](https://apis.io/collections/influxdb/open-influxdb/)
+- [InfluxDB Notification Endpoints and Write Surfaces](https://apis.io/collections/influxdb/open-influxdb-asyncapi/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Authorizations (API tokens) API](https://apis.io/collections/influxdb/open-influxdb-authorizations-api-tokens-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Bucket Schemas API](https://apis.io/collections/influxdb/open-influxdb-bucket-schemas-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Buckets API](https://apis.io/collections/influxdb/open-influxdb-buckets-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Cells API](https://apis.io/collections/influxdb/open-influxdb-cells-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Checks API](https://apis.io/collections/influxdb/open-influxdb-checks-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Config API](https://apis.io/collections/influxdb/open-influxdb-config-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Dashboards API](https://apis.io/collections/influxdb/open-influxdb-dashboards-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Data I/O endpoints API](https://apis.io/collections/influxdb/open-influxdb-data-i-o-endpoints-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) DBRPs API](https://apis.io/collections/influxdb/open-influxdb-dbrps-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Delete API](https://apis.io/collections/influxdb/open-influxdb-delete-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Invokable Scripts API](https://apis.io/collections/influxdb/open-influxdb-invokable-scripts-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Labels API](https://apis.io/collections/influxdb/open-influxdb-labels-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Legacy Authorizations API](https://apis.io/collections/influxdb/open-influxdb-legacy-authorizations-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Legacy Query API](https://apis.io/collections/influxdb/open-influxdb-legacy-query-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Legacy Write API](https://apis.io/collections/influxdb/open-influxdb-legacy-write-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Limits API](https://apis.io/collections/influxdb/open-influxdb-limits-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Maps API](https://apis.io/collections/influxdb/open-influxdb-maps-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) NotificationEndpoints API](https://apis.io/collections/influxdb/open-influxdb-notificationendpoints-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) NotificationRules API](https://apis.io/collections/influxdb/open-influxdb-notificationrules-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Organizations API](https://apis.io/collections/influxdb/open-influxdb-organizations-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Ping API](https://apis.io/collections/influxdb/open-influxdb-ping-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Query API](https://apis.io/collections/influxdb/open-influxdb-query-api/)
+- [Complete InfluxDB Cloud Authorizations (API tokens) Authorizations (API tokens) Resources API](https://apis.io/collections/influxdb/open-influxdb-resources-api/)
+- …and 17 more published on APIs.io
 
-#### Properties
+#### Security (4)
 
-- [Documentation](https://docs.influxdata.com/influxdb/cloud/api/v2/)
-- [OpenAPI](https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [AsyncAPI](https://raw.githubusercontent.com/api-evangelist/influxdb/refs/heads/main/openapi/influxdb-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
-- [Authentication](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Authentication)
-- [Getting Started](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start)
-- [Pagination](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Pagination)
-- [Headers](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Headers)
-- [Source](https://github.com/influxdata/openapi)
+Authentication, trust centre, and vulnerability disclosure.
 
-## Common Properties
+- [Influxdb Authentication](https://apis.io/security/influxdb/influxdb-authentication/)
+- [Influxdb Domain Security](https://apis.io/security/influxdb/influxdb-domain-security/)
+- [Influxdb Trust Center](https://apis.io/security/influxdb/influxdb-trust-center/)
+- [Influxdb Vulnerability Disclosure](https://apis.io/security/influxdb/influxdb-vulnerability-disclosure/)
+
+#### Plans and pricing (2)
+
+Published plans, tiers and prices.
+
+- [Influxdb Plans Pricing](https://apis.io/plans/influxdb/influxdb-plans-pricing/)
+- [Influxdb Price Estimates](https://apis.io/plans/influxdb/influxdb-price-estimates/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Influxdb Rate Limits](https://apis.io/rate-limits/influxdb/influxdb-rate-limits/)
+
+#### FinOps (1)
+
+What the API costs to run, by operation.
+
+- [Influxdb Finops](https://apis.io/finops/influxdb/influxdb-finops/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.influxdata.com/)
 - [Documentation](https://docs.influxdata.com/)
-- [Getting Started](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start)
+- [Getting started](https://docs.influxdata.com/influxdb/cloud/api/v2/#tag/Quick-start)
 - [Pricing](https://www.influxdata.com/influxdb-pricing/)
-- [Use  Cases](https://www.influxdata.com/solutions/)
-- [Resources](https://www.influxdata.com/_resources/?pg=1)
-- [Webinars](https://www.influxdata.com/_resources/?pg=1&ct=webinar)
-- [White  Papers](https://www.influxdata.com/_resources/?pg=1&ct=tech_paper)
-- [Video](https://www.influxdata.com/_resources/?pg=1&ct=video)
-- [Case  Studies](https://www.influxdata.com/_resources/?pg=1&ct=case_study)
-- [Events](https://www.influxdata.com/events/)
-- [Glossary](https://www.influxdata.com/glossary/)
-- [Integrations](https://www.influxdata.com/products/integrations/)
-- [Issues](https://github.com/influxdata/influxdb/issues/new/choose/)
 - [Support](https://support.influxdata.com/)
-- [Git Hub](https://github.com/influxdata/influxdb)
-- [LinkedIn](https://www.linkedin.com/company/influxdb/)
+- [Blog](https://www.influxdata.com/blog/)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 35.2** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 57.1 |
+| Contract quality | 48.5 |
+| Contract governance | 0.0 |
+| Operational transparency | 13.2 |
+| Developer ergonomics | 26.2 |
+| Access clarity | 50.0 |
+
+**Agent readiness 32.3** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | verified |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 22.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/influxdb/](https://apis.io/providers/influxdb/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for InfluxDB: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/influxdb/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
